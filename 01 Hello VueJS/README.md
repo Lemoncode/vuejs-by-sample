@@ -1,4 +1,4 @@
-# 00 Boilerplate
+# 01 Hello VueJS
 
 In this sample we are going to create our first Vue.js component and connect it with the DOM.
 
@@ -8,9 +8,8 @@ Summary steps:
  - Install Vue.js devtools.
  - Install `vue.js` library.
  - Configure webpack to work with `vue.js`.
- - Import averageService into `students.js`
- - Use the averageService features inside the `students.js` code.
- - Transpile and test on `index.html`
+ - Update `index.html`
+ - Update `main.ts`
 
 # Steps to build it
 
