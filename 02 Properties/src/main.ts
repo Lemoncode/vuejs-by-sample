@@ -17,11 +17,11 @@ new Vue({
     </div>
   `,
   components: {
-    'hello': HelloComponent,
+    hello: HelloComponent,
   },
   data: {
     message: 'Hello from Vue.js'
-  } as State,  
+  },  
   methods: {
     onChange: function(value) {
       this.message = value;

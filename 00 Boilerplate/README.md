@@ -83,7 +83,6 @@ our webpack configuration (handling <abbr title="Cascading Style Sheets">CSS</ab
     "moduleResolution": "node",
     "declaration": false,
     "noImplicitAny": false,
-    "jsx": "react",
     "sourceMap": true,
     "noLib": false,
     "suppressImplicitAnyIndexErrors": true

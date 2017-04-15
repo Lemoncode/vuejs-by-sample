@@ -63,7 +63,6 @@ npm install vue --save
     "moduleResolution": "node",
     "declaration": false,
     "noImplicitAny": false,
-    "jsx": "react",
     "sourceMap": true,
     "noLib": false,
 -   "suppressImplicitAnyIndexErrors": true

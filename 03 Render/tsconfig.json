@@ -7,7 +7,9 @@
     "noImplicitAny": false,
     "sourceMap": true,
     "noLib": false,
-    "suppressImplicitAnyIndexErrors": true
+    "suppressImplicitAnyIndexErrors": true,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "preserve"
   },
   "compileOnSave": false,
   "exclude": [

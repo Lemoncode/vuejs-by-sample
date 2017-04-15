@@ -102,8 +102,8 @@ new Vue({
   data: {
     message: 'Hello from Vue.js'
 - }
++ },
 -});
-+ } as State,
 + methods: {
 +   onChange: function(value) {
 +     this.message = value;
@@ -138,14 +138,13 @@ new Vue({
   `,
   data: {
     message: 'Hello from Vue.js'
-- } as State,
+  },
 - methods: {
 -   onChange: function(value) {
 -     this.message = value;
 -   },
 - },
 -} as ComponentOptions<State>);
-+ }
 +});
 
 ```
@@ -194,7 +193,7 @@ new Vue({
     </div>
   `,
 + components: {
-+   'hello': HelloComponent,
++   hello: HelloComponent,
 + },
   data: {
     message: 'Hello from Vue.js'
@@ -253,13 +252,13 @@ new Vue({
     </div>
   `,
   components: {
-    'hello': HelloComponent,
+    hello: HelloComponent,
   },
   data: {
     message: 'Hello from Vue.js'
 - }
++ },
 -});
-+ } as State,  
 + methods: {
 +   onChange: function(value) {
 +     this.message = value;
@@ -268,9 +267,9 @@ new Vue({
 +} as ComponentOptions<State>);
 
 ```
+
 > [`v-model` directive](https://vuejs.org/v2/guide/components.html#Form-Input-Components-using-Custom-Events)
 > [Props types](https://vuejs.org/v2/guide/components.html#Prop-Validation)
-
 
 - Execute the sample:
 
