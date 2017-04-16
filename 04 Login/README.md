@@ -390,6 +390,54 @@ export const loginAPI = {
 
 ### ./src/pages/login/pageContainer.tsx
 ```javascript
+import Vue, {ComponentOptions} from 'vue';
+import {LoginPage} from './page';
+import {LoginEntity} from '../../model/login';
+import {loginAPI} from '../../api/login';
+import {router} from '../../router';
+
+interface State extends Vue{
+  loginEntity: LoginEntity;
+  updateLogin: (login: string, password: string) => void;
+  loginRequest: () => void;
+}
+
+export const LoginPageContainer = Vue.extend({
+  render: function(h) {
+    return (
+      <LoginPage
+        loginEntity={this.loginEntity}
+        updateLogin={this.updateLogin}
+        loginRequest={this.loginRequest}
+      />
+    );
+  },
+  data: function() {
+    return {
+      loginEntity: {
+        login: '',
+        password: ''
+      },
+    }
+  },
+  methods: {
+    updateLogin: function(login: string, password: string) {
+      this.loginEntity = {
+        login,
+        password,
+      };
+    },
+    loginRequest: function() {
+      loginAPI.loginRequest(this.loginEntity)
+        .then((isValid) => {
+          router.push('/recipe');
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+    }
+  }
+} as ComponentOptions<State>);
 
 ```
 
@@ -402,6 +450,11 @@ import {HeaderComponent} from './header';
 import {FormComponent} from './form';
 
 export const LoginPage = Vue.extend({
++ props: [
++   'loginEntity',
++   'updateLogin',
++   'loginRequest',
++ ],
   render: function(h) {
     return (
       <div class="container">
@@ -409,7 +462,12 @@ export const LoginPage = Vue.extend({
           <div class="col-md-4 col-md-offset-4">
             <div class="panel panel-default">
               <HeaderComponent />
-              <FormComponent />
+-             <FormComponent />
++             <FormComponent
++               loginEntity={this.loginEntity}
++               updateLogin={this.updateLogin}
++               loginRequest={this.loginRequest}
++             />
             </div>
           </div>
         </div>
@@ -427,6 +485,11 @@ export const LoginPage = Vue.extend({
 import Vue from 'vue';
 
 export const FormComponent = Vue.extend({
++ props: [
++   'loginEntity',
++   'updateLogin',
++   'loginRequest',
++ ],
   render: function(h) {
     return (
       <div class="panel-body">
@@ -436,6 +499,8 @@ export const FormComponent = Vue.extend({
               class="form-control"
               placeholder="e-mail"
               type="text"
++             value={this.loginEntity.login}
++             onInput={(e) => this.updateLogin(e.target.value, this.loginEntity.password)}
             />
           </div>
           <div class="form-group">
@@ -443,13 +508,22 @@ export const FormComponent = Vue.extend({
               class="form-control"
               placeholder="password"
               type="password"
++             value={this.loginEntity.password}
++             onInput={(e) => this.updateLogin(this.loginEntity.login, e.target.value)}
             />
           </div>
-          <router-link to="/recipe"
+-         <router-link to="/recipe"
++         <button
++           onClick={(e) => {
++               e.preventDefault();
++               this.loginRequest();
++             }
++           }
             class="btn btn-lg btn-success btn-block"
           >
             Login
-          </router-link>
+-         </router-link>
++         </button>
         </form>
       </div>
     );
@@ -462,10 +536,12 @@ export const FormComponent = Vue.extend({
 
 ### ./src/pages/login/index.ts
 ```diff
-import {LoginPage} from './page';
+- import {LoginPage} from './page';
++ import {LoginPageContainer} from './pageContainer';
 
 export {
-  LoginPage
+- LoginPage
++ LoginPageContainer
 }
 
 ```
@@ -475,12 +551,14 @@ export {
 ### ./src/router.ts
 ```diff
 import Router, {RouteConfig} from 'vue-router';
-import {LoginPage} from './pages/login';
+- import {LoginPage} from './pages/login';
++ import {LoginPageContainer} from './pages/login';
 import {RecipeListPage} from './pages/recipe/list';
 
 const routes: RouteConfig[] = [
   { path: '/', redirect: '/login' },
-  { path: '/login', component: LoginPage },
+- { path: '/login', component: LoginPage },
++ { path: '/login', component: LoginPageContainer },
   { path: '/recipe', component: RecipeListPage },
 ];
 
