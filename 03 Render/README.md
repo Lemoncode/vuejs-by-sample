@@ -7,6 +7,9 @@ We will take a startup point sample _02 Properties_.
 Summary steps:
  - Configure to work with runtime-only build.
  - Enable and configure jsx
+ - Install `babel-plugin-transform-vue-jsx`
+ - Rename to `main.tsx` and update it.
+ - Rename to `hello.tsx` and update it.
 
 # Steps to build it
 
