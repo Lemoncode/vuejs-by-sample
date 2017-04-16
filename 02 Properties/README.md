@@ -1,6 +1,6 @@
 # 02 Properties
 
-In this sample we are going to a basic concept, handling properties.
+In this sample we are going to learn a basic concept, handling properties.
 
 We will take a startup point sample _01 Hello VueJS_.
 

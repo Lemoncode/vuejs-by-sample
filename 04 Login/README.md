@@ -1,6 +1,6 @@
 # 04 Login
 
-In this sample we are going to a basic concept, handling properties.
+In this sample we are going to create a `login` page.
 
 We will take a startup point sample _03 Render_.
 
@@ -10,7 +10,7 @@ Summary steps:
  - Create `login` page.
  - Configure router navigation.
  - Create `recipe list` page.
- - Create model `LoginEntity`.
+ - Create `LoginEntity` model.
  - Create fake `login` API.
  - Check valid login.
 

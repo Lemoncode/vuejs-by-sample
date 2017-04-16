@@ -1,6 +1,6 @@
 # 03 Render
 
-In this sample we are going to a basic concept, handling properties.
+In this sample we are going to work with `render` function.
 
 We will take a startup point sample _02 Properties_.
 
