@@ -37,6 +37,6 @@ const matchIngredient = (ingredient, searchedIngredient) => {
   return ingredientLowerCase.indexOf(searchedIngredientLowerCase) >= 0;
 };
 
-export const recipeBusiness = {
+export const filterRecipeBusiness = {
   filterRecipesByCommaSeparatedText,
 };

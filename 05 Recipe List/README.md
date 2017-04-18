@@ -81,7 +81,7 @@ export const mockRecipes: RecipeEntity[] = [
   },
   {
     id: 3,
-    name: 'Spaghetti wit tomato sauce',
+    name: 'Spaghetti with tomato sauce',
     description: `
      1. Brown beef over medium heat. Drain off fat.
      2. In a large pot, combine beef, salt, oregano, pepper, garlic powder, onion flakes, diced tomatoes, tomato sauce, and mushrooms. Simmer at a low heat setting for 2 hours, stirring occasionally
@@ -121,16 +121,67 @@ export const recipeAPI = {
 
 ### ./src/pages/recipe/list/pageContainer.tsx
 ```javascript
+import Vue, {ComponentOptions} from 'vue';
+import {RecipeEntity} from '../../../model/recipe';
+import {recipeAPI} from '../../../api/recipe';
+import {RecipeListPage} from './page';
+
+interface State extends Vue {
+  recipes: RecipeEntity[];
+}
+
+export const RecipeListPageContainer = Vue.extend({
+  render: function(h) {
+    return (
+      <RecipeListPage
+        recipes={this.recipes}
+      />
+    );
+  },
+  data: function() {
+    return {
+      recipes: []
+    }
+  },
+  beforeCreate: function() {
+    recipeAPI.fetchRecipes()
+      .then((recipes) => {
+        this.recipes = recipes;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+} as ComponentOptions<State>);
+
 ```
 
 - Create `header`:
 
 ### ./src/pages/recipe/list/header.tsx
 ```javascript
+import Vue from 'vue';
+
+export const HeaderComponent = Vue.extend({
+  render: function(h) {
+    return (
+      <thead>
+        <th>
+          Name
+        </th>
+        <th>
+          Description
+        </th>
+        <th>
+        </th>
+      </thead>
+    );
+  }
+});
 
 ```
 
-- Install `webpack-env` typings for use `require`:
+- To work with CSS Modules, we'll install `webpack-env` typings for use `require`:
 
 ```
 npm install @types/webpack-env --save-dev
@@ -210,12 +261,57 @@ npm install @types/webpack-env --save-dev
 
 ### ./src/pages/recipe/list/rowStyles.css
 ```css
+.name {
+  width: 25%;
+}
+
+.description {
+  max-width: 177px;
+}
+
+.description span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  max-width: 100%;
+}
+
 ```
 
 - Create `row`:
 
 ### ./src/pages/recipe/list/row.tsx
 ```javascript
+import Vue from 'vue';
+const rowStyles: any = require('./rowStyles');
+
+export const RowComponent = Vue.extend({
+  props: [
+    'recipe'
+  ],
+  render: function(h) {
+    return (
+      <tr>
+        <td class={rowStyles.name}>
+          <span>
+            {this.recipe.name}
+          </span>
+        </td>
+        <td class={rowStyles.description}>
+          <span>
+            {this.recipe.description}
+          </span>
+        </td>
+        <td>
+          <a class="btn btn-primary pull-right">
+            <i class="glyphicon glyphicon-pencil" />
+          </a>
+        </td>
+      </tr>
+    );
+  }
+});
 
 ```
 
@@ -223,15 +319,183 @@ npm install @types/webpack-env --save-dev
 
 ### ./src/pages/recipe/list/page.tsx
 ```diff
-import Vue from 'vue';
+- import Vue from 'vue';
++ import Vue, {ComponentOptions} from 'vue';
++ import {RecipeEntity} from '../../../model/recipe';
++ import {HeaderComponent} from './header';
++ import {RowComponent} from './row';
+
++ interface State extends Vue {
++   recipes: RecipeEntity[];
++ }
 
 export const RecipeListPage = Vue.extend({
++ props: [
++   'recipes'
++ ],
   render: function(h) {
     return (
-      <h1> Recipe List Page </h1>
+-     <h1> Recipe List Page </h1>
++     <div class="container">
++       <h2>Recipes</h2>
++       <table class="table table-striped">
++         <HeaderComponent />
++         <tbody>
++           {
++             this.recipes.map((recipe) =>
++               <RowComponent
++                 key={recipe.id}
++                 recipe={recipe}
++               />
++             )
++           }
++         </tbody>
++       </table>
++     </div>
+    );
+  }
+-});
++} as ComponentOptions<State>);
+
+```
+
+- Create `SearchBar`:
+
+### ./src/pages/recipe/list/searchBar.tsx
+```javascript
+import Vue from 'vue';
+
+export const SearchBarComponent = Vue.extend({
+  props: [
+    'searchInputHandler'
+  ],
+  render: function(h) {
+    return (
+      <div class="form-group">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search for ingredients comma separated..."
+          onInput={(e) => this.searchInputHandler(e.target.value)}
+        />
+      </div>
     );
   }
 });
+
+```
+
+- Create `filter recipe` business:
+
+### ./src/pages/recipe/list/business/filterRecipeBusiness.ts
+```javascript
+import {RecipeEntity} from '../../../../model/recipe';
+
+const filterRecipesByCommaSeparatedText = (recipes, searchText) => {
+  const searchedIngredients = getSearchedIngredientList(searchText);
+
+  return searchText === '' ?
+    recipes :
+    filterRecipesBySearchedIngredients(recipes, searchedIngredients);
+};
+
+const getSearchedIngredientList = (searchText: string) => {
+  return searchText.split(',');
+};
+
+const filterRecipesBySearchedIngredients = (recipes, searchedIngredients) => {
+  return recipes.filter((recipe: RecipeEntity) => 
+    matchAllSearchedIngredients(recipe.ingredients, searchedIngredients)
+  );
+};
+
+const matchAllSearchedIngredients = (ingredients, searchedIngredients) => {
+  return searchedIngredients.every((searchedIngredient) =>
+    matchSearchedIngredient(searchedIngredient, ingredients)
+  );
+};
+
+const matchSearchedIngredient = (searchedIngredient: string, ingredients: string[]) => {
+  return ingredients.some((ingredient) =>
+    matchIngredient(ingredient, searchedIngredient)
+  );
+};
+
+const matchIngredient = (ingredient, searchedIngredient) => {
+  const searchedIngredientLowerCase = searchedIngredient.toLowerCase().trim();
+  const ingredientLowerCase = ingredient.toLowerCase().trim();
+  
+  return ingredientLowerCase.indexOf(searchedIngredientLowerCase) >= 0;
+};
+
+export const filterRecipeBusiness = {
+  filterRecipesByCommaSeparatedText,
+};
+
+```
+
+- Update `recipe list` page:
+
+### ./src/pages/recipe/list/page.tsx
+```diff
+import Vue, {ComponentOptions} from 'vue';
+import {RecipeEntity} from '../../../model/recipe';
+import {HeaderComponent} from './header';
+import {RowComponent} from './row';
++ import {SearchBarComponent} from './searchBar';
++ import {filterRecipeBusiness} from './business/filterRecipeBusiness';
+
+interface State extends Vue {
+  recipes: RecipeEntity[];
++ filteredRecipes: RecipeEntity[];
++ searchText: string;
++ searchInputHandler: (value: string) => void;
+}
+
+export const RecipeListPage = Vue.extend({
+  props: [
+    'recipes'
+  ],
++ data: function() {
++   return {
++     searchText: ''
++   };
++ },
++ methods: {
++   searchInputHandler: function(value) {
++     this.searchText = value;
++   }
++ },
++ computed: {
++   filteredRecipes: function() {
++     return filterRecipeBusiness.filterRecipesByCommaSeparatedText(this.recipes, this.searchText);
++   }
++ },
+  render: function(h) {
+    return (
+      <div class="container">
+        <h2>Recipes</h2>
++       <SearchBarComponent
++         searchInputHandler={this.searchInputHandler}
++       />
+        <table class="table table-striped">
+          <HeaderComponent />
+          <tbody>
+            {
+-             this.recipes.map((recipe) =>
++             this.filteredRecipes.map((recipe) =>
+                <RowComponent
+                  key={recipe.id}
+                  recipe={recipe}
+                />
+              )
+            }
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+} as ComponentOptions<State>);
 
 ```
 
@@ -285,6 +549,57 @@ export const App = Vue.extend({
 +     </div>
     );
   },
+});
+
+```
+
+- Finally, we are going to create a dummy `edit recipe` page to navigate:
+
+### ./src/pages/recipe/edit/page.tsx
+```javascript
+import Vue from 'vue';
+
+export const EditRecipePage = Vue.extend({
+  props: [
+    'id'
+  ],
+  render: function(h) {
+    return (
+      <h1> Edit Recipe Page {this.id}</h1>
+    );
+  }
+});
+
+```
+
+### ./src/pages/recipe/edit/index.ts
+```javascript
+import {EditRecipePage} from './page';
+
+export {
+  EditRecipePage
+}
+
+```
+
+- Update `router.ts`:
+
+### ./src/router.ts
+```diff
+import Router, {RouteConfig} from 'vue-router';
+import {LoginPageContainer} from './pages/login';
+import {RecipeListPageContainer} from './pages/recipe/list';
++ import {EditRecipePage} from './pages/recipe/edit';
+
+const routes: RouteConfig[] = [
+  { path: '/', redirect: '/login' },
+  { path: '/login', component: LoginPageContainer },
+  { path: '/recipe', component: RecipeListPageContainer },
++ { path: '/recipe/:id', component: EditRecipePage, props: true },
+];
+
+export const router = new Router({
+  routes
 });
 
 ```

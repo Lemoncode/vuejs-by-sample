@@ -19,9 +19,11 @@ export const RowComponent = Vue.extend({
           </span>
         </td>
         <td>
-          <a class=" btn btn-primary">
-            <i class="glyphicon glyphicon-pencil" />
-          </a>
+          <router-link
+            to={`recipe/${this.recipe.id}`}
+            class="btn btn-primary pull-right">
+              <i class="glyphicon glyphicon-pencil" />
+          </router-link>
         </td>
       </tr>
     );

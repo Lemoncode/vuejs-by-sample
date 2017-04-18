@@ -6,12 +6,14 @@ export const SearchBarComponent = Vue.extend({
   ],
   render: function(h) {
     return (
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Search for ingredients comma separated..."
-        onInput={(e) => this.searchInputHandler(e.target.value)}
-      />
+      <div class="form-group">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search for ingredients comma separated..."
+          onInput={(e) => this.searchInputHandler(e.target.value)}
+        />
+      </div>
     );
   }
 });

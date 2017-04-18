@@ -84,6 +84,8 @@ render: function(h) {
 > [More info](https://github.com/vuejs/vue/issues/5262)
 >
 > [`h` is an alias of createElement](https://vuejs.org/v2/guide/render-function.html#JSX) (necessary to work with TypeScript)
+>
+> [`HypeScript`](https://github.com/hyperhype/hyperscript)
 
 - To solve this issue, the goal is:
     - Avoid TypeScript transpile `tsx`.

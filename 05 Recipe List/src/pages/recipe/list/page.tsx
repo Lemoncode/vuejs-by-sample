@@ -3,7 +3,7 @@ import {RecipeEntity} from '../../../model/recipe';
 import {HeaderComponent} from './header';
 import {RowComponent} from './row';
 import {SearchBarComponent} from './searchBar';
-import {recipeBusiness} from './business/recipeBusiness';
+import {filterRecipeBusiness} from './business/filterRecipeBusiness';
 
 interface State extends Vue {
   recipes: RecipeEntity[];
@@ -28,7 +28,7 @@ export const RecipeListPage = Vue.extend({
   },
   computed: {
     filteredRecipes: function() {
-      return recipeBusiness.filterRecipesByCommaSeparatedText(this.recipes, this.searchText);
+      return filterRecipeBusiness.filterRecipesByCommaSeparatedText(this.recipes, this.searchText);
     }
   },
   render: function(h) {

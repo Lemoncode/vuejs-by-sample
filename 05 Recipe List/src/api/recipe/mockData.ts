@@ -38,7 +38,7 @@ export const mockRecipes: RecipeEntity[] = [
   },
   {
     id: 3,
-    name: 'Spaghetti wit tomato sauce',
+    name: 'Spaghetti with tomato sauce',
     description: `
      1. Brown beef over medium heat. Drain off fat.
      2. In a large pot, combine beef, salt, oregano, pepper, garlic powder, onion flakes, diced tomatoes, tomato sauce, and mushrooms. Simmer at a low heat setting for 2 hours, stirring occasionally
