@@ -9,6 +9,7 @@ Summary steps:
  - Create fake `recipe` API.
  - Create `recipe list` page container.
  - Update `recipe list` page.
+ - Navigate to `edit recipe` page.
 
 # Steps to build it
 
