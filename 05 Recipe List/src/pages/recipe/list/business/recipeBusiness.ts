@@ -1,34 +1,42 @@
 import {RecipeEntity} from '../../../../model/recipe';
 
-const getFilteredRecipes = (recipes, searchText) => {
-  const searchedIngredients = getSearchedIngredients(searchText);
+const filterRecipesByCommaSeparatedText = (recipes, searchText) => {
+  const searchedIngredients = getSearchedIngredientList(searchText);
 
-  return recipes.filter((recipe: RecipeEntity) => {
-    return searchText === '' ||
-      matchIngredients(recipe.ingredients, searchedIngredients);
-  });
+  return searchText === '' ?
+    recipes :
+    filterRecipesBySearchedIngredients(recipes, searchedIngredients);
 };
 
-const getSearchedIngredients = (searchText: string) => {
+const getSearchedIngredientList = (searchText: string) => {
   return searchText.split(',');
 };
 
-const matchIngredients = (ingredients, searchedIngredients) => {
-  return ingredients.some((ingredient) => {
-    return matchSearchedIngredients(ingredient, searchedIngredients);
-  })
+const filterRecipesBySearchedIngredients = (recipes, searchedIngredients) => {
+  return recipes.filter((recipe: RecipeEntity) => 
+    matchAllSearchedIngredients(recipe.ingredients, searchedIngredients)
+  );
 };
 
-const matchSearchedIngredients = (ingredient: string, searchedIngredients: string[]) => {
-  return searchedIngredients.some((searchedIngredient) => {
-    const searchedIngredientLowerCase = searchedIngredient.toLowerCase().trim();
-    const ingredientLowerCase = ingredient.toLowerCase().trim();
+const matchAllSearchedIngredients = (ingredients, searchedIngredients) => {
+  return searchedIngredients.every((searchedIngredient) =>
+    matchSearchedIngredient(searchedIngredient, ingredients)
+  );
+};
 
-    return searchedIngredientLowerCase !== '' &&
-      ingredientLowerCase.indexOf(searchedIngredientLowerCase) >= 0;
-  })
-}
+const matchSearchedIngredient = (searchedIngredient: string, ingredients: string[]) => {
+  return ingredients.some((ingredient) =>
+    matchIngredient(ingredient, searchedIngredient)
+  );
+};
+
+const matchIngredient = (ingredient, searchedIngredient) => {
+  const searchedIngredientLowerCase = searchedIngredient.toLowerCase().trim();
+  const ingredientLowerCase = ingredient.toLowerCase().trim();
+  
+  return ingredientLowerCase.indexOf(searchedIngredientLowerCase) >= 0;
+};
 
 export const recipeBusiness = {
-  getFilteredRecipes,
+  filterRecipesByCommaSeparatedText,
 };

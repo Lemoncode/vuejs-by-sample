@@ -28,7 +28,7 @@ export const RecipeListPage = Vue.extend({
   },
   computed: {
     filteredRecipes: function() {
-      return recipeBusiness.getFilteredRecipes(this.recipes, this.searchText);
+      return recipeBusiness.filterRecipesByCommaSeparatedText(this.recipes, this.searchText);
     }
   },
   render: function(h) {
