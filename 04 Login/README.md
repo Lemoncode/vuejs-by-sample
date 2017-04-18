@@ -568,6 +568,92 @@ export const router = new Router({
 
 ```
 
+- As example about `data` property in a `Vue` component, we can define an object with all app state:
+
+### ./src/state.ts
+```javascript
+export const state = {
+  loginEntity: {
+    login: '',
+    password: ''
+  },
+}
+
+```
+
+### ./src/app.tsx
+```diff
+import Vue from 'vue';
++ import {state} from './state';
+
+export const App = Vue.extend({
+  render: function(h) {
+    return (
+-     <router-view></router-view>
++     <div>
++       <h1 class="well">{state.loginEntity}</h1>
++       <router-view></router-view>
++     </div>
+    );
+  },
+});
+
+```
+
+### ./src/pages/login/pageContainer.tsx
+```diff
+import Vue, {ComponentOptions} from 'vue';
+import {LoginPage} from './page';
+import {LoginEntity} from '../../model/login';
+import {loginAPI} from '../../api/login';
+import {router} from '../../router';
++ import {state} from '../../state';
+
+...
+
+export const LoginPageContainer = Vue.extend({
+...
+  data: function() {
++   return state;
+-   return {
+-     loginEntity: {
+-       login: '',
+-       password: ''
+-     },
+-   };
+  },
+...
+
+```
+
+- Remove `state.ts` and undo updates.
+
+- Finally, we are going to add `form validations`.
+
+- First we're going to install [`lc-form-validation`](https://github.com/Lemoncode/lcFormValidation):
+
+```
+npm install lc-form-validation --save
+```
+
+- Add it as `vendor`:
+
+### ./webpack.config.js
+```diff
+...
+vendor: [
+  'vue',
+  'vue-router',
++ 'lc-form-validation',
+],
+...
+
+```
+
+- Create validation `constraints`:
+
+### ./src/pages/login/validations/loginFormValidation.ts
+
 - Execute the sample:
 
 ```

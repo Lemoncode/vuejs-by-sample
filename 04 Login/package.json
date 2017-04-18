@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "bootstrap": "^3.3.7",
+    "lc-form-validation": "^1.0.0",
     "vue": "^2.2.6",
     "vue-router": "^2.4.0"
   }
