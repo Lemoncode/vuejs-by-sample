@@ -3,10 +3,9 @@
 In this sample we are going to setup a web project that can be easily managed
 by webpack.
 
-We won't install anything related about Vue.js, just some basic plumbing.
+We won't install anything related to Vue.js, just some basic plumbing.
 
-We will setup an initial <abbr title="Node.js package manager, a package manager for the JavaScript runtime environment Node.js">npm</abbr> project, give support to TypeScript<br />
-Then we will create a **helloworld.ts** sample.
+We will setup an initial <abbr title="Node.js package manager, a package manager for the JavaScript runtime environment Node.js">npm</abbr> project and give support to TypeScript. Then we will create a **helloworld.ts** sample.
 
 Summary steps:
 
@@ -30,8 +29,7 @@ Install [Node.js and npm](https://nodejs.org/en/) (v6.x.x) if they are not alrea
 
 - Create and navigate to the folder where you are going to create the empty project.
 
-- Execute `npm init`, you will be prompted to answer some information request
-about the project (e.g. set name to _sample-vue-js_ and description to _Sample working with TypeScript and Webpack_).
+- Execute `npm init`, you will be prompted to answer some information about the project (e.g. set name to _sample-vue-js_ and description to _Sample working with TypeScript and Webpack_).
 Once you have successfully fullfilled them a **package.json** file we will generated.
 
  ```
@@ -43,14 +41,13 @@ Once you have successfully fullfilled them a **package.json** file we will gener
  ```
  npm install webpack --save-dev
  ```
-- Install **webpack-dev-server** locally, as a development dependency (the reason to install it locally and not globally is to be easy to setup, e.g. can be launched on a clean machine without having to install anything globally but nodejs).
+- Install **webpack-dev-server** locally, as a development dependency (the reason to install it locally instead of globally is for it to be easy to setup, e.g. It can be launched on a clean machine without having to install anything globally but nodejs).
 
  ```
  npm install webpack-dev-server --save-dev
  ```
 
-- Let's install a list of plugins and loaders that will add powers to
-our webpack configuration (handling <abbr title="Cascading Style Sheets">CSS</abbr>, TypeScript...).
+- Let's install a list of plugins and loaders that will add powers to our webpack configuration (handling <abbr title="Cascading Style Sheets">CSS</abbr>, TypeScript...).
 
  ```
  npm install css-loader style-loader file-loader url-loader html-webpack-plugin extract-text-webpack-plugin awesome-typescript-loader --save-dev
@@ -95,7 +92,7 @@ our webpack configuration (handling <abbr title="Cascading Style Sheets">CSS</ab
 
  ```
 
-- Since we had configure TypeScript to work with ES6, we need to install `babel` to transpile to ES5:
+- Since we had configured TypeScript to work with ES6, we need to install `babel` to transpile to ES5:
 
 ```
 TypeScript transpile to ES6 files and Babel transpile to ES5 files
@@ -128,7 +125,7 @@ npm install babel-core babel-preset-env --save-dev
  npm install bootstrap --save
  ```
 
-- Now, our **package.json** file should looks something like:
+- Now, our **package.json** file should look something like:
 
 ```json
 {
@@ -216,7 +213,7 @@ document.write("Hello from main.ts !");
  include plumbing for:
  - Launching a web dev server.
  - Transpiling from TypeScript to JavaScript.
- - Setup Twitter Bootstrap (including fonts, etc...).
+ - Setting up Twitter Bootstrap (including fonts, etc...).
  - Generating the build under a **dist** folder.
 
 ### ./webpack.config.js
