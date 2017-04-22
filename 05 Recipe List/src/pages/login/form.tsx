@@ -1,8 +1,11 @@
 import Vue from 'vue';
+import {ValidationComponent} from '../../common/components/form/validation';
+import {InputComponent} from '../../common/components/form/input';
 
 export const FormComponent = Vue.extend({
   props: [
     'loginEntity',
+    'loginError',
     'updateLogin',
     'loginRequest',
   ],
@@ -10,24 +13,28 @@ export const FormComponent = Vue.extend({
     return (
       <div class="panel-body">
         <form role="form">
-          <div class="form-group">
-            <input
-              class="form-control"
+          <ValidationComponent
+            hasError={!this.loginError.login.succeeded}
+            errorMessage={this.loginError.login.errorMessage}
+          >
+            <InputComponent
               placeholder="e-mail"
               type="text"
               value={this.loginEntity.login}
-              onInput={(e) => this.updateLogin(e.target.value, this.loginEntity.password)}
+              inputHandler={(e) => this.updateLogin('login', e.target.value)}
             />
-          </div>
-          <div class="form-group">
-            <input
-              class="form-control"
+          </ValidationComponent>
+          <ValidationComponent
+            hasError={!this.loginError.password.succeeded}
+            errorMessage={this.loginError.password.errorMessage}
+          >
+            <InputComponent
               placeholder="password"
               type="password"
               value={this.loginEntity.password}
-              onInput={(e) => this.updateLogin(this.loginEntity.login, e.target.value)}
+              inputHandler={(e) => this.updateLogin('password', e.target.value)}
             />
-          </div>
+          </ValidationComponent>
           <button
             onClick={(e) => {
                 e.preventDefault();

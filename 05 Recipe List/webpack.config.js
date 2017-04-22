@@ -15,6 +15,7 @@ module.exports = {
     vendor: [
       'vue',
       'vue-router',
+      'lc-form-validation',
     ],
     vendorStyles: [
       '../node_modules/bootstrap/dist/css/bootstrap.css',
