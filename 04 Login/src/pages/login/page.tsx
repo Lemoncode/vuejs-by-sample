@@ -5,6 +5,7 @@ import {FormComponent} from './form';
 export const LoginPage = Vue.extend({
   props: [
     'loginEntity',
+    'loginError',
     'updateLogin',
     'loginRequest',
   ],
@@ -17,6 +18,7 @@ export const LoginPage = Vue.extend({
               <HeaderComponent />
               <FormComponent
                 loginEntity={this.loginEntity}
+                loginError={this.loginError}
                 updateLogin={this.updateLogin}
                 loginRequest={this.loginRequest}
               />

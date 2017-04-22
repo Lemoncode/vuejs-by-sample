@@ -358,9 +358,14 @@ export const FormComponent = Vue.extend({
 
 ### ./src/model/login.ts
 ```javascript
-export interface LoginEntity {
+export class LoginEntity {
   login: string;
   password: string;
+
+  constructor() {
+    this.login = '';
+    this.password = '';
+  }
 }
 
 ```
@@ -414,10 +419,7 @@ export const LoginPageContainer = Vue.extend({
   },
   data: function() {
     return {
-      loginEntity: {
-        login: '',
-        password: ''
-      },
+      loginEntity: new LoginEntity(),
     }
   },
   methods: {
@@ -572,11 +574,10 @@ export const router = new Router({
 
 ### ./src/state.ts
 ```javascript
+import {LoginEntity} from './model/login';
+
 export const state = {
-  loginEntity: {
-    login: '',
-    password: ''
-  },
+  loginEntity: new LoginEntity(),
 }
 
 ```
@@ -616,10 +617,7 @@ export const LoginPageContainer = Vue.extend({
   data: function() {
 +   return state;
 -   return {
--     loginEntity: {
--       login: '',
--       password: ''
--     },
+-     loginEntity: new LoginEntity(),
 -   };
   },
 ...
@@ -653,6 +651,301 @@ vendor: [
 - Create validation `constraints`:
 
 ### ./src/pages/login/validations/loginFormValidation.ts
+```javascript
+import {ValidationConstraints, createFormValidation, Validators} from 'lc-form-validation';
+
+const loginFormValidationConstraints: ValidationConstraints = {
+  fields: {
+    login: [
+      { validator: Validators.required }
+    ],
+    password: [
+      { validator: Validators.required }
+    ],
+  }
+};
+
+export const loginFormValidation = createFormValidation(loginFormValidationConstraints);
+
+```
+
+- Create `LoginError` model:
+
+### ./src/model/loginError.ts
+```javascript
+import {FieldValidationResult} from 'lc-form-validation';
+
+export class LoginError {
+  login: FieldValidationResult;
+  password: FieldValidationResult;
+
+  constructor() {
+    this.login = new FieldValidationResult();
+    this.login.succeeded = true;
+
+    this.password = new FieldValidationResult();
+    this.password.succeeded = true;
+  }
+}
+
+```
+
+- Update `pageContainer`:
+
+### ./src/pages/login/pageContainer.tsx
+```diff
+import Vue, {ComponentOptions} from 'vue';
+import {LoginPage} from './page';
+import {LoginEntity} from '../../model/login';
+import {loginAPI} from '../../api/login';
+import {router} from '../../router';
++ import {LoginError} from '../../model/loginError';
++ import {loginFormValidation} from './validations/loginFormValidation';
+
+interface State extends Vue{
+  loginEntity: LoginEntity;
++ loginError: LoginError;
+  updateLogin: (login: string, password: string) => void;
+  loginRequest: () => void;
+}
+
+export const LoginPageContainer = Vue.extend({
+  render: function(h) {
+    return (
+      <LoginPage
+        loginEntity={this.loginEntity}
++       loginError={this.loginError}
+        updateLogin={this.updateLogin}
+        loginRequest={this.loginRequest}
+      />
+    );
+  },
+  data: function() {
+    return {
+      loginEntity: new LoginEntity(),
++     loginError: new LoginError(),
+    }
+  },
+  methods: {
+    updateLogin: function(login: string, password: string) {
+-     this.loginEntity = {
+-       login,
+-       password,
+-     };
++     this.loginEntity = {
++       ...this.loginEntity,
++       [field]: value,
++     };
+
++     loginFormValidation.validateField(this.loginEntity, field, value)
++       .then((fieldValidationResult) => {
++         this.loginError = {
++           ...this.loginError,
++           [field]: fieldValidationResult,
++         };
++       })
++       .catch((error) => console.log(error));
+    },
+    loginRequest: function() {
++     loginFormValidation.validateForm(this.loginEntity)
++       .then((formValidationResult) => {
++         if(formValidationResult.succeeded) {
+            loginAPI.loginRequest(this.loginEntity)
+              .then((isValid) => {
+                router.push('/recipe');
+              })
+              .catch((error) => {
+                console.log(error);
+              });
++         }
++       })
++       .catch((error) => console.log(error));
+    }
+  }
+} as ComponentOptions<State>);
+
+```
+
+- Update `page`:
+
+### ./src/pages/login/page.tsx
+```diff
+import Vue from 'vue';
+import {HeaderComponent} from './header';
+import {FormComponent} from './form';
+
+export const LoginPage = Vue.extend({
+  props: [
+    'loginEntity',
++   'loginError',
+    'updateLogin',
+    'loginRequest',
+  ],
+  render: function(h) {
+    return (
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 col-md-offset-4">
+            <div class="panel panel-default">
+              <HeaderComponent />
+              <FormComponent
+                loginEntity={this.loginEntity}
++               loginError={this.loginError}
+                updateLogin={this.updateLogin}
+                loginRequest={this.loginRequest}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+});
+
+```
+
+- Create reusable `input with validation`:
+
+### ./src/common/components/form/validation.tsx
+```javascript
+import Vue from 'vue';
+
+export const ValidationComponent = Vue.extend({
+  props: [
+    'hasError',
+    'errorMessage',
+    'className',
+  ],
+  render: function(h) {
+    let wrapperClass = `${this.className}`;
+
+    if(this.hasError) {
+      wrapperClass = `${wrapperClass} has-error`
+    }
+
+    return (
+      <div class={wrapperClass}>
+        {this.$slots.default}
+        <div class="help-block">
+          {this.errorMessage}
+        </div>
+      </div>
+    );
+  },
+});
+
+```
+
+### ./src/common/components/form/input.tsx
+```javascript
+import Vue from 'vue';
+
+export const InputComponent = Vue.extend({
+  props: [
+    'className',
+    'placeholder',
+    'type',
+    'value',
+    'inputHandler',
+    'label',
+    'name',
+  ],
+  render: function(h) {
+    return (
+      <div class={`form-group ${this.className}`}>
+        <label for={this.name}>
+          {this.label}
+        </label>
+        <input
+          class="form-control"
+          placeholder={this.placeholder}
+          type={this.type}
+          value={this.value}
+          onInput={this.inputHandler}
+        />
+      </div>
+    );
+  },
+});
+
+```
+
+- Update `form`:
+
+### ./src/pages/login/form.tsx
+```diff
+import Vue from 'vue';
++ import {ValidationComponent} from '../../common/components/form/validation';
++ import {InputComponent} from '../../common/components/form/input';
+
+export const FormComponent = Vue.extend({
+  props: [
+    'loginEntity',
++   'loginError',
+    'updateLogin',
+    'loginRequest',
+  ],
+  render: function(h) {
+    return (
+      <div class="panel-body">
+        <form role="form">
+-         <div class="form-group">
+-           <input
+-             class="form-control"
+-             placeholder="e-mail"
+-             type="text"
+-             value={this.loginEntity.login}
+-             onInput={(e) => this.updateLogin('login', e.target.value)}
+-           />
+-         </div>
++         <ValidationComponent
++           hasError={!this.loginError.login.succeeded}
++           errorMessage={this.loginError.login.errorMessage}
++         >
++           <InputComponent
++             placeholder="e-mail"
++             type="text"
++             value={this.loginEntity.login}
++             inputHandler={(e) => this.updateLogin('login', e.target.value)}
++           />
++         </ValidationComponent>
+-         <div class="form-group">
+-           <input
+-             class="form-control"
+-             placeholder="password"
+-             type="password"
+-             value={this.loginEntity.password}
+-             onInput={(e) => this.updateLogin('password', e.target.value)}
+-           />
+-         </div>
++         <ValidationComponent
++           hasError={!this.loginError.password.succeeded}
++           errorMessage={this.loginError.password.errorMessage}
++         >
++           <InputComponent
++             placeholder="password"
++             type="password"
++             value={this.loginEntity.password}
++             inputHandler={(e) => this.updateLogin('password', e.target.value)}
++           />
++         </ValidationComponent>
+          <button
+            onClick={(e) => {
+                e.preventDefault();
+                this.loginRequest();
+              }
+            }
+            class="btn btn-lg btn-success btn-block"
+          >
+            Login
+          </button>
+        </form>
+      </div>
+    );
+  }
+});
+
+```
 
 - Execute the sample:
 
