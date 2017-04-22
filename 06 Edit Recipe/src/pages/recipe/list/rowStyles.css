@@ -1,0 +1,15 @@
+.name {
+  width: 25%;
+}
+
+.description {
+  max-width: 177px;
+}
+
+.description span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  max-width: 100%;
+}
