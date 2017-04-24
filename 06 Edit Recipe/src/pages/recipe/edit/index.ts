@@ -1,5 +1,5 @@
-import {EditRecipePage} from './page';
+import {EditRecipeContainer} from './pageContainer';
 
 export {
-  EditRecipePage
+  EditRecipeContainer
 }

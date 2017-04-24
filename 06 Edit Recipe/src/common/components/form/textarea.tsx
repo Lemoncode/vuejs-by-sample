@@ -1,14 +1,14 @@
 import Vue from 'vue';
 
-export const InputComponent = Vue.extend({
+export const TextareaComponent = Vue.extend({
   props: [
     'className',
     'placeholder',
-    'type',
     'value',
     'inputHandler',
     'label',
     'name',
+    'rows',
   ],
   render: function(h) {
     return (
@@ -16,14 +16,15 @@ export const InputComponent = Vue.extend({
         <label for={this.name}>
           {this.label}
         </label>
-        <input
+        <textarea
           class="form-control"
           name={this.name}
           placeholder={this.placeholder}
-          type={this.type}
-          value={this.value}
           onInput={this.inputHandler}
-        />
+          rows={this.rows}
+        >
+          {this.value}
+        </textarea>
       </div>
     );
   },
