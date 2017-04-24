@@ -7,18 +7,19 @@ export const IngredientRowComponent = Vue.extend({
   ],
   render: function(h) {
     return (
-      <div class="row"> 
-        <div class="form-group panel-body">
+        <div class="col-sm-3">
           <label
-            class="col-xs-2"
-          >{this.ingredient}</label>
+            class="col-xs-8"
+          >
+            {this.ingredient}
+          </label>
           <span
             class="btn btn-default"
             onClick={this.removeIngredient}
           >
             <i class="glyphicon glyphicon-remove"></i>
           </span>
-        </div>
+        
       </div>
     );
   },

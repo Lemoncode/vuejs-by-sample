@@ -2,6 +2,7 @@ import Vue, {ComponentOptions} from 'vue';
 import {RecipeEntity} from '../../../model/recipe';
 import {recipeAPI} from '../../../api/recipe';
 import {EditRecipePage} from './page';
+import {router} from '../../../router';
 
 interface State extends Vue {
   recipe: RecipeEntity;
@@ -62,7 +63,10 @@ export const EditRecipeContainer = Vue.extend({
     },
     save: function() {
       recipeAPI.save(this.recipe)
-        .then((message) => console.log(message))
+        .then((message) => {
+          console.log(message);
+          router.back();
+        })
         .catch((error) => console.log(error));
     },
   }

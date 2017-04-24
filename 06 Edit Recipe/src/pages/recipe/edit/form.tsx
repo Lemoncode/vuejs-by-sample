@@ -55,28 +55,35 @@ export const FormComponent = Vue.extend({
           </ValidationComponent>
         </div>
         <div class="row">
-          <InputButtonComponent
-            label="Ingredients"
-            type="text"
-            placeholder="Add ingredient"
-            value={this.ingredient}
-            inputHandler={(e) => { this.ingredient = e.target.value}}
-            buttonText="Add"
-            buttonClassName="btn btn-primary"
-            buttonClickHandler={this.addIngredientHandler}
-          />
+          <ValidationComponent
+            hasError={true}
+            errorMessage="Test error"
+          >
+            <InputButtonComponent
+              label="Ingredients"
+              type="text"
+              placeholder="Add ingredient"
+              value={this.ingredient}
+              inputHandler={(e) => { this.ingredient = e.target.value}}
+              buttonText="Add"
+              buttonClassName="btn btn-primary"
+              buttonClickHandler={this.addIngredientHandler}
+            />
+          </ValidationComponent>
         </div>
         <div class="row">
           <div class="form-group panel panel-default">
-            {
-              this.recipe.ingredients.map((ingredient, index) =>
-                <IngredientRowComponent
-                  key={index}
-                  ingredient={ingredient}
-                  removeIngredient={() => this.removeIngredient(ingredient)}
-                />
-              )
-            }
+            <div class="form-group panel-body">
+              {
+                this.recipe.ingredients.map((ingredient, index) =>
+                  <IngredientRowComponent
+                    key={index}
+                    ingredient={ingredient}
+                    removeIngredient={() => this.removeIngredient(ingredient)}
+                  />
+                )
+              }
+            </div>
           </div>
         </div>
         <div class="row">
