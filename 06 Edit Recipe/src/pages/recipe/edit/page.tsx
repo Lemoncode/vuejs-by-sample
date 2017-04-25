@@ -12,7 +12,7 @@ export const EditRecipePage = Vue.extend({
   render: function(h) {
     return (
       <div>
-        <h1> Edit Recipe Page {this.id}</h1>
+        <h1>Recipe: {this.recipe.name}</h1>
         <FormComponent
           recipe={this.recipe}
           updateRecipe={this.updateRecipe}

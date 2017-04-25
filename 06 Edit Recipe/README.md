@@ -31,12 +31,40 @@ npm install
 import {RecipeEntity} from '../../model/recipe';
 import {mockRecipes} from './mockData';
 
++ let recipes = mockRecipes;
+
 const fetchRecipes = (): Promise<RecipeEntity[]> => {
-  return Promise.resolve(mockRecipes);
+- return Promise.resolve(mockRecipes);
++ return Promise.resolve(recipes);
 }
+
++ const fetchRecipeById = (id: number): Promise<RecipeEntity> => {
++   const recipe = recipes.find((r) => r.id === id);
++   return Promise.resolve(recipe);
++ }
+
++ const save = (recipe: RecipeEntity): Promise<string> => {
++   const index = recipes.findIndex(r => r.id === recipe.id);
+
++   return index >= 0 ?
++     saveRecipeByIndex(index, recipe) :
++     Promise.reject<string>('Something was wrong saving recipe :(');
++ }
+
++ const saveRecipeByIndex = (index, recipe) => {
++   recipes = [
++     ...recipes.slice(0, index),
++     recipe,
++     ...recipes.slice(index + 1),
++   ];
+
++   return Promise.resolve('Save recipe sucess');
++ }
 
 export const recipeAPI = {
   fetchRecipes,
++ fetchRecipeById,
++ save,
 }
 
 ```
@@ -45,6 +73,80 @@ export const recipeAPI = {
 
 ### ./src/pages/recipe/edit/pageContainer.tsx
 ```javascript
+import Vue, {ComponentOptions} from 'vue';
+import {RecipeEntity} from '../../../model/recipe';
+import {recipeAPI} from '../../../api/recipe';
+import {EditRecipePage} from './page';
+import {router} from '../../../router';
+
+interface State extends Vue {
+  recipe: RecipeEntity;
+  updateRecipe: (field, value) => void;
+  addIngredient: (ingredient) => void;
+  removeIngredient: (ingredient) => void;
+  save: () => void;
+}
+
+export const EditRecipeContainer = Vue.extend({
+  render: function(h) {
+    return (
+      <EditRecipePage
+        recipe={this.recipe}
+        updateRecipe={this.updateRecipe}
+        addIngredient={this.addIngredient}
+        removeIngredient={this.removeIngredient}
+        save={this.save}
+      />
+    );
+  },
+  props: [
+    'id'
+  ],
+  data: function() {
+    return {
+      recipe: new RecipeEntity(),
+    };
+  },
+  beforeMount: function() {
+    const id = Number(this["id"]) || 0;
+    recipeAPI.fetchRecipeById(id)
+      .then((recipe) => {
+        this.recipe = recipe;
+      })
+      .catch((error) => console.log(error));
+  },
+  methods: {
+    updateRecipe: function(field: string, value) {
+      this.recipe = {
+        ...this.recipe,
+        [field]: value,
+      };
+    },
+    addIngredient: function(ingredient: string) {
+      this.recipe = {
+        ...this.recipe,
+        ingredients: [...this.recipe.ingredients, ingredient],
+      }
+    },
+    removeIngredient: function(ingredient: string) {
+      this.recipe = {
+        ...this.recipe,
+        ingredients: this.recipe.ingredients.filter((i) => {
+          return i !== ingredient;
+        }),
+      }
+    },
+    save: function() {
+      recipeAPI.save(this.recipe)
+        .then((message) => {
+          console.log(message);
+          router.back();
+        })
+        .catch((error) => console.log(error));
+    },
+  }
+} as ComponentOptions<State>);
+
 ```
 
 - Update `index`:
@@ -94,13 +196,26 @@ import {FormComponent} from './form';
 
 export const EditRecipePage = Vue.extend({
   props: [
-    'id'
+-   'id'
++   'recipe',
++   'updateRecipe',
++   'addIngredient',
++   'removeIngredient',
++   'save',
   ],
   render: function(h) {
     return (
       <div>
-        <h1> Edit Recipe Page {this.id}</h1>
-        <FormComponent />
+-       <h1> Edit Recipe Page {this.id}</h1>
++       <h1>Recipe: {this.recipe.name}</h1>
+-       <FormComponent />
++       <FormComponent
++         recipe={this.recipe}
++         updateRecipe={this.updateRecipe}
++         addIngredient={this.addIngredient}
++         removeIngredient={this.removeIngredient}
++         save={this.save}
++       />
       </div>
     );
   }
@@ -112,19 +227,491 @@ export const EditRecipePage = Vue.extend({
 
 ### ./src/common/components/form/inputButton.tsx
 ```javascript
-```
-### ./src/common/components/form/textarea.tsx
-```javascript
+import Vue from 'vue';
+
+export const InputButtonComponent = Vue.extend({
+  props: [
+    'className',
+    'placeholder',
+    'type',
+    'value',
+    'inputHandler',
+    'label',
+    'name',
+    'buttonText',
+    'buttonClickHandler',
+    'buttonClassName',
+  ],
+  render: function(h) {
+    return (
+      <div class={`form-group ${this.className}`}>
+        <label for={this.name}>
+          {this.label}
+        </label>
+        <div class="input-group">
+          <input
+            class="form-control"
+            name={this.name}
+            placeholder={this.placeholder}
+            type={this.type}
+            value={this.value}
+            onInput={this.inputHandler}
+          />
+          <div class="input-group-btn">
+            <button
+              class={this.buttonClassName}
+              onClick={this.buttonClickHandler}
+            >
+              {this.buttonText}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  },
+});
+
 ```
 
 ### ./src/common/components/form/index.tsx
 ```javascript
+import {InputComponent} from './input';
+import {ValidationComponent} from './validation';
+import {InputButtonComponent} from './inputButton';
+
+export {
+  InputComponent,
+  ValidationComponent,
+  InputButtonComponent,
+}
+
 ```
 
 - Create `edit recipe` form:
 
 ### ./src/pages/recipe/edit/form.tsx
 ```javascript
+import Vue, {ComponentOptions} from 'vue';
+import {RecipeEntity} from '../../../model/recipe';
+import {
+  ValidationComponent, InputComponent, InputButtonComponent
+} from '../../../common/components/form';
+
+interface FormComponentProperties extends Vue {
+  recipe: RecipeEntity;
+  updateRecipe: (field, value) => void;
+  addIngredient: (ingredient) => void;
+  removeIngredient: (ingredient) => void;
+  save: () => void;
+  ingredient: string;
+  addIngredientHandler: (event) => void;
+}
+
+export const FormComponent = Vue.extend({
+  props: [
+    'recipe',
+    'updateRecipe',
+    'addIngredient',
+    'removeIngredient',
+    'save',
+  ],
+  data: function() {
+    return {
+      ingredient: ''
+    }
+  },
+  methods: {
+    addIngredientHandler: function(e) {
+      e.preventDefault();
+      if(this.ingredient) {
+        this.addIngredient(this.ingredient);
+      }
+    },
+  },
+  render: function(h) {
+    return (
+      <form class="container">
+        <div class="row">
+          <ValidationComponent
+            hasError={true}
+            errorMessage="Test error"
+          >
+            <InputComponent
+              type="text"
+              label="Name"
+              name="name"
+              value={this.recipe.name}
+              inputHandler={(e) => { this.updateRecipe('name', e.target.value)}}
+            />
+          </ValidationComponent>
+        </div>
+        <div class="row">
+          <InputButtonComponent
+            label="Ingredients"
+            type="text"
+            placeholder="Add ingredient"
+            value={this.ingredient}
+            inputHandler={(e) => { this.ingredient = e.target.value}}
+            buttonText="Add"
+            buttonClassName="btn btn-primary"
+            buttonClickHandler={this.addIngredientHandler}
+          />
+        </div>
+        <div class="row">
+          <div class="form-group pull-right">
+            <button
+              type="button"
+              class="btn btn-lg btn-success"
+              onClick={this.save}
+              >
+                Save
+              </button>
+          </div>
+        </div>
+      </form>
+    );
+  },
+} as ComponentOptions<FormComponentProperties>);
+
+```
+
+- Create `ingredients` row and list
+
+### ./src/pages/recipe/edit/ingredientRow.tsx
+```javascript
+import Vue from 'vue';
+
+export const IngredientRowComponent = Vue.extend({
+  props: [
+    'ingredient',
+    'removeIngredient',
+  ],
+  render: function(h) {
+    return (
+      <div class="col-sm-3">
+        <label class="col-xs-8">
+          {this.ingredient}
+        </label>
+        <span
+          class="btn btn-default"
+          onClick={() => this.removeIngredient(this.ingredient)}
+        >
+          <i class="glyphicon glyphicon-remove"></i>
+        </span>
+      </div>
+    );
+  },
+});
+
+```
+
+### ./src/pages/recipe/edit/ingredientList.tsx
+```javascript
+import Vue from 'vue';
+import {IngredientRowComponent} from './ingredientRow';
+
+export const IngredientListComponent = Vue.extend({
+  props: [
+    'ingredients',
+    'removeIngredient',
+  ],
+  render: function(h) {
+    return (
+      <div class="form-group panel panel-default">
+        <div class="panel-body">
+          {
+            this.ingredients.map((ingredient, index) =>
+              <IngredientRowComponent
+                key={index}
+                ingredient={ingredient}
+                removeIngredient={this.removeIngredient}
+              />
+            )
+          }
+        </div>
+      </div>
+    );
+  },
+});
+
+```
+
+- Update `edit recipe` form:
+
+### ./src/pages/recipe/edit/form.tsx
+```diff
+import Vue, {ComponentOptions} from 'vue';
+import {RecipeEntity} from '../../../model/recipe';
+import {
+  ValidationComponent, InputComponent, InputButtonComponent
+} from '../../../common/components/form';
++ import {IngredientListComponent} from './ingredientList';
+
+interface FormComponentProperties extends Vue {
+  recipe: RecipeEntity;
+  updateRecipe: (field, value) => void;
+  addIngredient: (ingredient) => void;
+  removeIngredient: (ingredient) => void;
+  save: () => void;
+  ingredient: string;
+  addIngredientHandler: (event) => void;
+}
+
+export const FormComponent = Vue.extend({
+  props: [
+    'recipe',
+    'updateRecipe',
+    'addIngredient',
+    'removeIngredient',
+    'save',
+  ],
+  data: function() {
+    return {
+      ingredient: ''
+    }
+  },
+  methods: {
+    addIngredientHandler: function(e) {
+      e.preventDefault();
+      if(this.ingredient) {
+        this.addIngredient(this.ingredient);
+      }
+    },
+  },
+  render: function(h) {
+    return (
+      <form class="container">
+        <div class="row">
+          <ValidationComponent
+            hasError={true}
+            errorMessage="Test error"
+          >
+            <InputComponent
+              type="text"
+              label="Name"
+              name="name"
+              value={this.recipe.name}
+              inputHandler={(e) => { this.updateRecipe('name', e.target.value)}}
+            />
+          </ValidationComponent>
+        </div>
+        <div class="row">
+          <InputButtonComponent
+            label="Ingredients"
+            type="text"
+            placeholder="Add ingredient"
+            value={this.ingredient}
+            inputHandler={(e) => { this.ingredient = e.target.value}}
+            buttonText="Add"
+            buttonClassName="btn btn-primary"
+            buttonClickHandler={this.addIngredientHandler}
+          />
+        </div>
++       <div class="row">
++         <ValidationComponent
++           hasError={true}
++           errorMessage="Test error"
++         >
++           <IngredientListComponent
++             ingredients={this.recipe.ingredients}
++             removeIngredient={this.removeIngredient}
++           />
++         </ValidationComponent>
++       </div>
+        <div class="row">
+          <div class="form-group pull-right">
+            <button
+              type="button"
+              class="btn btn-lg btn-success"
+              onClick={this.save}
+              >
+                Save
+              </button>
+          </div>
+        </div>
+      </form>
+    );
+  },
+} as ComponentOptions<FormComponentProperties>);
+
+```
+
+- Create `textarea` common component:
+
+### ./src/common/components/form/textarea.tsx
+```javascript
+import Vue from 'vue';
+
+export const TextareaComponent = Vue.extend({
+  props: [
+    'className',
+    'placeholder',
+    'value',
+    'inputHandler',
+    'label',
+    'name',
+    'rows',
+  ],
+  render: function(h) {
+    return (
+      <div class={`form-group ${this.className}`}>
+        <label for={this.name}>
+          {this.label}
+        </label>
+        <textarea
+          class="form-control"
+          name={this.name}
+          placeholder={this.placeholder}
+          onInput={this.inputHandler}
+          rows={this.rows}
+        >
+          {this.value}
+        </textarea>
+      </div>
+    );
+  },
+});
+
+```
+
+### ./src/common/components/form/index.tsx
+```diff
+import {InputComponent} from './input';
+import {ValidationComponent} from './validation';
+import {InputButtonComponent} from './inputButton';
++ import {TextareaComponent} from './textarea';
+
+export {
+  InputComponent,
+  ValidationComponent,
+  InputButtonComponent,
++ TextareaComponent,
+}
+
+```
+
+- Add `form styles`:
+
+### ./src/pages/recipe/edit/formStyles.css
+```css
+.description textarea {
+  resize: none;
+}
+
+```
+
+- Update `edit recipe` form:
+
+### ./src/pages/recipe/edit/form.tsx
+```diff
+import Vue, {ComponentOptions} from 'vue';
+import {RecipeEntity} from '../../../model/recipe';
+import {
+  ValidationComponent, InputComponent, InputButtonComponent,
++ TextareaComponent
+} from '../../../common/components/form';
+import {IngredientListComponent} from './ingredientList';
+
++ const classNames: any = require('./formStyles');
+
+interface FormComponentProperties extends Vue {
+  recipe: RecipeEntity;
+  updateRecipe: (field, value) => void;
+  addIngredient: (ingredient) => void;
+  removeIngredient: (ingredient) => void;
+  save: () => void;
+  ingredient: string;
+  addIngredientHandler: (event) => void;
+}
+
+export const FormComponent = Vue.extend({
+  props: [
+    'recipe',
+    'updateRecipe',
+    'addIngredient',
+    'removeIngredient',
+    'save',
+  ],
+  data: function() {
+    return {
+      ingredient: ''
+    }
+  },
+  methods: {
+    addIngredientHandler: function(e) {
+      e.preventDefault();
+      if(this.ingredient) {
+        this.addIngredient(this.ingredient);
+      }
+    },
+  },
+  render: function(h) {
+    return (
+      <form class="container">
+        <div class="row">
+          <ValidationComponent
+            hasError={true}
+            errorMessage="Test error"
+          >
+            <InputComponent
+              type="text"
+              label="Name"
+              name="name"
+              value={this.recipe.name}
+              inputHandler={(e) => { this.updateRecipe('name', e.target.value)}}
+            />
+          </ValidationComponent>
+        </div>
+        <div class="row">
+          <InputButtonComponent
+            label="Ingredients"
+            type="text"
+            placeholder="Add ingredient"
+            value={this.ingredient}
+            inputHandler={(e) => { this.ingredient = e.target.value}}
+            buttonText="Add"
+            buttonClassName="btn btn-primary"
+            buttonClickHandler={this.addIngredientHandler}
+          />
+        </div>
+        <div class="row">
+          <ValidationComponent
+            hasError={true}
+            errorMessage="Test error"
+          >
+            <IngredientListComponent
+              ingredients={this.recipe.ingredients}
+              removeIngredient={this.removeIngredient}
+            />
+          </ValidationComponent>
+        </div>
++       <div class="row">
++         <TextareaComponent
++           className={classNames.description}
++           label="Description"
++           name="description"
++           placeholder="Description..."
++           rows="10"
++           value={this.recipe.description}
++           inputHandler={(e) => { this.updateRecipe('description', e.target.value)}}
++         />
++       </div>
+        <div class="row">
+          <div class="form-group pull-right">
+            <button
+              type="button"
+              class="btn btn-lg btn-success"
+              onClick={this.save}
+              >
+                Save
+              </button>
+          </div>
+        </div>
+      </form>
+    );
+  },
+} as ComponentOptions<FormComponentProperties>);
+
 ```
 
 - Execute the sample:
