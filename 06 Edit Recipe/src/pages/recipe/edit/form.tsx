@@ -1,5 +1,6 @@
 import Vue, {ComponentOptions} from 'vue';
 import {RecipeEntity} from '../../../model/recipe';
+import {RecipeError} from '../../../model/recipeError';
 import {
   ValidationComponent, InputComponent, InputButtonComponent,
   TextareaComponent
@@ -10,6 +11,7 @@ const classNames: any = require('./formStyles');
 
 interface FormComponentProperties extends Vue {
   recipe: RecipeEntity;
+  recipeError: RecipeError;
   updateRecipe: (field, value) => void;
   addIngredient: (ingredient) => void;
   removeIngredient: (ingredient) => void;
@@ -21,6 +23,7 @@ interface FormComponentProperties extends Vue {
 export const FormComponent = Vue.extend({
   props: [
     'recipe',
+    'recipeError',
     'updateRecipe',
     'addIngredient',
     'removeIngredient',
@@ -44,8 +47,8 @@ export const FormComponent = Vue.extend({
       <form class="container">
         <div class="row">
           <ValidationComponent
-            hasError={true}
-            errorMessage="Test error"
+            hasError={!this.recipeError.name.succeeded}
+            errorMessage={this.recipeError.name.errorMessage}
           >
             <InputComponent
               type="text"
@@ -70,8 +73,8 @@ export const FormComponent = Vue.extend({
         </div>
         <div class="row">
           <ValidationComponent
-            hasError={true}
-            errorMessage="Test error"
+            hasError={!this.recipeError.ingredients.succeeded}
+            errorMessage={this.recipeError.ingredients.errorMessage}
           >
             <IngredientListComponent
               ingredients={this.recipe.ingredients}

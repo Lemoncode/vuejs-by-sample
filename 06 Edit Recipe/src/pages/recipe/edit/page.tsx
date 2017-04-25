@@ -4,6 +4,7 @@ import {FormComponent} from './form';
 export const EditRecipePage = Vue.extend({
   props: [
     'recipe',
+    'recipeError',
     'updateRecipe',
     'addIngredient',
     'removeIngredient',
@@ -15,6 +16,7 @@ export const EditRecipePage = Vue.extend({
         <h1>Recipe: {this.recipe.name}</h1>
         <FormComponent
           recipe={this.recipe}
+          recipeError={this.recipeError}
           updateRecipe={this.updateRecipe}
           addIngredient={this.addIngredient}
           removeIngredient={this.removeIngredient}
