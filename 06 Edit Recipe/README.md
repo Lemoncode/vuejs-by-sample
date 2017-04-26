@@ -8,7 +8,9 @@ Summary steps:
  - Create `API` methods.
  - Create `pageContainer`.
  - Update `page`.
+ - Create `common` components.
  - Create `edit recipe` form.
+ - Add `form validations` with `lc-form-validation`.
 
 # Steps to build it
 
@@ -718,12 +720,85 @@ export const FormComponent = Vue.extend({
 
 ### ./src/pages/recipe/edit/validations/editFormValidation.ts
 ```javascript
+import {
+  ValidationConstraints, createFormValidation, Validators
+} from 'lc-form-validation';
+import {hasItems} from './arrayValidation';
+
+const constraints: ValidationConstraints = {
+  fields: {
+    name: [
+      { validator: Validators.required }
+    ],
+    ingredients: [
+      { validator: hasItems('Should has one or more ingredients')}
+    ]
+  }
+};
+
+export const editFormValidation = createFormValidation(constraints);
+
+```
+
+- Create custom `validator`:
+
+### ./src/pages/recipe/edit/validations/arrayValidation.ts
+```javascript
+import {FieldValidationResult} from 'lc-form-validation';
+
+export const hasItems = (message) => (value: any[]): FieldValidationResult => {
+  return {
+    type: 'ARRAY_HAS_ITEMS',
+    succeeded: value.length > 0,
+    errorMessage: message,
+  }
+}
+
+```
+
+- Update `constraints`:
+
+### ./src/pages/recipe/edit/validations/editFormValidation.ts
+```diff
+import {
+  ValidationConstraints, createFormValidation, Validators
+} from 'lc-form-validation';
++ import {hasItems} from './arrayValidation';
+
+const constraints: ValidationConstraints = {
+  fields: {
+    name: [
+      { validator: Validators.required }
+    ],
++   ingredients: [
++     { validator: hasItems('Should has one or more ingredients')}
++   ]
+  }
+};
+
+export const editFormValidation = createFormValidation(constraints);
+
 ```
 
 - Create `recipe error` model:
 
 ### ./src/model/recipeError.ts
 ```javascript
+import {FieldValidationResult} from 'lc-form-validation';
+
+export class RecipeError {
+  name: FieldValidationResult;
+  ingredients: FieldValidationResult;
+
+  constructor() {
+    this.name = new FieldValidationResult();
+    this.name.succeeded = true;
+
+    this.ingredients = new FieldValidationResult();
+    this.ingredients.succeeded = true;
+  }
+}
+
 ```
 
 - Update `pageContainer`:
@@ -735,9 +810,11 @@ import {RecipeEntity} from '../../../model/recipe';
 import {recipeAPI} from '../../../api/recipe';
 import {EditRecipePage} from './page';
 import {router} from '../../../router';
++ import {editFormValidation} from './validations/editFormValidation';
 
 interface State extends Vue {
   recipe: RecipeEntity;
++ recipeError: RecipeError;
   updateRecipe: (field, value) => void;
   addIngredient: (ingredient) => void;
   removeIngredient: (ingredient) => void;
@@ -749,6 +826,7 @@ export const EditRecipeContainer = Vue.extend({
     return (
       <EditRecipePage
         recipe={this.recipe}
++       recipeError={this.recipeError}
         updateRecipe={this.updateRecipe}
         addIngredient={this.addIngredient}
         removeIngredient={this.removeIngredient}
@@ -762,6 +840,7 @@ export const EditRecipeContainer = Vue.extend({
   data: function() {
     return {
       recipe: new RecipeEntity(),
++     recipeError: new RecipeError(),
     };
   },
   beforeMount: function() {
@@ -778,6 +857,15 @@ export const EditRecipeContainer = Vue.extend({
         ...this.recipe,
         [field]: value,
       };
+
++     editFormValidation.validateField(this.recipe, field, value)
++       .then((result) => {
++         this.recipeError = {
++           ...this.recipeError,
++           [field]: result,
++         };
++       })
++       .catch((error) => console.log(error));
     },
     addIngredient: function(ingredient: string) {
       this.recipe = {
@@ -794,12 +882,25 @@ export const EditRecipeContainer = Vue.extend({
       }
     },
     save: function() {
-      recipeAPI.save(this.recipe)
-        .then((message) => {
-          console.log(message);
-          router.back();
-        })
-        .catch((error) => console.log(error));
++     editFormValidation.validateForm(this.recipe)
++       .then((result) => {
++         result.fieldErrors.map((error) => {
++           this.recipeError = {
++             ...this.recipeError,
++             [error.key]: error,
++           }
++         });
+          
++         if(result.succeeded) {
+            recipeAPI.save(this.recipe)
+              .then((message) => {
+                console.log(message);
+                router.back();
+              })
+              .catch((error) => console.log(error));
++         }
++       })
++       .catch((error) => console.log(error));
     },
   }
 } as ComponentOptions<State>);
@@ -816,6 +917,7 @@ import {FormComponent} from './form';
 export const EditRecipePage = Vue.extend({
   props: [
     'recipe',
++   'recipeError',
     'updateRecipe',
     'addIngredient',
     'removeIngredient',
@@ -827,6 +929,7 @@ export const EditRecipePage = Vue.extend({
         <h1>Recipe: {this.recipe.name}</h1>
         <FormComponent
           recipe={this.recipe}
++         recipeError={this.recipeError}
           updateRecipe={this.updateRecipe}
           addIngredient={this.addIngredient}
           removeIngredient={this.removeIngredient}
@@ -845,6 +948,7 @@ export const EditRecipePage = Vue.extend({
 ```diff
 import Vue, {ComponentOptions} from 'vue';
 import {RecipeEntity} from '../../../model/recipe';
++ import {RecipeError} from '../../../model/recipeError';
 import {
   ValidationComponent, InputComponent, InputButtonComponent,
   TextareaComponent
@@ -855,6 +959,7 @@ const classNames: any = require('./formStyles');
 
 interface FormComponentProperties extends Vue {
   recipe: RecipeEntity;
++ recipeError: RecipeError;
   updateRecipe: (field, value) => void;
   addIngredient: (ingredient) => void;
   removeIngredient: (ingredient) => void;
@@ -866,6 +971,7 @@ interface FormComponentProperties extends Vue {
 export const FormComponent = Vue.extend({
   props: [
     'recipe',
++   'recipeError',
     'updateRecipe',
     'addIngredient',
     'removeIngredient',
@@ -889,8 +995,10 @@ export const FormComponent = Vue.extend({
       <form class="container">
         <div class="row">
           <ValidationComponent
-            hasError={true}
-            errorMessage="Test error"
+-           hasError={true}
++           hasError={!this.recipeError.name.succeeded}
+-           errorMessage="Test error"
++           errorMessage={this.recipeError.name.errorMessage}
           >
             <InputComponent
               type="text"
@@ -915,8 +1023,10 @@ export const FormComponent = Vue.extend({
         </div>
         <div class="row">
           <ValidationComponent
-            hasError={true}
-            errorMessage="Test error"
+-           hasError={true}
++           hasError={!this.recipeError.ingredients.succeeded}
+-           errorMessage="Test error"
++           errorMessage={this.recipeError.ingredients.errorMessage}
           >
             <IngredientListComponent
               ingredients={this.recipe.ingredients}

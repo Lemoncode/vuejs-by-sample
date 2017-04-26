@@ -8,8 +8,8 @@ Summary steps:
  - Install Vue.js devtools.
  - Install `vue.js` library.
  - Configure webpack to work with `vue.js`.
- - Update `index.html`
- - Update `main.ts`
+ - Update `index.html`.
+ - Update `main.ts`.
 
 # Steps to build it
 
