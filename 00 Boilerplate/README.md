@@ -21,7 +21,7 @@ Summary steps:
 
 # Prerequisites
 
-Install [Node.js and npm](https://nodejs.org/en/) (v6.x.x) if they are not already installed on your computer.
+Install [Node.js and npm](https://nodejs.org/en/) (v6.x.x or higher) if they are not already installed on your computer.
 
 > Verify that you are running at least node v6.x.x and npm 3.x.x by running `node -v` and `npm -v` in a terminal/console window. Older versions may produce errors.
 
@@ -154,18 +154,18 @@ npm install babel-core babel-preset-env --save-dev
   },
   "homepage": "https://github.com/Lemoncode/vuejs-by-sample#readme",
   "devDependencies": {
-    "awesome-typescript-loader": "^3.1.2",
-    "babel-core": "^6.24.1",
-    "babel-preset-env": "^1.3.3",
-    "css-loader": "^0.28.0",
-    "extract-text-webpack-plugin": "^2.1.0",
-    "file-loader": "^0.11.1",
-    "html-webpack-plugin": "^2.28.0",
-    "style-loader": "^0.16.1",
-    "typescript": "^2.2.2",
-    "url-loader": "^0.5.8",
-    "webpack": "^2.3.3",
-    "webpack-dev-server": "^2.4.2"
+    "awesome-typescript-loader": "^3.3.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "css-loader": "^0.28.7",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^1.1.5",
+    "html-webpack-plugin": "^2.30.1",
+    "style-loader": "^0.19.0",
+    "typescript": "^2.6.1",
+    "url-loader": "^0.6.2",
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.4"
   },
   "dependencies": {
     "bootstrap": "^3.3.7"
@@ -222,6 +222,7 @@ var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var { CheckerPlugin } = require('awesome-typescript-loader');
 
 var basePath = __dirname;
 
@@ -232,6 +233,9 @@ module.exports = {
   },
   entry: {
     app: './main.ts',
+    vendor: [
+
+    ],
     vendorStyles: [
       '../node_modules/bootstrap/dist/css/bootstrap.css',
     ],
@@ -249,6 +253,7 @@ module.exports = {
           loader: 'awesome-typescript-loader',
           options: {
             useBabel: true,
+            useCache: true,
           },
         },
       },
@@ -289,18 +294,16 @@ module.exports = {
       template: 'index.html', //Name of template in ./src
       hash: true,
     }),
-    new webpack.ProvidePlugin({
-      $: "jquery",
-      jQuery: "jquery"
-    }),
     new webpack.optimize.CommonsChunkPlugin({
       names: ['vendor', 'manifest'],
     }),
+    new webpack.HashedModuleIdsPlugin(),
     new ExtractTextPlugin({
       filename: '[name].css',
       disable: false,
       allChunks: true,
     }),
+    new CheckerPlugin(),
   ],
 }
 
