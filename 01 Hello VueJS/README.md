@@ -67,7 +67,7 @@ npm install vue --save
     "noLib": false,
 -   "suppressImplicitAnyIndexErrors": true
 +   "suppressImplicitAnyIndexErrors": true,
-+   "allowSyntheticDefaultImports": true
++   "strict": true
   },
   "compileOnSave": false,
   "exclude": [
