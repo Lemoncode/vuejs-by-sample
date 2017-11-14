@@ -4,3 +4,5 @@ dist/
 *.orig
 .idea/
 bundle.js
+package-lock.json
+.awcache/
