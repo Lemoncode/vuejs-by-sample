@@ -42,9 +42,9 @@ npm install vue --save
 ...
   entry: {
     app: './main.ts',
-+   vendor: [
+    vendor: [
 +     'vue',
-+   ],
+    ],
     vendorStyles: [
       '../node_modules/bootstrap/dist/css/bootstrap.css',
     ],
