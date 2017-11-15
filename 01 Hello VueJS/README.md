@@ -42,9 +42,9 @@ npm install vue --save
 ...
   entry: {
     app: './main.ts',
-+   vendor: [
+    vendor: [
 +     'vue',
-+   ],
+    ],
     vendorStyles: [
       '../node_modules/bootstrap/dist/css/bootstrap.css',
     ],
@@ -67,7 +67,7 @@ npm install vue --save
     "noLib": false,
 -   "suppressImplicitAnyIndexErrors": true
 +   "suppressImplicitAnyIndexErrors": true,
-+   "allowSyntheticDefaultImports": true
++   "strict": true
   },
   "compileOnSave": false,
   "exclude": [
@@ -77,7 +77,13 @@ npm install vue --save
 
 ```
 
-- There are [two builds available](https://github.com/vuejs/vue/wiki/Vue-2.0-RC-Starter-Resources#standalone-vs-runtime-builds) to work with `Vue.js`. We can start using `standalone one` to keep this sample as simple as possible. To configure it for webpack:
+- There are [two builds available](https://vuejs.org/v2/guide/installation.html#Explanation-of-Different-Builds) to work with `Vue.js`.
+
+    - `Runtime + Compiler`: needed to compile templates on the client side, e.g. passing a string to `template` property.
+
+    - `Runtime-only`: when using a `pre-compiler` like `vue-loader`, `vueify`, etc.
+
+- For now, we could start using `first one` to keep this sample as simple as possible. To configure it for webpack:
 
 ### ./webpack.config.js
 ```diff
