@@ -1,5 +1,5 @@
-import Vue, {ComponentOptions} from 'vue';
-import {HelloComponent} from './hello';
+import Vue, { ComponentOptions } from 'vue';
+import { HelloComponent } from './hello';
 
 interface State extends Vue {
   message: string;
@@ -21,7 +21,7 @@ new Vue({
   },
   data: {
     message: 'Hello from Vue.js'
-  },  
+  },
   methods: {
     onChange: function(value) {
       this.message = value;
