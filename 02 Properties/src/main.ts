@@ -1,9 +1,5 @@
-import Vue, { ComponentOptions } from 'vue';
+import Vue from 'vue';
 import { HelloComponent } from './hello';
-
-interface State extends Vue {
-  message: string;
-}
 
 new Vue({
   el: '#root',
@@ -26,5 +22,5 @@ new Vue({
     onChange: function(value) {
       this.message = value;
     }
-  }
-} as ComponentOptions<State>);
+  },
+});

@@ -80,12 +80,7 @@ new Vue({
 
 ### ./src/main.ts
 ```diff
-- import Vue from 'vue';
-+ import Vue, {ComponentOptions} from 'vue';
-
-+ interface State extends Vue {
-+   message: string;
-+ }
+import Vue from 'vue';
 
 new Vue({
   el: '#root',
@@ -95,7 +90,7 @@ new Vue({
       <input
         :value="message"
 -       @input="message = $event.target.value"
-+       @input="onChange($event.target.value)"
++       @input="onChange($event)"
       />
     </div>
   `,
@@ -105,11 +100,11 @@ new Vue({
 + },
 -});
 + methods: {
-+   onChange: function(value) {
-+     this.message = value;
++   onChange: function(event) {
++     this.message = event.target.value;
 +   },
 + },
-+} as ComponentOptions<State>);
++});
 
 ```
 
@@ -117,12 +112,7 @@ new Vue({
 
 ### ./src/main.ts
 ```diff
-- import Vue, {ComponentOptions} from 'vue';
-+ import Vue from 'vue';
-
-- interface State extends Vue {
--   message: string;
-- }
+import Vue from 'vue';
 
 new Vue({
   el: '#root',
@@ -131,7 +121,7 @@ new Vue({
       <h1>{{message}}</h1>
       <input
 -       :value="message"
--       @input="onChange($event.target.value)"
+-       @input="onChange($event)"
 +       v-model="message"
       />
     </div>
@@ -140,12 +130,11 @@ new Vue({
     message: 'Hello from Vue.js'
   },
 - methods: {
--   onChange: function(value) {
--     this.message = value;
+-   onChange: function(event) {
+-     this.message = event.target.value;
 -   },
 - },
--} as ComponentOptions<State>);
-+});
+});
 
 ```
 
@@ -179,7 +168,7 @@ export const HelloComponent = Vue.extend({
 ### ./src/main.ts
 ```diff
 import Vue from 'vue';
-+ import {HelloComponent} from './hello';
++ import { HelloComponent } from './hello';
 
 new Vue({
   el: '#root',
@@ -233,11 +222,7 @@ export const HelloComponent = Vue.extend({
 ### ./src/main.ts
 ```diff
 import Vue from 'vue';
-import {HelloComponent} from './hello';
-
-+ interface State extends Vue {
-+   message: string;
-+ }
+import { HelloComponent } from './hello';
 
 new Vue({
   el: '#root',
@@ -256,15 +241,13 @@ new Vue({
   },
   data: {
     message: 'Hello from Vue.js'
-- }
-+ },
--});
+  },
 + methods: {
 +   onChange: function(value) {
 +     this.message = value;
 +   }
-+ }
-+} as ComponentOptions<State>);
++ },
+});
 
 ```
 
