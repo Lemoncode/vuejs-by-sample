@@ -252,6 +252,7 @@ new Vue({
 ```
 
 > [`v-model` directive](https://vuejs.org/v2/guide/components.html#Form-Input-Components-using-Custom-Events)
+
 > [Props types](https://vuejs.org/v2/guide/components.html#Prop-Validation)
 
 - Execute the sample:
