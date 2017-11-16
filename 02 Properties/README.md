@@ -90,7 +90,7 @@ new Vue({
       <input
         :value="message"
 -       @input="message = $event.target.value"
-+       @input="onChange($event)"
++       @input="onChange($event.target.value)"
       />
     </div>
   `,
@@ -100,8 +100,8 @@ new Vue({
 + },
 -});
 + methods: {
-+   onChange: function(event) {
-+     this.message = event.target.value;
++   onChange: function(value) {
++     this.message = value;
 +   },
 + },
 +});
@@ -121,7 +121,7 @@ new Vue({
       <h1>{{message}}</h1>
       <input
 -       :value="message"
--       @input="onChange($event)"
+-       @input="onChange($event.target.value)"
 +       v-model="message"
       />
     </div>
@@ -130,8 +130,8 @@ new Vue({
     message: 'Hello from Vue.js'
   },
 - methods: {
--   onChange: function(event) {
--     this.message = event.target.value;
+-   onChange: function(value) {
+-     this.message = value;
 -   },
 - },
 });
