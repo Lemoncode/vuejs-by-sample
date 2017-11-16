@@ -80,12 +80,7 @@ new Vue({
 
 ### ./src/main.ts
 ```diff
-- import Vue from 'vue';
-+ import Vue, {ComponentOptions} from 'vue';
-
-+ interface State extends Vue {
-+   message: string;
-+ }
+import Vue from 'vue';
 
 new Vue({
   el: '#root',
@@ -109,7 +104,7 @@ new Vue({
 +     this.message = value;
 +   },
 + },
-+} as ComponentOptions<State>);
++});
 
 ```
 
@@ -117,12 +112,7 @@ new Vue({
 
 ### ./src/main.ts
 ```diff
-- import Vue, {ComponentOptions} from 'vue';
-+ import Vue from 'vue';
-
-- interface State extends Vue {
--   message: string;
-- }
+import Vue from 'vue';
 
 new Vue({
   el: '#root',
@@ -144,8 +134,7 @@ new Vue({
 -     this.message = value;
 -   },
 - },
--} as ComponentOptions<State>);
-+});
+});
 
 ```
 
@@ -179,7 +168,7 @@ export const HelloComponent = Vue.extend({
 ### ./src/main.ts
 ```diff
 import Vue from 'vue';
-+ import {HelloComponent} from './hello';
++ import { HelloComponent } from './hello';
 
 new Vue({
   el: '#root',
@@ -233,11 +222,7 @@ export const HelloComponent = Vue.extend({
 ### ./src/main.ts
 ```diff
 import Vue from 'vue';
-import {HelloComponent} from './hello';
-
-+ interface State extends Vue {
-+   message: string;
-+ }
+import { HelloComponent } from './hello';
 
 new Vue({
   el: '#root',
@@ -256,19 +241,18 @@ new Vue({
   },
   data: {
     message: 'Hello from Vue.js'
-- }
-+ },
--});
+  },
 + methods: {
 +   onChange: function(value) {
 +     this.message = value;
 +   }
-+ }
-+} as ComponentOptions<State>);
++ },
+});
 
 ```
 
 > [`v-model` directive](https://vuejs.org/v2/guide/components.html#Form-Input-Components-using-Custom-Events)
+
 > [Props types](https://vuejs.org/v2/guide/components.html#Prop-Validation)
 
 - Execute the sample:

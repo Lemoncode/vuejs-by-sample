@@ -2,6 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var { CheckerPlugin } = require('awesome-typescript-loader');
 
 var basePath = __dirname;
 
@@ -35,6 +36,7 @@ module.exports = {
           loader: 'awesome-typescript-loader',
           options: {
             useBabel: true,
+            useCache: true,
           },
         },
       },
@@ -75,17 +77,15 @@ module.exports = {
       template: 'index.html', //Name of template in ./src
       hash: true,
     }),
-    new webpack.ProvidePlugin({
-      $: "jquery",
-      jQuery: "jquery"
-    }),
     new webpack.optimize.CommonsChunkPlugin({
       names: ['vendor', 'manifest'],
     }),
+    new webpack.HashedModuleIdsPlugin(),
     new ExtractTextPlugin({
       filename: '[name].css',
       disable: false,
       allChunks: true,
     }),
+    new CheckerPlugin(),
   ],
 }
