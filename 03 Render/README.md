@@ -25,7 +25,7 @@ You will need to have Node.js installed in your computer. In order to follow thi
 npm install
 ```
 
-- In previous samples, we were working with standalone build which allow us to define HTML as string `template`. This time, we'll configure runtime-only build to work with `render` option:
+- In previous samples, we were working with full build which allow us to define HTML as string `template`. This time, we'll configure runtime-only build to work with `render` option:
 
 ### ./webpack.config.js
 ```diff
@@ -54,8 +54,8 @@ resolve: {
     "sourceMap": true,
     "noLib": false,
     "suppressImplicitAnyIndexErrors": true,
--   "allowSyntheticDefaultImports": true
-+   "allowSyntheticDefaultImports": true,
+-   "strict": true
++   "strict": true,
 +   "jsx": "react",
 +   "jsxFactory": "h"
   },
@@ -105,8 +105,9 @@ render: function(h) {
     "sourceMap": true,
     "noLib": false,
     "suppressImplicitAnyIndexErrors": true,
--   "allowSyntheticDefaultImports": true
-+   "allowSyntheticDefaultImports": true,
+    "strict": true,
+-   "jsx": "react",
+-   "jsxFactory": "h"
 +   "jsx": "preserve"
   },
   "compileOnSave": false,
