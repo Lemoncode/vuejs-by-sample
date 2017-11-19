@@ -1,7 +1,7 @@
-import Vue from 'vue';
+import Vue, { VNode } from 'vue';
 
 export const HelloComponent = Vue.extend({
-  render: function (h) {
+  render(h): VNode {
     return (
       <input
         value={this.message}
