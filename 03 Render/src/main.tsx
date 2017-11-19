@@ -1,14 +1,9 @@
-import Vue, {ComponentOptions} from 'vue';
-import {HelloComponent} from './hello';
-
-interface State extends Vue {
-  message: string;
-  inputHandler: (value: string) => void;
-}
+import Vue, { VNode } from 'vue';
+import { HelloComponent } from './hello';
 
 new Vue({
   el: '#root',
-  render: function(h) {
+  render(h): VNode {
     return (
       <div>
         <h1>{this.message}</h1>
@@ -20,11 +15,11 @@ new Vue({
     );
   },
   data: {
-    message: 'Hello from Vue.js'
+    message: 'Hello from Vue.js',
   },
   methods: {
-    inputHandler: function(value) {
+    inputHandler(value) {
       this.message = value;
     }
-  }
-} as ComponentOptions<State>);
+  },
+});

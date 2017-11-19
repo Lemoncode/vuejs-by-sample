@@ -184,22 +184,18 @@ npm i babel-plugin-transform-vue-jsx babel-plugin-syntax-jsx babel-helper-vue-js
 
 ### ./src/main.tsx
 ```diff
-import Vue, {ComponentOptions} from 'vue';
-import {HelloComponent} from './hello';
-
-interface State extends Vue {
-  message: string;
-+ inputHandler: (value: string) => void;
-}
+- import Vue from 'vue';
++ import Vue, { VNode } from 'vue';
+import { HelloComponent } from './hello';
 
 new Vue({
   el: '#root',
 - template: `
-+ render: function(h) {
++ render(h): VNode {
 +   return (
       <div>
 -       <h1>{{message}}</h1>
-+       <h1>{message}</h1>
++       <h1>{this.message}</h1>
 -       <hello
 +       <HelloComponent
 -         :message="message"
@@ -219,11 +215,11 @@ new Vue({
   },
   methods: {
 -   onChange: function(value) {
-+   inputHandler: function(value) {
++   inputHandler(value) {
       this.message = value;
     }
   }
-} as ComponentOptions<State>);
+});
 
 ```
 
@@ -231,11 +227,12 @@ new Vue({
 
 ### ./src/hello.tsx
 ```diff
-import Vue from 'vue';
+- import Vue from 'vue';
++ import Vue, { VNode } from 'vue';
 
 export const HelloComponent = Vue.extend({
 - template: `
-+ render: function (h) {
++ render(h): VNode {
 +   return (
       <input
 -       :value="message"
