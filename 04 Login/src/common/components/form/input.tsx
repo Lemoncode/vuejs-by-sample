@@ -1,6 +1,6 @@
-import Vue from 'vue';
+import Vue, { VNode } from 'vue';
 
-export const InputComponent = Vue.extend({
+export const Input = Vue.extend({
   props: [
     'className',
     'placeholder',
@@ -10,7 +10,7 @@ export const InputComponent = Vue.extend({
     'label',
     'name',
   ],
-  render: function(h) {
+  render(h): VNode {
     return (
       <div class={`form-group ${this.className}`}>
         <label for={this.name}>
@@ -21,9 +21,14 @@ export const InputComponent = Vue.extend({
           placeholder={this.placeholder}
           type={this.type}
           value={this.value}
-          onInput={this.inputHandler}
+          name={this.name}
+          onInput={onInput(this)}
         />
       </div>
     );
   },
 });
+
+const onInput = (component) => (e) => {
+  component.inputHandler(e.target.name, e.target.value);
+};

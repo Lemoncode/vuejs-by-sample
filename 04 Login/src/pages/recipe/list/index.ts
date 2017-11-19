@@ -1,5 +1,1 @@
-import {RecipeListPage} from './page';
-
-export {
-  RecipeListPage
-}
+export * from './page';
