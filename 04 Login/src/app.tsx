@@ -1,9 +1,9 @@
-import Vue from 'vue';
+import Vue, { VNode } from 'vue';
 
 export const App = Vue.extend({
-  render: function(h) {
+  render(h): VNode {
     return (
-      <router-view></router-view>
+      <router-view />
     );
   },
 });

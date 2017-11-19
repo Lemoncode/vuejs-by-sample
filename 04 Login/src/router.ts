@@ -1,6 +1,6 @@
-import Router, {RouteConfig} from 'vue-router';
-import {LoginPageContainer} from './pages/login';
-import {RecipeListPage} from './pages/recipe/list';
+import Router, { RouteConfig } from 'vue-router';
+import { LoginPageContainer } from './pages/login';
+import { RecipeListPage } from './pages/recipe/list';
 
 const routes: RouteConfig[] = [
   { path: '/', redirect: '/login' },
