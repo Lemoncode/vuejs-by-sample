@@ -2,20 +2,13 @@ import Vue, { VNode, PropOptions } from 'vue';
 import { LoginEntity, LoginError } from '../viewModel';
 import { Validation, Input, Button } from '../../../common/components/form';
 
-interface Props {
-  loginEntity: PropOptions<LoginEntity>;
-  loginError: PropOptions<LoginError>;
-  updateLogin: PropOptions<(field: string, value: string) => void>;
-  loginRequest: PropOptions<() => void>;
-}
-
 export const FormComponent = Vue.extend({
   props: {
-    loginEntity: {},
-    loginError: {},
-    updateLogin: {},
-    loginRequest: {},
-  } as Props,
+    loginEntity: {} as PropOptions<LoginEntity>,
+    loginError: {} as PropOptions<LoginError>,
+    updateLogin: {} as PropOptions<(field: string, value: string) => void>,
+    loginRequest: {} as PropOptions<() => void>,
+  },
   render(h): VNode {
     return (
       <div class="panel-body">
