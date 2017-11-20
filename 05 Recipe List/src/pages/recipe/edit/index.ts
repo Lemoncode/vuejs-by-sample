@@ -1,5 +1,1 @@
-import {EditRecipePage} from './page';
-
-export {
-  EditRecipePage
-}
+export * from './page';

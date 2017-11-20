@@ -1,7 +1,7 @@
-import Vue from 'vue';
+import Vue, { VNode } from 'vue';
 
 export const HeaderComponent = Vue.extend({
-  render: function(h) {
+  render(h): VNode {
     return (
       <thead>
         <th>

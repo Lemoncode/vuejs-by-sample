@@ -1,11 +1,9 @@
-import Vue from 'vue';
+import Vue, { VNode } from 'vue';
 
 export const App = Vue.extend({
-  render: function(h) {
+  render(h): VNode {
     return (
-      <div class="container-fluid">
-        <router-view></router-view>
-      </div>
+      <router-view />
     );
   },
 });
