@@ -53,7 +53,7 @@ npm install
 
 - Create `login` page:
 
-### ./src/pages/login/header.tsx
+### ./src/pages/login/components/header.tsx
 ```javascript
 import Vue, { VNode } from 'vue';
 
@@ -72,7 +72,7 @@ export const HeaderComponent = Vue.extend({
 
 ```
 
-### ./src/pages/login/form.tsx
+### ./src/pages/login/components/form.tsx
 ```javascript
 import Vue, { VNode } from 'vue';
 
@@ -108,11 +108,18 @@ export const FormComponent = Vue.extend({
 
 ```
 
+### ./src/pages/login/components/index.ts
+
+```javascript
+export * from './header';
+export * from './form';
+
+```
+
 ### ./src/pages/login/page.tsx
 ```javascript
 import Vue, { VNode } from 'vue';
-import { HeaderComponent } from './header';
-import { FormComponent } from './form';
+import { HeaderComponent, FormComponent } from './components';
 
 export const LoginPage = Vue.extend({
   render(h): VNode {
@@ -144,8 +151,8 @@ export * from './page';
 ### ./src/main.tsx
 ```diff
 import Vue, { VNode } from 'vue';
-- import {HelloComponent} from './hello';
-+ import {LoginPage} from './pages/login';
+- import { HelloComponent } from './hello';
++ import { LoginPage } from './pages/login';
 
 new Vue({
   el: '#root',
@@ -255,7 +262,7 @@ export const App = Vue.extend({
 ```diff
 import Vue from 'vue';
 import Router from 'vue-router';
-import {router} from './router';
+import { router } from './router';
 + import { App } from './app';
 
 Vue.use(Router);
@@ -316,7 +323,7 @@ export const router = new Router({
 
 - Navigate using `router-link`:
 
-### ./src/pages/login/form.tsx
+### ./src/pages/login/components/form.tsx
 ```diff
 import Vue, { VNode } from 'vue';
 
@@ -465,8 +472,7 @@ export const LoginPageContainer = Vue.extend({
 - import Vue, { VNode } from 'vue';
 + import Vue, { VNode, PropOptions } from 'vue';
 + import { LoginEntity } from './viewModel';
-import { HeaderComponent } from './header';
-import { FormComponent } from './form';
+import { HeaderComponent, FormComponent } from './components';
 
 export const LoginPage = Vue.extend({
 + props: {
@@ -499,11 +505,11 @@ export const LoginPage = Vue.extend({
 
 - Update `form.tsx`:
 
-### ./src/pages/login/form.tsx
+### ./src/pages/login/components/form.tsx
 ```diff
 - import Vue, { VNode } from 'vue';
 + import Vue, { VNode, PropOptions } from 'vue';
-+ import { LoginEntity } from './viewModel';
++ import { LoginEntity } from '../viewModel';
 
 export const FormComponent = Vue.extend({
 + props: {
@@ -808,8 +814,7 @@ export const LoginPageContainer = Vue.extend({
 import Vue, { VNode, PropOptions } from 'vue';
 - import { LoginEntity } from './viewModel';
 + import { LoginEntity, LoginError } from './viewModel';
-import { HeaderComponent } from './header';
-import { FormComponent } from './form';
+import { HeaderComponent, FormComponent } from './components';
 
 export const LoginPage = Vue.extend({
   props: {
@@ -901,16 +906,17 @@ export const Input = Vue.extend({
           type={this.type}
           value={this.value}
           name={this.name}
-          onInput={onInput(this)}
+          onInput={this.onInput}
         />
       </div>
     );
   },
+  methods: {
+    onInput(e) {
+      this.inputHandler(e.target.name, e.target.value);
+    }
+  }
 });
-
-const onInput = (component) => (e) => {
-  component.inputHandler(e.target.name, e.target.value);
-};
 
 ```
 
@@ -932,19 +938,20 @@ export const Button = Vue.extend({
       <button
         class={this.className}
         type={this.type}
-        onClick={onClick(this)}
+        onClick={this.onClick}
         disabled={this.disabled}
       >
         {this.label}
       </button>
     );
   },
+  methods: {
+    onClick(e) {
+      e.preventDefault();
+      this.clickHandler();
+    }
+  }
 });
-
-const onClick = (component) => (e) => {
-  e.preventDefault();
-  component.clickHandler();
-};
 
 ```
 
@@ -959,12 +966,12 @@ export * from './button';
 
 - Update `form`:
 
-### ./src/pages/login/form.tsx
+### ./src/pages/login/components/form.tsx
 ```diff
 import Vue, { VNode, PropOptions } from 'vue';
-- import { LoginEntity } from './viewModel';
-+ import { LoginEntity, LoginError } from './viewModel';
-+ import { Validation, Input, Button } from '../../common/components/form';
+- import { LoginEntity } from '../viewModel';
++ import { LoginEntity, LoginError } from '../viewModel';
++ import { Validation, Input, Button } from '../../../common/components/form';
 
 export const FormComponent = Vue.extend({
   props: {

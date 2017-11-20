@@ -25,33 +25,36 @@ You will need to have Node.js installed in your computer. In order to follow thi
 npm install
 ```
 
-- Create `recipe` model:
+- Create `recipe` api model:
 
-### ./src/model/recipe.ts
+### ./src/rest-api/model/recipe.ts
+
 ```javascript
-export class RecipeEntity {
+export interface Recipe {
   id: number;
   name: string;
   description: string;
   ingredients: string[];
-
-  constructor() {
-    this.id = 0;
-    this.name = '';
-    this.description = '';
-    this.ingredients = [];
-  }
 }
+
+```
+
+### ./src/rest-api/model/index.ts
+
+```diff
+export * from './login';
++ export * from './recipe';
 
 ```
 
 - Create fake `recipe` API:
 
-### ./src/api/recipe/mockData.ts
-```javascript
-import {RecipeEntity} from '../../model/recipe';
+### ./src/rest-api/api/recipe/mockData.ts
 
-export const mockRecipes: RecipeEntity[] = [
+```javascript
+import { Recipe } from '../../model';
+
+export const mockRecipes: Recipe[] = [
   {
     id: 1,
     name: 'Omelette',
@@ -110,18 +113,46 @@ export const mockRecipes: RecipeEntity[] = [
 
 ```
 
-### ./src/api/recipe/index.ts
+### ./src/rest-api/api/recipe/index.ts
 ```javascript
-import {RecipeEntity} from '../../model/recipe';
-import {mockRecipes} from './mockData';
+import { Recipe } from '../../model';
+import { mockRecipes } from './mockData';
 
-const fetchRecipes = (): Promise<RecipeEntity[]> => {
+export const fetchRecipes = (): Promise<Recipe[]> => {
   return Promise.resolve(mockRecipes);
+};
+
+```
+
+- Create `recipe` viewModel:
+
+### ./src/pages/recipe/list/viewModel.ts
+
+```javascript
+export interface Recipe {
+  id: number;
+  name: string;
+  description: string;
+  ingredients: string[];
 }
 
-export const recipeAPI = {
-  fetchRecipes,
-}
+```
+
+- Create `mapper` to map from model to viewModel:
+
+### ./src/pages/recipe/list/mappers.ts
+
+```javascript
+import * as model from '../../../rest-api/model';
+import * as vm from './viewModel';
+
+export const mapRecipeListModelToVm = (recipes: model.Recipe[]): vm.Recipe[] => (
+  recipes.map(mapRecipeModelToVm)
+);
+
+const mapRecipeModelToVm = (recipe: model.Recipe): vm.Recipe => ({
+  ...recipe,
+});
 
 ```
 
@@ -129,49 +160,42 @@ export const recipeAPI = {
 
 ### ./src/pages/recipe/list/pageContainer.tsx
 ```javascript
-import Vue, {ComponentOptions} from 'vue';
-import {RecipeEntity} from '../../../model/recipe';
-import {recipeAPI} from '../../../api/recipe';
-import {RecipeListPage} from './page';
-
-interface State extends Vue {
-  recipes: RecipeEntity[];
-}
+import Vue, { VNode } from 'vue';
+import { Recipe } from './viewModel';
+import { mapRecipeListModelToVm } from './mappers';
+import { fetchRecipes } from '../../../rest-api/api/recipe';
+import { RecipeListPage } from './page';
 
 export const RecipeListPageContainer = Vue.extend({
-  render: function(h) {
+  render(h): VNode {
     return (
       <RecipeListPage
         recipes={this.recipes}
       />
     );
   },
-  data: function() {
-    return {
-      recipes: []
-    }
-  },
-  beforeCreate: function() {
-    recipeAPI.fetchRecipes()
+  data: () => ({
+    recipes: [] as Recipe[],
+  }),
+  created: function() {
+    fetchRecipes()
       .then((recipes) => {
-        this.recipes = recipes;
+        this.recipes = mapRecipeListModelToVm(recipes);
       })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-} as ComponentOptions<State>);
+      .catch((error) => console.log(error));
+  },
+});
 
 ```
 
 - Create `header`:
 
-### ./src/pages/recipe/list/header.tsx
+### ./src/pages/recipe/list/components/header.tsx
 ```javascript
-import Vue from 'vue';
+import Vue, { VNode } from 'vue';
 
 export const HeaderComponent = Vue.extend({
-  render: function(h) {
+  render(h): VNode {
     return (
       <thead>
         <th>
@@ -209,7 +233,7 @@ npm install @types/webpack-env --save-dev
     "sourceMap": true,
     "noLib": false,
     "suppressImplicitAnyIndexErrors": true,
-    "allowSyntheticDefaultImports": true,
+    "strict": true,
 -   "jsx": "preserve"
 +   "jsx": "preserve",
 +   "types": [
@@ -229,10 +253,6 @@ npm install @types/webpack-env --save-dev
 ### ./webpack.config.js
 ```diff
   ...
-  resolve: {
--   extensions: ['.js', '.ts', '.tsx'],
-+   extensions: ['.js', '.ts', '.tsx', '.css'],
-  },
   ...
   module: {
     rules: [
@@ -265,9 +285,9 @@ npm install @types/webpack-env --save-dev
       ...
 ```
 
-- Create `rowStyles.css`:
+- Create `row.css` styles:
 
-### ./src/pages/recipe/list/rowStyles.css
+### ./src/pages/recipe/list/components/row.css
 ```css
 .name {
   width: 25%;
@@ -289,24 +309,26 @@ npm install @types/webpack-env --save-dev
 
 - Create `row`:
 
-### ./src/pages/recipe/list/row.tsx
+### ./src/pages/recipe/list/components/row.tsx
+
 ```javascript
-import Vue from 'vue';
-const rowStyles: any = require('./rowStyles');
+import Vue, { VNode, PropOptions } from 'vue';
+import { Recipe } from '../viewModel';
+const styles = require('./row.css');
 
 export const RowComponent = Vue.extend({
-  props: [
-    'recipe'
-  ],
-  render: function(h) {
+  props: {
+    recipe: {} as PropOptions<Recipe>
+  },
+  render(h): VNode {
     return (
       <tr>
-        <td class={rowStyles.name}>
+        <td class={styles.name}>
           <span>
             {this.recipe.name}
           </span>
         </td>
-        <td class={rowStyles.description}>
+        <td class={styles.description}>
           <span>
             {this.recipe.description}
           </span>
@@ -318,8 +340,16 @@ export const RowComponent = Vue.extend({
         </td>
       </tr>
     );
-  }
+  },
 });
+
+```
+
+### ./src/pages/recipe/list/components/index.ts
+
+```javascript
+export * from './header';
+export * from './row';
 
 ```
 
@@ -327,24 +357,18 @@ export const RowComponent = Vue.extend({
 
 ### ./src/pages/recipe/list/page.tsx
 ```diff
-- import Vue from 'vue';
-+ import Vue, {ComponentOptions} from 'vue';
-+ import {RecipeEntity} from '../../../model/recipe';
-+ import {HeaderComponent} from './header';
-+ import {RowComponent} from './row';
-
-+ interface State extends Vue {
-+   recipes: RecipeEntity[];
-+ }
+import Vue, { VNode } from 'vue';
++ import { Recipe } from './viewModel';
++ import { HeaderComponent, RowComponent } from './components';
 
 export const RecipeListPage = Vue.extend({
-+ props: [
-+   'recipes'
-+ ],
-  render: function(h) {
++ props: {
++   recipes: {} as PropOptions<Recipe[]>,
++ },
+  render(h): VNode {
     return (
 -     <h1> Recipe List Page </h1>
-+     <div class="container">
++     <div class="container-fluid">
 +       <h2>Recipes</h2>
 +       <table class="table table-striped">
 +         <HeaderComponent />
@@ -362,44 +386,92 @@ export const RecipeListPage = Vue.extend({
 +     </div>
     );
   }
--});
-+} as ComponentOptions<State>);
+});
+
+```
+
+- Update `index.ts`:
+
+### ./src/pages/recipe/list/index.ts
+
+```diff
+- export * from './page';
++ export * from './pageContainer';
+
+```
+
+- Update `router.ts`:
+
+### ./src/router.ts
+```diff
+import Router, { RouteConfig } from 'vue-router';
+import { LoginPageContainer } from './pages/login';
+- import { RecipeListPage } from './pages/recipe/list';
++ import { RecipeListPageContainer } from './pages/recipe/list';
+
+const routes: RouteConfig[] = [
+  { path: '/', redirect: '/login' },
+  { path: '/login', component: LoginPageContainer },
+- { path: '/recipe', component: RecipeListPage },
++ { path: '/recipe', component: RecipeListPageContainer },
+];
+
+export const router = new Router({
+  routes
+});
 
 ```
 
 - Create `SearchBar`:
 
-### ./src/pages/recipe/list/searchBar.tsx
+### ./src/pages/recipe/list/components/searchBar.tsx
+
 ```javascript
-import Vue from 'vue';
+import Vue, { VNode, PropOptions } from 'vue';
+import { Input } from '../../../../common/components/form';
 
 export const SearchBarComponent = Vue.extend({
-  props: [
-    'searchInputHandler'
-  ],
-  render: function(h) {
+  props: {
+    searchText: String,
+    searchInputHandler: {} as PropOptions<(value: string) => void>,
+  },
+  render(h): VNode {
     return (
-      <div class="form-group">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Search for ingredients comma separated..."
-          onInput={(e) => this.searchInputHandler(e.target.value)}
-        />
-      </div>
+      <Input
+        type="text"
+        name="searchText"
+        value={this.searchText}
+        placeholder="Search for ingredients comma separated..."
+        inputHandler={this.inputHandler}
+      />
     );
+  },
+  methods: {
+    inputHandler(field: string, value: string) {
+      this.searchInputHandler(value);
+    }
   }
 });
+
+```
+
+### ./src/pages/recipe/list/components/index.ts
+
+```diff
+export * from './header';
+export * from './row';
++ export * from './searchBar';
 
 ```
 
 - Create `filter recipe` business:
 
 ### ./src/pages/recipe/list/business/filterRecipeBusiness.ts
-```javascript
-import {RecipeEntity} from '../../../../model/recipe';
 
-const filterRecipesByCommaSeparatedText = (recipes, searchText) => {
+```javascript
+import { Recipe } from '../viewModel';
+
+export const filterRecipesByCommaSeparatedText = (recipes, searchText) => {
   const searchedIngredients = getSearchedIngredientList(searchText);
 
   return searchText === '' ?
@@ -412,7 +484,7 @@ const getSearchedIngredientList = (searchText: string) => {
 };
 
 const filterRecipesBySearchedIngredients = (recipes, searchedIngredients) => {
-  return recipes.filter((recipe: RecipeEntity) => 
+  return recipes.filter((recipe: Recipe) =>
     matchAllSearchedIngredients(recipe.ingredients, searchedIngredients)
   );
 };
@@ -432,12 +504,8 @@ const matchSearchedIngredient = (searchedIngredient: string, ingredients: string
 const matchIngredient = (ingredient, searchedIngredient) => {
   const searchedIngredientLowerCase = searchedIngredient.toLowerCase().trim();
   const ingredientLowerCase = ingredient.toLowerCase().trim();
-  
-  return ingredientLowerCase.indexOf(searchedIngredientLowerCase) >= 0;
-};
 
-export const filterRecipeBusiness = {
-  filterRecipesByCommaSeparatedText,
+  return ingredientLowerCase.indexOf(searchedIngredientLowerCase) >= 0;
 };
 
 ```
@@ -446,44 +514,35 @@ export const filterRecipeBusiness = {
 
 ### ./src/pages/recipe/list/page.tsx
 ```diff
-import Vue, {ComponentOptions} from 'vue';
-import {RecipeEntity} from '../../../model/recipe';
-import {HeaderComponent} from './header';
-import {RowComponent} from './row';
-+ import {SearchBarComponent} from './searchBar';
-+ import {filterRecipeBusiness} from './business/filterRecipeBusiness';
-
-interface State extends Vue {
-  recipes: RecipeEntity[];
-+ filteredRecipes: RecipeEntity[];
-+ searchText: string;
-+ searchInputHandler: (value: string) => void;
-}
+import Vue, { VNode, PropOptions } from 'vue';
+import { Recipe } from './viewModel';
+- import { HeaderComponent, RowComponent } from './components';
++ import { HeaderComponent, RowComponent, SearchBarComponent } from './components';
++ import { filterRecipesByCommaSeparatedText } from './business/filterRecipeBusiness';
 
 export const RecipeListPage = Vue.extend({
-  props: [
-    'recipes'
-  ],
-+ data: function() {
-+   return {
-+     searchText: ''
-+   };
-+ },
+  props: {
+    recipes: {} as PropOptions<Recipe[]>,
+  },
++ data: () => ({
++   searchText: '',
++ }),
 + methods: {
-+   searchInputHandler: function(value) {
++   searchInputHandler(value: string) {
 +     this.searchText = value;
-+   }
++   },
 + },
 + computed: {
-+   filteredRecipes: function() {
-+     return filterRecipeBusiness.filterRecipesByCommaSeparatedText(this.recipes, this.searchText);
-+   }
++   filteredRecipes(): Recipe[] {
++     return filterRecipesByCommaSeparatedText(this.recipes, this.searchText);
++   },
 + },
-  render: function(h) {
+  render(h): VNode {
     return (
       <div class="container">
         <h2>Recipes</h2>
 +       <SearchBarComponent
++         searchText={this.searchText}
 +         searchInputHandler={this.searchInputHandler}
 +       />
         <table class="table table-striped">
@@ -503,60 +562,6 @@ export const RecipeListPage = Vue.extend({
       </div>
     );
   }
-} as ComponentOptions<State>);
-
-```
-
-- Update `index.ts`:
-
-### ./src/pages/recipe/list/index.ts
-```diff
-- import {RecipeListPage} from './page';
-+ import {RecipeListPageContainer} from './pageContainer';
-
-export {
-- RecipeListPage
-+ RecipeListPageContainer
-}
-
-```
-
-- Update `router.ts`:
-
-### ./src/router.ts
-```diff
-import Router, {RouteConfig} from 'vue-router';
-import {LoginPageContainer} from './pages/login';
-- import {RecipeListPage} from './pages/recipe/list';
-+ import {RecipeListPageContainer} from './pages/recipe/list';
-
-const routes: RouteConfig[] = [
-  { path: '/', redirect: '/login' },
-  { path: '/login', component: LoginPageContainer },
-- { path: '/recipe', component: RecipeListPage },
-+ { path: '/recipe', component: RecipeListPageContainer },
-];
-
-export const router = new Router({
-  routes
-});
-
-```
-
-- Update `app.tsx`:
-
-### ./src/app.ts
-```diff
-import Vue from 'vue';
-
-export const App = Vue.extend({
-  render: function(h) {
-    return (
-+     <div class="container-fluid">
-        <router-view></router-view>
-+     </div>
-    );
-  },
 });
 
 ```
@@ -564,14 +569,15 @@ export const App = Vue.extend({
 - Finally, we are going to create a dummy `edit recipe` page to navigate:
 
 ### ./src/pages/recipe/edit/page.tsx
+
 ```javascript
-import Vue from 'vue';
+import Vue, { VNode } from 'vue';
 
 export const EditRecipePage = Vue.extend({
-  props: [
-    'id'
-  ],
-  render: function(h) {
+  props: {
+    id: String,
+  },
+  render(h): VNode {
     return (
       <h1> Edit Recipe Page {this.id}</h1>
     );
@@ -581,12 +587,9 @@ export const EditRecipePage = Vue.extend({
 ```
 
 ### ./src/pages/recipe/edit/index.ts
-```javascript
-import {EditRecipePage} from './page';
 
-export {
-  EditRecipePage
-}
+```javascript
+export * from './page';
 
 ```
 
@@ -594,10 +597,10 @@ export {
 
 ### ./src/router.ts
 ```diff
-import Router, {RouteConfig} from 'vue-router';
-import {LoginPageContainer} from './pages/login';
-import {RecipeListPageContainer} from './pages/recipe/list';
-+ import {EditRecipePage} from './pages/recipe/edit';
+import Router, { RouteConfig } from 'vue-router';
+import { LoginPageContainer } from './pages/login';
+import { RecipeListPageContainer } from './pages/recipe/list';
++ import { EditRecipePage } from './pages/recipe/edit';
 
 const routes: RouteConfig[] = [
   { path: '/', redirect: '/login' },
@@ -608,6 +611,49 @@ const routes: RouteConfig[] = [
 
 export const router = new Router({
   routes
+});
+
+```
+
+- Finally, we need to update the `row` component:
+
+### ./src/pages/recipe/list/components/row.tsx
+
+```diff
+import Vue, { VNode, PropOptions } from 'vue';
+import { Recipe } from '../viewModel';
+const styles = require('./row.css');
+
+export const RowComponent = Vue.extend({
+  props: {
+    recipe: {} as PropOptions<Recipe>
+  },
+  render(h): VNode {
+    return (
+      <tr>
+        <td class={styles.name}>
+          <span>
+            {this.recipe.name}
+          </span>
+        </td>
+        <td class={styles.description}>
+          <span>
+            {this.recipe.description}
+          </span>
+        </td>
+        <td>
+-         <a class="btn btn-primary pull-right">
++         <router-link
++           to={`recipe/${this.recipe.id}`}
++           class="btn btn-primary pull-right"
++         >
+            <i class="glyphicon glyphicon-pencil" />
+-         </a>
++         </router-link>
+        </td>
+      </tr>
+    );
+  },
 });
 
 ```

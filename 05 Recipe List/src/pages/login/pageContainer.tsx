@@ -1,20 +1,16 @@
-import Vue, {ComponentOptions} from 'vue';
-import {LoginPage} from './page';
-import {LoginEntity} from '../../model/login';
-import {loginAPI} from '../../api/login';
-import {router} from '../../router';
-import {LoginError} from '../../model/loginError';
-import {loginFormValidation} from './validations/loginFormValidation';
-
-interface State extends Vue{
-  loginEntity: LoginEntity;
-  loginError: LoginError;
-  updateLogin: (login: string, password: string) => void;
-  loginRequest: () => void;
-}
+import Vue, { VNode } from 'vue';
+import { router } from '../../router';
+import { loginRequest } from '../../rest-api/api/login';
+import {
+  LoginEntity, createEmptyLoginEntity,
+  LoginError, createEmptyLoginError,
+} from './viewModel';
+import { mapLoginEntityVmToModel } from './mappers';
+import { validations } from './validations';
+import { LoginPage } from './page';
 
 export const LoginPageContainer = Vue.extend({
-  render: function(h) {
+  render(h): VNode {
     return (
       <LoginPage
         loginEntity={this.loginEntity}
@@ -24,20 +20,18 @@ export const LoginPageContainer = Vue.extend({
       />
     );
   },
-  data: function() {
-    return {
-      loginEntity: new LoginEntity(),
-      loginError: new LoginError(),
-    }
-  },
+  data: () => ({
+    loginEntity: createEmptyLoginEntity(),
+    loginError: createEmptyLoginError(),
+  }),
   methods: {
-    updateLogin: function(field: string, value: string) {
+    updateLogin(field: string, value: string) {
       this.loginEntity = {
         ...this.loginEntity,
         [field]: value,
       };
 
-      loginFormValidation.validateField(this.loginEntity, field, value)
+      validations.validateField(this.loginEntity, field, value)
         .then((fieldValidationResult) => {
           this.loginError = {
             ...this.loginError,
@@ -46,12 +40,13 @@ export const LoginPageContainer = Vue.extend({
         })
         .catch((error) => console.log(error));
     },
-    loginRequest: function() {
-      loginFormValidation.validateForm(this.loginEntity)
+    loginRequest() {
+      validations.validateForm(this.loginEntity)
         .then((formValidationResult) => {
-          if(formValidationResult.succeeded) {
-            loginAPI.loginRequest(this.loginEntity)
-              .then((isValid) => {
+          if (formValidationResult.succeeded) {
+            const loginEntityModel = mapLoginEntityVmToModel(this.loginEntity);
+            loginRequest(loginEntityModel)
+              .then(() => {
                 router.push('/recipe');
               })
               .catch((error) => {
@@ -60,6 +55,6 @@ export const LoginPageContainer = Vue.extend({
           }
         })
         .catch((error) => console.log(error));
-    }
-  }
-} as ComponentOptions<State>);
+    },
+  },
+});

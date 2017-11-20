@@ -1,16 +1,16 @@
-import Vue from 'vue';
+import Vue, { VNode } from 'vue';
 
-export const ValidationComponent = Vue.extend({
+export const Validation = Vue.extend({
   props: [
     'hasError',
     'errorMessage',
     'className',
   ],
-  render: function(h) {
+  render(h): VNode {
     let wrapperClass = `${this.className}`;
 
-    if(this.hasError) {
-      wrapperClass = `${wrapperClass} has-error`
+    if (this.hasError) {
+      wrapperClass = `${wrapperClass} has-error`;
     }
 
     return (
