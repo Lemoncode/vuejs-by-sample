@@ -432,14 +432,17 @@ import { Input } from '../../../../common/components/form';
 
 export const SearchBarComponent = Vue.extend({
   props: {
-    searchInputHandler: {} as PropOptions<(value) => void>,
+    searchText: String,
+    searchInputHandler: {} as PropOptions<(value: string) => void>,
   },
   render(h): VNode {
     return (
       <Input
         type="text"
+        name="searchText"
+        value={this.searchText}
         placeholder="Search for ingredients comma separated..."
-        inputHandler={this.searchInputHandler}
+        inputHandler={this.inputHandler}
       />
     );
   },
@@ -452,13 +455,23 @@ export const SearchBarComponent = Vue.extend({
 
 ```
 
+### ./src/pages/recipe/list/components/index.ts
+
+```diff
+export * from './header';
+export * from './row';
++ export * from './searchBar';
+
+```
+
 - Create `filter recipe` business:
 
 ### ./src/pages/recipe/list/business/filterRecipeBusiness.ts
-```javascript
-import {RecipeEntity} from '../../../../model/recipe';
 
-const filterRecipesByCommaSeparatedText = (recipes, searchText) => {
+```javascript
+import { Recipe } from '../viewModel';
+
+export const filterRecipesByCommaSeparatedText = (recipes, searchText) => {
   const searchedIngredients = getSearchedIngredientList(searchText);
 
   return searchText === '' ?
@@ -471,7 +484,7 @@ const getSearchedIngredientList = (searchText: string) => {
 };
 
 const filterRecipesBySearchedIngredients = (recipes, searchedIngredients) => {
-  return recipes.filter((recipe: RecipeEntity) =>
+  return recipes.filter((recipe: Recipe) =>
     matchAllSearchedIngredients(recipe.ingredients, searchedIngredients)
   );
 };
@@ -495,54 +508,41 @@ const matchIngredient = (ingredient, searchedIngredient) => {
   return ingredientLowerCase.indexOf(searchedIngredientLowerCase) >= 0;
 };
 
-export const filterRecipeBusiness = {
-  filterRecipesByCommaSeparatedText,
-};
-
 ```
 
 - Update `recipe list` page:
 
 ### ./src/pages/recipe/list/page.tsx
 ```diff
-import Vue, {ComponentOptions} from 'vue';
-import {RecipeEntity} from '../../../model/recipe';
-import {HeaderComponent} from './header';
-import {RowComponent} from './row';
-+ import {SearchBarComponent} from './searchBar';
-+ import {filterRecipeBusiness} from './business/filterRecipeBusiness';
-
-interface State extends Vue {
-  recipes: RecipeEntity[];
-+ filteredRecipes: RecipeEntity[];
-+ searchText: string;
-+ searchInputHandler: (value: string) => void;
-}
+import Vue, { VNode, PropOptions } from 'vue';
+import { Recipe } from './viewModel';
+- import { HeaderComponent, RowComponent } from './components';
++ import { HeaderComponent, RowComponent, SearchBarComponent } from './components';
++ import { filterRecipesByCommaSeparatedText } from './business/filterRecipeBusiness';
 
 export const RecipeListPage = Vue.extend({
-  props: [
-    'recipes'
-  ],
-+ data: function() {
-+   return {
-+     searchText: ''
-+   };
-+ },
+  props: {
+    recipes: {} as PropOptions<Recipe[]>,
+  },
++ data: () => ({
++   searchText: '',
++ }),
 + methods: {
-+   searchInputHandler: function(value) {
++   searchInputHandler(value: string) {
 +     this.searchText = value;
-+   }
++   },
 + },
 + computed: {
-+   filteredRecipes: function() {
-+     return filterRecipeBusiness.filterRecipesByCommaSeparatedText(this.recipes, this.searchText);
-+   }
++   filteredRecipes(): Recipe[] {
++     return filterRecipesByCommaSeparatedText(this.recipes, this.searchText);
++   },
 + },
-  render: function(h) {
+  render(h): VNode {
     return (
       <div class="container">
         <h2>Recipes</h2>
 +       <SearchBarComponent
++         searchText={this.searchText}
 +         searchInputHandler={this.searchInputHandler}
 +       />
         <table class="table table-striped">
@@ -562,24 +562,6 @@ export const RecipeListPage = Vue.extend({
       </div>
     );
   }
-} as ComponentOptions<State>);
-
-```
-
-- Update `app.tsx`:
-
-### ./src/app.ts
-```diff
-import Vue from 'vue';
-
-export const App = Vue.extend({
-  render: function(h) {
-    return (
-+     <div class="container-fluid">
-        <router-view></router-view>
-+     </div>
-    );
-  },
 });
 
 ```
@@ -587,14 +569,15 @@ export const App = Vue.extend({
 - Finally, we are going to create a dummy `edit recipe` page to navigate:
 
 ### ./src/pages/recipe/edit/page.tsx
+
 ```javascript
-import Vue from 'vue';
+import Vue, { VNode } from 'vue';
 
 export const EditRecipePage = Vue.extend({
-  props: [
-    'id'
-  ],
-  render: function(h) {
+  props: {
+    id: String,
+  },
+  render(h): VNode {
     return (
       <h1> Edit Recipe Page {this.id}</h1>
     );
@@ -604,12 +587,9 @@ export const EditRecipePage = Vue.extend({
 ```
 
 ### ./src/pages/recipe/edit/index.ts
-```javascript
-import {EditRecipePage} from './page';
 
-export {
-  EditRecipePage
-}
+```javascript
+export * from './page';
 
 ```
 
@@ -617,10 +597,10 @@ export {
 
 ### ./src/router.ts
 ```diff
-import Router, {RouteConfig} from 'vue-router';
-import {LoginPageContainer} from './pages/login';
-import {RecipeListPageContainer} from './pages/recipe/list';
-+ import {EditRecipePage} from './pages/recipe/edit';
+import Router, { RouteConfig } from 'vue-router';
+import { LoginPageContainer } from './pages/login';
+import { RecipeListPageContainer } from './pages/recipe/list';
++ import { EditRecipePage } from './pages/recipe/edit';
 
 const routes: RouteConfig[] = [
   { path: '/', redirect: '/login' },
@@ -631,6 +611,49 @@ const routes: RouteConfig[] = [
 
 export const router = new Router({
   routes
+});
+
+```
+
+- Finally, we need to update the `row` component:
+
+### ./src/pages/recipe/list/components/row.tsx
+
+```diff
+import Vue, { VNode, PropOptions } from 'vue';
+import { Recipe } from '../viewModel';
+const styles = require('./row.css');
+
+export const RowComponent = Vue.extend({
+  props: {
+    recipe: {} as PropOptions<Recipe>
+  },
+  render(h): VNode {
+    return (
+      <tr>
+        <td class={styles.name}>
+          <span>
+            {this.recipe.name}
+          </span>
+        </td>
+        <td class={styles.description}>
+          <span>
+            {this.recipe.description}
+          </span>
+        </td>
+        <td>
+-         <a class="btn btn-primary pull-right">
++         <router-link
++           to={`recipe/${this.recipe.id}`}
++           class="btn btn-primary pull-right"
++         >
+            <i class="glyphicon glyphicon-pencil" />
+-         </a>
++         </router-link>
+        </td>
+      </tr>
+    );
+  },
 });
 
 ```
