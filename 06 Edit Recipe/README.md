@@ -28,52 +28,81 @@ npm install
 
 - Create `API` methods:
 
-### ./src/api/recipe/index.ts
+### ./src/rest-api/api/recipe/index.ts
+
 ```diff
-import {RecipeEntity} from '../../model/recipe';
-import {mockRecipes} from './mockData';
+import { Recipe } from '../../model';
+import { mockRecipes } from './mockData';
 
 + let recipes = mockRecipes;
 
-const fetchRecipes = (): Promise<RecipeEntity[]> => {
+export const fetchRecipes = (): Promise<Recipe[]> => {
 - return Promise.resolve(mockRecipes);
 + return Promise.resolve(recipes);
-}
+};
 
-+ const fetchRecipeById = (id: number): Promise<RecipeEntity> => {
++ export const fetchRecipeById = (id: number): Promise<Recipe | undefined> => {
 +   const recipe = recipes.find((r) => r.id === id);
 +   return Promise.resolve(recipe);
-+ }
++ };
 
-+ const save = (recipe: RecipeEntity): Promise<string> => {
-+   const index = recipes.findIndex(r => r.id === recipe.id);
++ export const save = (recipe: Recipe): Promise<string> => {
++   const index = recipes.findIndex((r) => r.id === recipe.id);
 
 +   return index >= 0 ?
 +     saveRecipeByIndex(index, recipe) :
-+     Promise.reject<string>('Something was wrong saving recipe :(');
-+ }
++     Promise.reject('Something was wrong saving recipe :(');
++ };
 
-+ const saveRecipeByIndex = (index, recipe) => {
++ const saveRecipeByIndex = (index: number, recipe: Recipe): Promise<string> => {
 +   recipes = [
 +     ...recipes.slice(0, index),
 +     recipe,
 +     ...recipes.slice(index + 1),
 +   ];
 
-+   return Promise.resolve('Save recipe sucess');
-+ }
++   return Promise.resolve('Save recipe success');
++ };
 
-export const recipeAPI = {
-  fetchRecipes,
-+ fetchRecipeById,
-+ save,
+```
+
+- Add `viewModel` and `mappers`:
+
+### ./src/pages/recipe/edit/viewModel.ts
+
+```javascript
+export interface Recipe {
+  id: number;
+  name: string;
+  description: string;
+  ingredients: string[];
 }
+
+export const createEmptyRecipe = (): Recipe => ({
+  id: 0,
+  name: '',
+  description: '',
+  ingredients: [],
+});
+
+```
+
+### ./src/pages/recipe/edit/mappers.ts
+
+```javascript
+import * as model from '../../../rest-api/model';
+import * as vm from './viewModel';
+
+export const mapRecipeModelToVm = (recipe: model.Recipe): vm.Recipe => ({
+  ...recipe,
+});
 
 ```
 
 - Create `pageContainer`:
 
 ### ./src/pages/recipe/edit/pageContainer.tsx
+
 ```javascript
 import Vue, {ComponentOptions} from 'vue';
 import {RecipeEntity} from '../../../model/recipe';
@@ -890,7 +919,7 @@ export const EditRecipeContainer = Vue.extend({
 +             [error.key]: error,
 +           }
 +         });
-          
+
 +         if(result.succeeded) {
             recipeAPI.save(this.recipe)
               .then((message) => {
