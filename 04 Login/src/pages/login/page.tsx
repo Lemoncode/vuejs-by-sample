@@ -1,7 +1,6 @@
 import Vue, { VNode, PropOptions } from 'vue';
 import { LoginEntity, LoginError } from './viewModel';
-import { HeaderComponent } from './header';
-import { FormComponent } from './form';
+import { HeaderComponent, FormComponent } from './components';
 
 export const LoginPage = Vue.extend({
   props: {

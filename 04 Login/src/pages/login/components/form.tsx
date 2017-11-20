@@ -1,6 +1,6 @@
 import Vue, { VNode, PropOptions } from 'vue';
-import { LoginEntity, LoginError } from './viewModel';
-import { Validation, Input, Button } from '../../common/components/form';
+import { LoginEntity, LoginError } from '../viewModel';
+import { Validation, Input, Button } from '../../../common/components/form';
 
 export const FormComponent = Vue.extend({
   props: {
