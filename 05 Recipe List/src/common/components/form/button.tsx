@@ -13,16 +13,17 @@ export const Button = Vue.extend({
       <button
         class={this.className}
         type={this.type}
-        onClick={onClick(this)}
+        onClick={this.onClick}
         disabled={this.disabled}
       >
         {this.label}
       </button>
     );
   },
+  methods: {
+    onClick(e) {
+      e.preventDefault();
+      this.clickHandler();
+    }
+  }
 });
-
-const onClick = (component) => (e) => {
-  e.preventDefault();
-  component.clickHandler();
-};

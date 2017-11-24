@@ -22,13 +22,14 @@ export const Input = Vue.extend({
           type={this.type}
           value={this.value}
           name={this.name}
-          onInput={onInput(this)}
+          onInput={this.onInput}
         />
       </div>
     );
   },
+  methods: {
+    onInput(e) {
+      this.inputHandler(e.target.name, e.target.value);
+    }
+  }
 });
-
-const onInput = (component) => (e) => {
-  component.inputHandler(e.target.name, e.target.value);
-};
