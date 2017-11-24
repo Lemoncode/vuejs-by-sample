@@ -1,6 +1,6 @@
-import Vue from 'vue';
+import Vue, { VNode } from 'vue';
 
-export const InputButtonComponent = Vue.extend({
+export const InputButton = Vue.extend({
   props: [
     'className',
     'placeholder',
@@ -13,7 +13,7 @@ export const InputButtonComponent = Vue.extend({
     'buttonClickHandler',
     'buttonClassName',
   ],
-  render: function(h) {
+  render(h): VNode {
     return (
       <div class={`form-group ${this.className}`}>
         <label for={this.name}>
@@ -22,16 +22,16 @@ export const InputButtonComponent = Vue.extend({
         <div class="input-group">
           <input
             class="form-control"
-            name={this.name}
             placeholder={this.placeholder}
             type={this.type}
             value={this.value}
-            onInput={this.inputHandler}
+            name={this.name}
+            onInput={this.onInput}
           />
           <div class="input-group-btn">
             <button
               class={this.buttonClassName}
-              onClick={this.buttonClickHandler}
+              onClick={this.onButtonClick}
             >
               {this.buttonText}
             </button>
@@ -40,4 +40,13 @@ export const InputButtonComponent = Vue.extend({
       </div>
     );
   },
+  methods: {
+    onInput(e) {
+      this.inputHandler(e.target.name, e.target.value);
+    },
+    onButtonClick(e) {
+      e.preventDefault();
+      this.buttonClickHandler(this.value);
+    },
+  }
 });

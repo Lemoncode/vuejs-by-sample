@@ -1,6 +1,6 @@
-import {RecipeEntity} from '../../../../model/recipe';
+import { Recipe } from '../viewModel';
 
-const filterRecipesByCommaSeparatedText = (recipes, searchText) => {
+export const filterRecipesByCommaSeparatedText = (recipes, searchText) => {
   const searchedIngredients = getSearchedIngredientList(searchText);
 
   return searchText === '' ?
@@ -13,7 +13,7 @@ const getSearchedIngredientList = (searchText: string) => {
 };
 
 const filterRecipesBySearchedIngredients = (recipes, searchedIngredients) => {
-  return recipes.filter((recipe: RecipeEntity) => 
+  return recipes.filter((recipe: Recipe) =>
     matchAllSearchedIngredients(recipe.ingredients, searchedIngredients)
   );
 };
@@ -33,10 +33,6 @@ const matchSearchedIngredient = (searchedIngredient: string, ingredients: string
 const matchIngredient = (ingredient, searchedIngredient) => {
   const searchedIngredientLowerCase = searchedIngredient.toLowerCase().trim();
   const ingredientLowerCase = ingredient.toLowerCase().trim();
-  
-  return ingredientLowerCase.indexOf(searchedIngredientLowerCase) >= 0;
-};
 
-export const filterRecipeBusiness = {
-  filterRecipesByCommaSeparatedText,
+  return ingredientLowerCase.indexOf(searchedIngredientLowerCase) >= 0;
 };

@@ -1,5 +1,1 @@
-import {EditRecipeContainer} from './pageContainer';
-
-export {
-  EditRecipeContainer
-}
+export * from './pageContainer';
