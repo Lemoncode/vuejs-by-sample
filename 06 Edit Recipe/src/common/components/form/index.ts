@@ -1,11 +1,5 @@
-import {InputComponent} from './input';
-import {ValidationComponent} from './validation';
-import {InputButtonComponent} from './inputButton';
-import {TextareaComponent} from './textarea';
-
-export {
-  InputComponent,
-  ValidationComponent,
-  InputButtonComponent,
-  TextareaComponent,
-}
+export * from './validation';
+export * from './input';
+export * from './button';
+export * from './inputButton';
+export * from './textarea';

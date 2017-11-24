@@ -1,6 +1,6 @@
-import Vue from 'vue';
+import Vue, { VNode } from 'vue';
 
-export const TextareaComponent = Vue.extend({
+export const Textarea = Vue.extend({
   props: [
     'className',
     'placeholder',
@@ -10,7 +10,7 @@ export const TextareaComponent = Vue.extend({
     'name',
     'rows',
   ],
-  render: function(h) {
+  render(h): VNode {
     return (
       <div class={`form-group ${this.className}`}>
         <label for={this.name}>
@@ -20,12 +20,17 @@ export const TextareaComponent = Vue.extend({
           class="form-control"
           name={this.name}
           placeholder={this.placeholder}
-          onInput={this.inputHandler}
           rows={this.rows}
+          onInput={this.onInput}
         >
           {this.value}
         </textarea>
       </div>
     );
+  },
+  methods: {
+    onInput(e) {
+      this.inputHandler(e.target.name, e.target.value);
+    },
   },
 });

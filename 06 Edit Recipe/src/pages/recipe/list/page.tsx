@@ -1,57 +1,47 @@
-import Vue, {ComponentOptions} from 'vue';
-import {RecipeEntity} from '../../../model/recipe';
-import {HeaderComponent} from './header';
-import {RowComponent} from './row';
-import {SearchBarComponent} from './searchBar';
-import {filterRecipeBusiness} from './business/filterRecipeBusiness';
-
-interface State extends Vue {
-  recipes: RecipeEntity[];
-  filteredRecipes: RecipeEntity[];
-  searchText: string;
-  searchInputHandler: (value: string) => void;
-}
+import Vue, { VNode, PropOptions, ComputedOptions } from 'vue';
+import { Recipe } from './viewModel';
+import { HeaderComponent, RowComponent, SearchBarComponent } from './components';
+import { filterRecipesByCommaSeparatedText } from './business/filterRecipeBusiness';
 
 export const RecipeListPage = Vue.extend({
-  props: [
-    'recipes'
-  ],
-  data: function() {
-    return {
-      searchText: ''
-    };
+  props: {
+    recipes: {} as PropOptions<Recipe[]>,
   },
+  data: () => ({
+    searchText: '',
+  }),
   methods: {
-    searchInputHandler: function(value) {
+    searchInputHandler(value: string) {
       this.searchText = value;
-    }
+    },
   },
   computed: {
-    filteredRecipes: function() {
-      return filterRecipeBusiness.filterRecipesByCommaSeparatedText(this.recipes, this.searchText);
-    }
+    filteredRecipes(): Recipe[] {
+      return filterRecipesByCommaSeparatedText(this.recipes, this.searchText);
+    },
   },
-  render: function(h) {
+  render(h): VNode {
     return (
-      <div class="container">
+      <div class="container-fluid">
         <h2>Recipes</h2>
         <SearchBarComponent
+          searchText={this.searchText}
           searchInputHandler={this.searchInputHandler}
         />
         <table class="table table-striped">
           <HeaderComponent />
           <tbody>
             {
-              this.filteredRecipes.map((recipe) =>
+              this.filteredRecipes.map((recipe) => (
                 <RowComponent
                   key={recipe.id}
                   recipe={recipe}
                 />
-              )
+              ))
             }
           </tbody>
         </table>
       </div>
     );
   }
-} as ComponentOptions<State>);
+});

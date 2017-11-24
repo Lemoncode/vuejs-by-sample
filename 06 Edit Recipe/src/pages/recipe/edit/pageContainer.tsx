@@ -1,22 +1,13 @@
-import Vue, {ComponentOptions} from 'vue';
-import {RecipeEntity} from '../../../model/recipe';
-import {RecipeError} from '../../../model/recipeError';
-import {recipeAPI} from '../../../api/recipe';
-import {EditRecipePage} from './page';
-import {router} from '../../../router';
-import {editFormValidation} from './validations/editFormValidation';
-
-interface State extends Vue {
-  recipe: RecipeEntity;
-  recipeError: RecipeError;
-  updateRecipe: (field, value) => void;
-  addIngredient: (ingredient) => void;
-  removeIngredient: (ingredient) => void;
-  save: () => void;
-}
+import Vue, { VNode } from 'vue';
+import { router } from '../../../router';
+import { fetchRecipeById, save } from '../../../rest-api/api/recipe';
+import { Recipe, createEmptyRecipe, RecipeError, createEmptyRecipeError } from './viewModel';
+import { mapRecipeModelToVm } from './mappers';
+import { EditRecipePage } from './page';
+import { validations } from './validations';
 
 export const EditRecipeContainer = Vue.extend({
-  render: function(h) {
+  render(h): VNode {
     return (
       <EditRecipePage
         recipe={this.recipe}
@@ -28,31 +19,29 @@ export const EditRecipeContainer = Vue.extend({
       />
     );
   },
-  props: [
-    'id'
-  ],
-  data: function() {
-    return {
-      recipe: new RecipeEntity(),
-      recipeError: new RecipeError(),
-    };
+  props: {
+    id: String,
   },
-  beforeMount: function() {
-    const id = Number(this["id"]) || 0;
-    recipeAPI.fetchRecipeById(id)
+  data: () => ({
+    recipe: createEmptyRecipe(),
+    recipeError: createEmptyRecipeError(),
+  }),
+  beforeMount() {
+    const id = Number(this.id || 0);
+    fetchRecipeById(id)
       .then((recipe) => {
-        this.recipe = recipe;
+        this.recipe = mapRecipeModelToVm(recipe);
       })
       .catch((error) => console.log(error));
   },
   methods: {
-    updateRecipe: function(field: string, value) {
+    updateRecipe(field: string, value) {
       this.recipe = {
         ...this.recipe,
         [field]: value,
       };
 
-      editFormValidation.validateField(this.recipe, field, value)
+      validations.validateField(this.recipe, field, value)
         .then((result) => {
           this.recipeError = {
             ...this.recipeError,
@@ -61,32 +50,31 @@ export const EditRecipeContainer = Vue.extend({
         })
         .catch((error) => console.log(error));
     },
-    addIngredient: function(ingredient: string) {
+    addIngredient(ingredient: string) {
       this.recipe = {
         ...this.recipe,
         ingredients: [...this.recipe.ingredients, ingredient],
-      }
+      };
     },
-    removeIngredient: function(ingredient: string) {
+    removeIngredient(ingredient: string) {
       this.recipe = {
         ...this.recipe,
         ingredients: this.recipe.ingredients.filter((i) => {
           return i !== ingredient;
         }),
-      }
+      };
     },
-    save: function() {
-      editFormValidation.validateForm(this.recipe)
+    save() {
+      validations.validateForm(this.recipe)
         .then((result) => {
           result.fieldErrors.map((error) => {
             this.recipeError = {
               ...this.recipeError,
-              [error.key]: error,
-            }
+              [error.key as string]: error,
+            };
           });
-          
-          if(result.succeeded) {
-            recipeAPI.save(this.recipe)
+          if (result.succeeded) {
+            save(this.recipe)
               .then((message) => {
                 console.log(message);
                 router.back();
@@ -96,6 +84,5 @@ export const EditRecipeContainer = Vue.extend({
         })
         .catch((error) => console.log(error));
     },
-  }
-} as ComponentOptions<State>);
-
+  },
+});
