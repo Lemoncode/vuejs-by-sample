@@ -9,15 +9,15 @@ We will setup an initial <abbr title="Node.js package manager, a package manager
 
 Summary steps:
 
-- Prerequisites: Install Node.js
-- Initialize **package.json** (with `npm init`)
-- Install:
-    - Webpack and webpack-dev-server.
-    - TypeScript.
-    - Bootstrap.
-- Setup **webpack.config.js**
-- Create a test js file.
-- Create a simple HTML file.
+* Prerequisites: Install Node.js
+* Initialize **package.json** (with `npm init`)
+* Install:
+  * Webpack and webpack-dev-server.
+  * TypeScript.
+  * Bootstrap.
+* Setup **webpack.config.js**
+* Create a test js file.
+* Create a simple HTML file.
 
 # Prerequisites
 
@@ -27,52 +27,55 @@ Install [Node.js and npm](https://nodejs.org/en/) (v6.x.x or higher) if they are
 
 ## Steps to build it
 
-- Create and navigate to the folder where you are going to create the empty project.
+* Create and navigate to the folder where you are going to create the empty project.
 
-- Execute `npm init`, you will be prompted to answer some information about the project (e.g. set name to _sample-vue-js_ and description to _Sample working with TypeScript and Webpack_).
-Once you have successfully fullfilled them a **package.json** file we will generated.
+* Execute `npm init`, you will be prompted to answer some information about the project (e.g. set name to _sample-vue-js_ and description to _Sample working with TypeScript and Webpack_).
+  Once you have successfully fullfilled them a **package.json** file we will generated.
 
- ```
- npm init
- ```
+```
+npm init
+```
 
-- Install **webpack** and **webpack-cli** as a development dependency.
+* Install **webpack** and **webpack-cli** as a development dependency.
 
- ```
- npm install webpack webpack-cli --save-dev
- ```
-- Install **webpack-dev-server** locally, as a development dependency (the reason to install it locally instead of globally is for it to be easy to setup, e.g. It can be launched on a clean machine without having to install anything globally but nodejs).
+```
+npm install webpack webpack-cli --save-dev
+```
 
- ```
- npm install webpack-dev-server --save-dev
- ```
+* Install **webpack-dev-server** locally, as a development dependency (the reason to install it locally instead of globally is for it to be easy to setup, e.g. It can be launched on a clean machine without having to install anything globally but nodejs).
 
-- Let's install a list of plugins and loaders that will add powers to our webpack configuration (handling <abbr title="Cascading Style Sheets">CSS</abbr>, TypeScript...).
+```
+npm install webpack-dev-server --save-dev
+```
 
- ```
- npm install css-loader style-loader file-loader url-loader html-webpack-plugin awesome-typescript-loader --save-dev
- ```
-- Let's add two commands to our **package.json** to build and start.
+* Let's install a list of plugins and loaders that will add powers to our webpack configuration (handling <abbr title="Cascading Style Sheets">CSS</abbr>, TypeScript...).
+
+```
+npm install css-loader file-loader url-loader html-webpack-plugin awesome-typescript-loader --save-dev
+```
+
+* Let's add two commands to our **package.json** to build and start.
 
 ### ./package.json
+
 ```diff
   "scripts": {
 +    "start": "webpack-dev-server --mode development",
 +    "build": "webpack --mode production"
   },
-
 ```
 
-- Let's install locally TypeScript:
+* Let's install locally TypeScript:
 
- ```
- npm install typescript --save-dev
- ```
+```
+npm install typescript --save-dev
+```
 
-- We need as well to drop a **tsconfig.json** file in the root folder of our project
+* We need as well to drop a **tsconfig.json** file in the root folder of our project
 
 ### ./tsconfig.json
- ```json
+
+```json
 {
   "compilerOptions": {
     "target": "es6",
@@ -85,47 +88,42 @@ Once you have successfully fullfilled them a **package.json** file we will gener
     "suppressImplicitAnyIndexErrors": true
   },
   "compileOnSave": false,
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }
+```
 
- ```
-
-- Since we had configured TypeScript to work with ES6, we need to install `babel` to transpile to ES5:
+* Since we had configured TypeScript to work with ES6, we need to install `babel` to transpile to ES5:
 
 ```
 TypeScript transpile to ES6 files and Babel transpile to ES5 files
 
       TypeScript            Babel
 .ts ============> ES6 .js =========> ES5 .js
-
 ```
 
 ```
 npm install babel-core babel-preset-env --save-dev
-
 ```
 
-- Add `.babelrc`:
+* Add `.babelrc`:
 
 ### ./.babelrc
+
 ```diff
 {
   "presets": [
     "env"
   ]
 }
-
 ```
 
-- Let's install bootstrap:
+* Let's install bootstrap:
 
- ```
- npm install bootstrap --save
- ```
+```
+npm install bootstrap --save
+```
 
-- Now, our **package.json** file should look something like:
+* Now, our **package.json** file should look something like:
 
 ```json
 {
@@ -141,12 +139,7 @@ npm install babel-core babel-preset-env --save-dev
     "type": "git",
     "url": "git+https://github.com/Lemoncode/vuejs-by-sample.git"
   },
-  "keywords": [
-    "vue.js",
-    "samples",
-    "typescript",
-    "webpack"
-  ],
+  "keywords": ["vue.js", "samples", "typescript", "webpack"],
   "author": "Lemoncode",
   "license": "MIT",
   "bugs": {
@@ -160,7 +153,7 @@ npm install babel-core babel-preset-env --save-dev
     "css-loader": "^0.28.11",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
-    "style-loader": "^0.20.3",
+    "mini-css-extract-plugin": "^0.4.0",
     "typescript": "^2.8.1",
     "url-loader": "^1.0.1",
     "webpack": "^4.6.0",
@@ -171,26 +164,26 @@ npm install babel-core babel-preset-env --save-dev
     "bootstrap": "^4.1.0"
   }
 }
-
 ```
 
-- Let's create a subfolder called **src**.
+* Let's create a subfolder called **src**.
 
 ```sh
 mkdir src
 ```
 
-- Let's create a basic **main.ts** file (under **src** folder):
+* Let's create a basic **main.ts** file (under **src** folder):
 
 ### ./src/main.ts
-```javascript
-document.write("Hello from main.ts !");
 
+```javascript
+document.write('Hello from main.ts !');
 ```
 
-- Let's create a basic **index.html** file (under **src** folder):
+* Let's create a basic **index.html** file (under **src** folder):
 
 ### ./src/index.html
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -206,22 +199,22 @@ document.write("Hello from main.ts !");
     </div>
   </body>
 </html>
-
 ```
 
-- Now it's time to create a basic **webpack.config.js** file, this configuration will
- include plumbing for:
- - Launching a web dev server.
- - Transpiling from TypeScript to JavaScript.
- - Setting up Twitter Bootstrap (including fonts, etc...).
- - Generating the build under a **dist** folder.
+* Now it's time to create a basic **webpack.config.js** file, this configuration will
+  include plumbing for:
+* Launching a web dev server.
+* Transpiling from TypeScript to JavaScript.
+* Setting up Twitter Bootstrap (including fonts, etc...).
+* Generating the build under a **dist** folder.
 
 ### ./webpack.config.js
- ```javascript
+
+```javascript
 var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 var { CheckerPlugin } = require('awesome-typescript-loader');
 
 var basePath = __dirname;
@@ -233,12 +226,8 @@ module.exports = {
   },
   entry: {
     app: './main.ts',
-    vendor: [
-
-    ],
-    vendorStyles: [
-      '../node_modules/bootstrap/dist/css/bootstrap.css',
-    ],
+    vendor: [],
+    vendorStyles: ['../node_modules/bootstrap/dist/css/bootstrap.css'],
   },
   output: {
     path: path.join(basePath, 'dist'),
@@ -259,32 +248,27 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: {
-            loader: 'css-loader',
-          },
-        }),
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       // Loading glyphicons => https://github.com/gowravshekar/bootstrap-webpack
       // Using here url-loader and file-loader
       {
         test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+        loader: 'url-loader?limit=10000&mimetype=application/font-woff',
       },
       {
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url-loader?limit=10000&mimetype=application/octet-stream'
+        loader: 'url-loader?limit=10000&mimetype=application/octet-stream',
       },
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file-loader'
+        loader: 'file-loader',
       },
       {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url-loader?limit=10000&mimetype=image/svg+xml'
+        loader: 'url-loader?limit=10000&mimetype=image/svg+xml',
       },
-    ]
+    ],
   },
   devtool: 'inline-source-map',
   plugins: [
@@ -294,26 +278,24 @@ module.exports = {
       template: 'index.html', //Name of template in ./src
       hash: true,
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      names: ['vendor', 'manifest'],
+    new MiniCssExtractPlugin({
+      // Options similar to the same options in webpackOptions.output
+      // both options are optional
+      // Check https://webpack.js.org/plugins/mini-css-extract-plugin/#minimizing-for-production in case of production
+      filename: '[name].css',
+      chunkFilename: '[id].css',
     }),
     new webpack.HashedModuleIdsPlugin(),
-    new ExtractTextPlugin({
-      filename: '[name].css',
-      disable: false,
-      allChunks: true,
-    }),
     new CheckerPlugin(),
   ],
-}
-
+};
 ```
 
-- Run webpack with:
+* Run webpack with:
 
- ```
- npm start
- ```
+```
+npm start
+```
 
 # About Lemoncode
 
