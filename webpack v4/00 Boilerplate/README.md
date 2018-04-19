@@ -123,7 +123,7 @@ npm install babel-core babel-preset-env --save-dev
 npm install bootstrap jquery popper.js --save
 ```
 
-> Bootstrap is dependent on jQuery and Popper, these are defined as peerDependencies, this means that you will have to make sure to add both of them to your package.json using npm install --save jquery popper.js.
+> Bootstrap 4 is dependent on jQuery and Popper, these are defined as peerDependencies, this means that you will have to make sure to add both of them to your package.json using `npm install --save jquery popper.js`
 
 * Now, our **package.json** file should look something like:
 
@@ -163,7 +163,9 @@ npm install bootstrap jquery popper.js --save
     "webpack-dev-server": "^3.1.3"
   },
   "dependencies": {
-    "bootstrap": "^4.1.0"
+    "bootstrap": "^4.1.0",
+    "jquery": "^3.3.1",
+    "popper.js": "^1.14.3"
   }
 }
 ```
