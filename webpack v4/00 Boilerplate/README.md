@@ -117,11 +117,13 @@ npm install babel-core babel-preset-env --save-dev
 }
 ```
 
-* Let's install bootstrap:
+* Let's install bootstrap and its dependencies:
 
 ```
-npm install bootstrap --save
+npm install bootstrap jquery popper.js --save
 ```
+
+> Bootstrap is dependent on jQuery and Popper, these are defined as peerDependencies, this means that you will have to make sure to add both of them to your package.json using npm install --save jquery popper.js.
 
 * Now, our **package.json** file should look something like:
 
