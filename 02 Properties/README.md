@@ -97,15 +97,16 @@ new Vue({
   data: {
     message: 'Hello from Vue.js'
   },
--});
 + methods: {
 +   onChange: function(value) {
 +     this.message = value;
 +   },
 + },
-+});
+});
 
 ```
+
+> Reference: [_Don't use arrow functions_](https://vuejs.org/v2/guide/instance.html#Instance-Lifecycle-Hooks)
 
 - Using syntactic sugar `v-model`:
 
