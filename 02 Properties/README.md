@@ -185,7 +185,7 @@ new Vue({
 
 ```
 
-- Since we are using `v-model` in `HelloComponent` we are mutating value prop and it's forbidden. To solve this:
+- Since we are using `v-model` in `HelloComponent` we are mutating `value` prop and it's forbidden. To solve this:
 
 ### ./src/hello.ts
 ```diff
