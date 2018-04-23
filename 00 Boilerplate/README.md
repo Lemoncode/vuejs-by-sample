@@ -39,7 +39,7 @@ Once you have successfully fullfilled them a **package.json** file we will gener
 - Install **webpack** as a development dependency.
 
  ```
- npm install webpack --save-dev
+ npm install webpack webpack-cli --save-dev
  ```
 - Install **webpack-dev-server** locally, as a development dependency (the reason to install it locally instead of globally is for it to be easy to setup, e.g. It can be launched on a clean machine without having to install anything globally but nodejs).
 
@@ -49,8 +49,8 @@ Once you have successfully fullfilled them a **package.json** file we will gener
 
 - Let's install a list of plugins and loaders that will add powers to our webpack configuration (handling <abbr title="Cascading Style Sheets">CSS</abbr>, TypeScript...).
 
- ```
- npm install css-loader style-loader file-loader url-loader html-webpack-plugin extract-text-webpack-plugin awesome-typescript-loader --save-dev
+ ```bash
+ npm install awesome-typescript-loader css-loader file-loader html-webpack-plugin mini-css-extract-plugin url-loader  --save-dev
  ```
 - Let's add two commands to our **package.json** to build and start.
 
@@ -154,21 +154,21 @@ npm install babel-core babel-preset-env --save-dev
   },
   "homepage": "https://github.com/Lemoncode/vuejs-by-sample#readme",
   "devDependencies": {
-    "awesome-typescript-loader": "^3.3.0",
+    "awesome-typescript-loader": "^5.0.0",
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.1",
-    "css-loader": "^0.28.7",
-    "extract-text-webpack-plugin": "^3.0.2",
-    "file-loader": "^1.1.5",
-    "html-webpack-plugin": "^2.30.1",
-    "style-loader": "^0.19.0",
-    "typescript": "^2.6.1",
-    "url-loader": "^0.6.2",
-    "webpack": "^3.8.1",
-    "webpack-dev-server": "^2.9.4"
+    "css-loader": "^0.28.11",
+    "file-loader": "^1.1.11",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.4.0",
+    "typescript": "^2.8.3",
+    "url-loader": "^1.0.1",
+    "webpack": "^4.6.0",
+    "webpack-cli": "^2.0.15",
+    "webpack-dev-server": "3.1.0"
   },
   "dependencies": {
-    "bootstrap": "^3.3.7"
+    "bootstrap": "^4.1.0"
   }
 }
 
@@ -221,7 +221,7 @@ document.write("Hello from main.ts !");
 var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var { CheckerPlugin } = require('awesome-typescript-loader');
 
 var basePath = __dirname;
@@ -231,11 +231,9 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.ts'],
   },
+  mode: 'development',
   entry: {
     app: './main.ts',
-    vendor: [
-
-    ],
     vendorStyles: [
       '../node_modules/bootstrap/dist/css/bootstrap.css',
     ],
@@ -259,12 +257,10 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: {
-            loader: 'css-loader',
-          },
-        }),
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+        ],
       },
       // Loading glyphicons => https://github.com/gowravshekar/bootstrap-webpack
       // Using here url-loader and file-loader
@@ -294,18 +290,13 @@ module.exports = {
       template: 'index.html', //Name of template in ./src
       hash: true,
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      names: ['vendor', 'manifest'],
-    }),
     new webpack.HashedModuleIdsPlugin(),
-    new ExtractTextPlugin({
+    new MiniCssExtractPlugin({
       filename: '[name].css',
-      disable: false,
-      allChunks: true,
     }),
     new CheckerPlugin(),
   ],
-}
+};
 
 ```
 
