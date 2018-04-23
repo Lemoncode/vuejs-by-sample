@@ -473,6 +473,8 @@ export const LoginPageContainer = Vue.extend({
 
 ```
 
+>Reference: [Why we have to use Function in data](https://vuejs.org/v2/api/#Options-Data)
+
 - Update `LoginPage`:
 
 ### ./src/pages/login/page.tsx
