@@ -45,7 +45,7 @@ new Vue({
 + `,
   data: {
     message: 'Hello from Vue.js'
-  }
+  },
 });
 
 ```
@@ -71,7 +71,7 @@ new Vue({
   `,
   data: {
     message: 'Hello from Vue.js'
-  }
+  },
 });
 
 ```
@@ -96,8 +96,7 @@ new Vue({
   `,
   data: {
     message: 'Hello from Vue.js'
-- }
-+ },
+  },
 -});
 + methods: {
 +   onChange: function(value) {
@@ -186,7 +185,7 @@ new Vue({
 + },
   data: {
     message: 'Hello from Vue.js'
-  }
+  },
 });
 
 ```

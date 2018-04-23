@@ -1,26 +1,9 @@
 import Vue from 'vue';
-import { HelloComponent } from './hello';
 
 new Vue({
   el: '#root',
-  template: `
-    <div>
-      <h1>{{message}}</h1>
-      <hello
-        :message="message"
-        :onChange="onChange"
-      />
-    </div>
-  `,
-  components: {
-    hello: HelloComponent,
-  },
+  template: '<h1>{{message}}</h1>',
   data: {
-    message: 'Hello from Vue.js'
-  },
-  methods: {
-    onChange: function(value) {
-      this.message = value;
-    }
+    message: 'Hello from Vue.js',
   },
 });
