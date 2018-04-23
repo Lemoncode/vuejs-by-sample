@@ -1,25 +1,11 @@
 import Vue, { VNode } from 'vue';
-import { HelloComponent } from './hello';
+import Router from 'vue-router';
+import { router } from './router';
+import { App } from './app';
+
+Vue.use(Router);
 
 new Vue({
-  el: '#root',
-  render(h): VNode {
-    return (
-      <div>
-        <h1>{this.message}</h1>
-        <HelloComponent
-          message={this.message}
-          inputHandler={this.inputHandler}
-        />
-      </div>
-    );
-  },
-  data: {
-    message: 'Hello from Vue.js',
-  },
-  methods: {
-    inputHandler(value) {
-      this.message = value;
-    }
-  },
-});
+  render: (h) => h(App),
+  router,
+}).$mount('#root');

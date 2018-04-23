@@ -67,7 +67,7 @@ export const HeaderComponent = Vue.extend({
         </h3>
       </div>
     );
-  }
+  },
 });
 
 ```
@@ -96,6 +96,7 @@ export const FormComponent = Vue.extend({
             />
           </div>
           <button
+            type="button"
             class="btn btn-lg btn-success btn-block"
           >
             Login
@@ -103,7 +104,7 @@ export const FormComponent = Vue.extend({
         </form>
       </div>
     );
-  }
+  },
 });
 
 ```
@@ -135,7 +136,7 @@ export const LoginPage = Vue.extend({
         </div>
       </div>
     );
-  }
+  },
 });
 
 ```
@@ -175,7 +176,7 @@ new Vue({
 -   inputHandler(value) {
 -     this.message = value;
 -   }
-- }
+- },
 });
 
 ```
@@ -288,9 +289,9 @@ import Vue, { VNode } from 'vue';
 export const RecipeListPage = Vue.extend({
   render(h): VNode {
     return (
-      <h1> Recipe List Page </h1>
+      <h1>Recipe List Page </h1>
     );
-  }
+  },
 });
 
 ```
@@ -332,6 +333,7 @@ export const FormComponent = Vue.extend({
     return (
       ...
 -         <button
+-           type="button"
 +         <router-link
 +           to="/recipe"
             class="btn btn-lg btn-success btn-block"

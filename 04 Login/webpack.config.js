@@ -16,6 +16,7 @@ module.exports = {
     app: './main.tsx',
     vendor: [
       'vue',
+      'vue-router',
     ],
     vendorStyles: [
       '../node_modules/bootstrap/dist/css/bootstrap.css',
