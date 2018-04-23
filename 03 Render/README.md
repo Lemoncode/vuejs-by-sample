@@ -28,6 +28,7 @@ npm install
 - In previous samples, we were working with full build which allow us to define HTML as string `template`. This time, we'll configure runtime-only build to work with `render` option:
 
 ### ./webpack.config.js
+
 ```diff
 ...
 resolve: {
@@ -150,6 +151,7 @@ npm i babel-plugin-transform-vue-jsx babel-plugin-syntax-jsx babel-helper-vue-js
 -   extensions: ['.js', '.ts'],
 +   extensions: ['.js', '.ts', '.tsx'],
   },
+  mode: 'development',
   entry: {
 -   app: './main.ts',
 +   app: './main.tsx',
