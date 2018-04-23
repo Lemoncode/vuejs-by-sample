@@ -49,8 +49,8 @@ Once you have successfully fullfilled them a **package.json** file we will gener
 
 - Let's install a list of plugins and loaders that will add powers to our webpack configuration (handling <abbr title="Cascading Style Sheets">CSS</abbr>, TypeScript...).
 
- ```
- npm install css-loader style-loader file-loader url-loader html-webpack-plugin extract-text-webpack-plugin awesome-typescript-loader --save-dev
+ ```bash
+ npm install awesome-typescript-loader css-loader file-loader html-webpack-plugin mini-css-extract-plugin url-loader  --save-dev
  ```
 - Let's add two commands to our **package.json** to build and start.
 
