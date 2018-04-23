@@ -42,9 +42,9 @@ npm install vue --save
 ...
   entry: {
     app: './main.ts',
-    vendor: [
++   vendor: [
 +     'vue',
-    ],
++   ],
     vendorStyles: [
       '../node_modules/bootstrap/dist/css/bootstrap.css',
     ],
@@ -131,7 +131,7 @@ resolve: {
 +   template: '<h1>{{message}}</h1>',
 +   data: {
 +     message: 'Hello from Vue.js'
-+   }
++   },
 + });
 
 ```

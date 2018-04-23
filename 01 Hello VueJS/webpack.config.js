@@ -1,7 +1,7 @@
 var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var { CheckerPlugin } = require('awesome-typescript-loader');
 
 var basePath = __dirname;
@@ -14,6 +14,7 @@ module.exports = {
       vue: 'vue/dist/vue.js',
     },
   },
+  mode: 'development',
   entry: {
     app: './main.ts',
     vendor: [
@@ -42,12 +43,10 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: {
-            loader: 'css-loader',
-          },
-        }),
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+        ],
       },
       // Loading glyphicons => https://github.com/gowravshekar/bootstrap-webpack
       // Using here url-loader and file-loader
@@ -77,15 +76,10 @@ module.exports = {
       template: 'index.html', //Name of template in ./src
       hash: true,
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      names: ['vendor', 'manifest'],
-    }),
     new webpack.HashedModuleIdsPlugin(),
-    new ExtractTextPlugin({
+    new MiniCssExtractPlugin({
       filename: '[name].css',
-      disable: false,
-      allChunks: true,
     }),
     new CheckerPlugin(),
   ],
-}
+};

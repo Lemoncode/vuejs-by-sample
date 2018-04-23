@@ -122,7 +122,7 @@ npm install babel-core babel-preset-env --save-dev
 - Let's install bootstrap:
 
  ```
- npm install bootstrap --save
+ npm install bootstrap@3 --save
  ```
 
 - Now, our **package.json** file should look something like:
@@ -168,7 +168,7 @@ npm install babel-core babel-preset-env --save-dev
     "webpack-dev-server": "3.1.0"
   },
   "dependencies": {
-    "bootstrap": "^4.1.0"
+    "bootstrap": "^3.3.7"
   }
 }
 
