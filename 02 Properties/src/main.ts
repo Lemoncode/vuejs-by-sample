@@ -16,7 +16,7 @@ new Vue({
     hello: HelloComponent,
   },
   data: {
-    message: 'Hello from Vue.js'
+    message: 'Hello from Vue.js',
   },
   methods: {
     onChange: function(value) {

@@ -45,7 +45,7 @@ new Vue({
 + `,
   data: {
     message: 'Hello from Vue.js'
-  }
+  },
 });
 
 ```
@@ -71,7 +71,7 @@ new Vue({
   `,
   data: {
     message: 'Hello from Vue.js'
-  }
+  },
 });
 
 ```
@@ -96,17 +96,17 @@ new Vue({
   `,
   data: {
     message: 'Hello from Vue.js'
-- }
-+ },
--});
+  },
 + methods: {
 +   onChange: function(value) {
 +     this.message = value;
 +   },
 + },
-+});
+});
 
 ```
+
+> Reference: [_Don't use arrow functions_](https://vuejs.org/v2/guide/instance.html#Instance-Lifecycle-Hooks)
 
 - Using syntactic sugar `v-model`:
 
@@ -147,18 +147,12 @@ import Vue from 'vue';
 export const HelloComponent = Vue.extend({
   template: `
     <input
-      :value="value"
-      @input="onChange($event.target.value)"
+      v-model="value"
     />
   `,
   props: {
     value: String
   },
-  methods: {
-    onChange: function(value) {
-      this.$emit('input', value);
-    }
-  }
 });
 
 ```
@@ -186,7 +180,33 @@ new Vue({
 + },
   data: {
     message: 'Hello from Vue.js'
-  }
+  },
+});
+
+```
+
+- Since we are using `v-model` in `HelloComponent` we are mutating `value` prop and it's forbidden. To solve this:
+
+### ./src/hello.ts
+```diff
+import Vue from 'vue';
+
+export const HelloComponent = Vue.extend({
+  template: `
+    <input
+-     v-model="value"
++     :value="value"
++     @input="onChange($event.target.value)"
+    />
+  `,
+  props: {
+    value: String
+  },
++ methods: {
++   onChange: function(value) {
++     this.$emit('input', value);
++   }
++ },
 });
 
 ```
@@ -251,7 +271,7 @@ new Vue({
 
 ```
 
-> [`v-model` directive](https://vuejs.org/v2/guide/components.html#Form-Input-Components-using-Custom-Events)
+> [`v-model` directive](https://vuejs.org/v2/api/#v-model)
 
 > [Props types](https://vuejs.org/v2/guide/components.html#Prop-Validation)
 
