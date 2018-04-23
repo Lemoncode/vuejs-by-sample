@@ -370,7 +370,7 @@ export * from './login';
 
 - Create fake `login` API.
 
-### ./src/rest-api/api/login/index.ts
+### ./src/rest-api/api/login/login.ts
 
 ```javascript
 import { LoginEntity } from '../../model';
@@ -385,6 +385,13 @@ const isValidLogin = (loginEntity: LoginEntity) => (
   loginEntity.login === 'admin' &&
   loginEntity.password === 'test'
 );
+
+```
+
+### ./src/rest-api/api/login/index.ts
+
+```javascript
+export * from './login';
 
 ```
 
