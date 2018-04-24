@@ -15,6 +15,7 @@ module.exports = {
   entry: {
     app: './main.tsx',
     vendor: [
+      'lc-form-validation',
       'vue',
       'vue-router',
     ],

@@ -1,11 +1,11 @@
 import Vue, { VNode, PropOptions } from 'vue';
-import { LoginEntity } from './viewModel';
 import { HeaderComponent, FormComponent } from './components';
 import { FormProps } from './formProps';
 
 export const LoginPage = Vue.extend({
   props: {
     loginEntity: {},
+    loginError: {},
     updateLogin: {},
     loginRequest: {},
   } as FormProps,
@@ -18,6 +18,7 @@ export const LoginPage = Vue.extend({
               <HeaderComponent />
               <FormComponent
                 loginEntity={this.loginEntity}
+                loginError={this.loginError}
                 updateLogin={this.updateLogin}
                 loginRequest={this.loginRequest}
               />

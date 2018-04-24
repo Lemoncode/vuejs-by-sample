@@ -1,10 +1,11 @@
 import Vue, { VNode, PropOptions } from 'vue';
-import { LoginEntity } from '../viewModel';
 import { FormProps } from '../formProps';
+import { Validation, Input, Button } from '../../../common/components/form';
 
 export const FormComponent = Vue.extend({
   props: {
     loginEntity: {},
+    loginError: {},
     updateLogin: {},
     loginRequest: {},
   } as FormProps,
@@ -12,33 +13,37 @@ export const FormComponent = Vue.extend({
     return (
       <div class="panel-body">
         <form role="form">
-          <div class="form-group">
-            <input
-              class="form-control"
+          <Validation
+            hasError={!this.loginError.login.succeeded}
+            errorMessage={this.loginError.login.errorMessage}
+          >
+            <Input
               placeholder="e-mail"
               type="text"
+              label="Login"
+              name="login"
               value={this.loginEntity.login}
-              onInput={(e) => this.updateLogin(e.target.value, this.loginEntity.password)}
+              inputHandler={this.updateLogin}
             />
-          </div>
-          <div class="form-group">
-            <input
-              class="form-control"
+          </Validation>
+          <Validation
+            hasError={!this.loginError.password.succeeded}
+            errorMessage={this.loginError.password.errorMessage}
+          >
+            <Input
               placeholder="password"
               type="password"
+              label="Password"
+              name="password"
               value={this.loginEntity.password}
-              onInput={(e) => this.updateLogin(this.loginEntity.login, e.target.value)}
+              inputHandler={this.updateLogin}
             />
-          </div>
-          <button
-            class="btn btn-lg btn-success btn-block"
-            onClick={(e) => {
-              e.preventDefault();
-              this.loginRequest();
-            }}
-          >
-            Login
-          </button>
+          </Validation>
+          <Button
+            className="btn btn-lg btn-success btn-block"
+            label="Login"
+            clickHandler={this.loginRequest}
+          />
         </form>
       </div>
     );
