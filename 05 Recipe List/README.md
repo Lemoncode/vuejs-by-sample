@@ -109,11 +109,12 @@ export const mockRecipes: Recipe[] = [
       'salt',
     ],
   },
-]
+];
 
 ```
 
-### ./src/rest-api/api/recipe/index.ts
+### ./src/rest-api/api/recipe/recipe.ts
+
 ```javascript
 import { Recipe } from '../../model';
 import { mockRecipes } from './mockData';
@@ -121,6 +122,13 @@ import { mockRecipes } from './mockData';
 export const fetchRecipes = (): Promise<Recipe[]> => {
   return Promise.resolve(mockRecipes);
 };
+
+```
+
+### ./src/rest-api/api/recipe/index.ts
+
+```javascript
+export * from './recipe';
 
 ```
 
@@ -219,35 +227,6 @@ export const HeaderComponent = Vue.extend({
 npm install @types/webpack-env --save-dev
 ```
 
-- Update `tsconfig.json`:
-
-### ./tsconfig.json
-```diff
-{
-  "compilerOptions": {
-    "target": "es6",
-    "module": "es6",
-    "moduleResolution": "node",
-    "declaration": false,
-    "noImplicitAny": false,
-    "sourceMap": true,
-    "noLib": false,
-    "suppressImplicitAnyIndexErrors": true,
-    "strict": true,
--   "jsx": "preserve"
-+   "jsx": "preserve",
-+   "types": [
-+     "webpack-env"
-+   ]
-  },
-  "compileOnSave": false,
-  "exclude": [
-    "node_modules"
-  ]
-}
-
-```
-
 - Configure CSS modules:
 
 ### ./webpack.config.js
@@ -259,28 +238,26 @@ npm install @types/webpack-env --save-dev
       ...
       {
         test: /\.css$/,
++       include: /node_modules/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+        ],
+      },
++     {
++       test: /\.css$/,
 +       exclude: /node_modules/,
-        loader: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: {
-            loader: 'css-loader',
++       use: [
++         MiniCssExtractPlugin.loader,
++         {
++           loader: 'css-loader',
 +           options: {
 +             module: true,
 +             localIdentName: '[name]__[local]___[hash:base64:5]',
 +             camelCase: true,
-+           }
-          },
-        }),
-      },
-+     {
-+       test: /\.css$/,
-+       include: /node_modules/,
-+       loader: ExtractTextPlugin.extract({
-+         fallback: 'style-loader',
-+         use: {
-+           loader: 'css-loader',
++           },
 +         },
-+       }),
++        ],
 +     },
       ...
 ```
@@ -357,7 +334,8 @@ export * from './row';
 
 ### ./src/pages/recipe/list/page.tsx
 ```diff
-import Vue, { VNode } from 'vue';
+- import Vue, { VNode } from 'vue';
++ import Vue, { VNode, PropOptions } from 'vue';
 + import { Recipe } from './viewModel';
 + import { HeaderComponent, RowComponent } from './components';
 
