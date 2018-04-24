@@ -10,5 +10,5 @@ export const HeaderComponent = Vue.extend({
         </h3>
       </div>
     );
-  }
+  },
 });

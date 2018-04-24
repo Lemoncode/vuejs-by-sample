@@ -67,7 +67,7 @@ export const HeaderComponent = Vue.extend({
         </h3>
       </div>
     );
-  }
+  },
 });
 
 ```
@@ -96,6 +96,7 @@ export const FormComponent = Vue.extend({
             />
           </div>
           <button
+            type="button"
             class="btn btn-lg btn-success btn-block"
           >
             Login
@@ -103,7 +104,7 @@ export const FormComponent = Vue.extend({
         </form>
       </div>
     );
-  }
+  },
 });
 
 ```
@@ -135,7 +136,7 @@ export const LoginPage = Vue.extend({
         </div>
       </div>
     );
-  }
+  },
 });
 
 ```
@@ -175,7 +176,7 @@ new Vue({
 -   inputHandler(value) {
 -     this.message = value;
 -   }
-- }
+- },
 });
 
 ```
@@ -288,9 +289,9 @@ import Vue, { VNode } from 'vue';
 export const RecipeListPage = Vue.extend({
   render(h): VNode {
     return (
-      <h1> Recipe List Page </h1>
+      <h1>Recipe List Page </h1>
     );
-  }
+  },
 });
 
 ```
@@ -332,6 +333,7 @@ export const FormComponent = Vue.extend({
     return (
       ...
 -         <button
+-           type="button"
 +         <router-link
 +           to="/recipe"
             class="btn btn-lg btn-success btn-block"
@@ -368,7 +370,7 @@ export * from './login';
 
 - Create fake `login` API.
 
-### ./src/rest-api/api/login/index.ts
+### ./src/rest-api/api/login/login.ts
 
 ```javascript
 import { LoginEntity } from '../../model';
@@ -383,6 +385,13 @@ const isValidLogin = (loginEntity: LoginEntity) => (
   loginEntity.login === 'admin' &&
   loginEntity.password === 'test'
 );
+
+```
+
+### ./src/rest-api/api/login/index.ts
+
+```javascript
+export * from './login';
 
 ```
 
@@ -463,6 +472,8 @@ export const LoginPageContainer = Vue.extend({
 });
 
 ```
+
+>Reference: [Why we have to use Function in data](https://vuejs.org/v2/api/#Options-Data)
 
 - Update `LoginPage`:
 
@@ -593,6 +604,67 @@ export const router = new Router({
 
 ```
 
+- We could define props like interface:
+
+### ./src/pages/login/formProps.ts
+
+```javascript
+import { PropOptions } from 'vue';
+import { LoginEntity } from './viewModel';
+
+export interface FormProps {
+  loginEntity: PropOptions<LoginEntity>,
+  updateLogin: PropOptions<(login: string, password: string) => void>,
+  loginRequest: PropOptions<() => void>,
+}
+
+```
+
+- And use it in `form.tsx` and `page.tsx`:
+
+### ./src/pages/login/components/form.tsx
+
+```diff
+import Vue, { VNode, PropOptions } from 'vue';
+- import { LoginEntity } from '../viewModel';
++ import { FormProps } from '../formProps';
+
+export const FormComponent = Vue.extend({
+  props: {
+-   loginEntity: {} as PropOptions<LoginEntity>,
++   loginEntity: {},
+-   updateLogin: {} as PropOptions<(login: string, password: string) => void>,
++   updateLogin: {},
+-   loginRequest: {} as PropOptions<() => void>,
++   loginRequest: {},
+- },
++ } as FormProps,
+  ...
+
+```
+
+### ./src/pages/login/page.tsx
+
+```diff
+import Vue, { VNode, PropOptions } from 'vue';
+- import { LoginEntity } from './viewModel';
+import { HeaderComponent, FormComponent } from './components';
++ import { FormProps } from './formProps';
+
+export const LoginPage = Vue.extend({
+  props: {
+-   loginEntity: {} as PropOptions<LoginEntity>,
++   loginEntity: {},
+-   updateLogin: {} as PropOptions<(login: string, password: string) => void>,
++   updateLogin: {},
+-   loginRequest: {} as PropOptions<() => void>,
++   loginRequest: {},
+- },
++ } as FormProps,
+  ...
+
+```
+
 - As example about `data` property in a `Vue` component, we could define an object with all app state:
 
 ### ./src/state.ts
@@ -664,9 +736,9 @@ npm install lc-form-validation --save
 ```diff
 ...
 vendor: [
++ 'lc-form-validation',
   'vue',
   'vue-router',
-+ 'lc-form-validation',
 ],
 ...
 
@@ -806,24 +878,41 @@ export const LoginPageContainer = Vue.extend({
 
 ```
 
+- Update `formProps`:
+
+### ./src/pages/login/formProps.ts
+
+```diff
+import { PropOptions } from 'vue';
+- import { LoginEntity } from './viewModel';
++ import { LoginEntity, LoginError } from './viewModel';
+
+export interface FormProps {
+  loginEntity: PropOptions<LoginEntity>,
++ loginError: PropOptions<LoginError>,
+  updateLogin: PropOptions<(login: string, password: string) => void>,
+  loginRequest: PropOptions<() => void>,
+}
+
+```
+
 - Update `page`:
 
 ### ./src/pages/login/page.tsx
 
 ```diff
 import Vue, { VNode, PropOptions } from 'vue';
-- import { LoginEntity } from './viewModel';
-+ import { LoginEntity, LoginError } from './viewModel';
 import { HeaderComponent, FormComponent } from './components';
+import { FormProps } from './formProps';
 
 export const LoginPage = Vue.extend({
+export const LoginPage = Vue.extend({
   props: {
-    loginEntity: {} as PropOptions<LoginEntity>,
-+   loginError: {} as PropOptions<LoginError>,
--   updateLogin: {} as PropOptions<(login: string, password: string) => void>,
-+   updateLogin: {} as PropOptions<(field: string, value: string) => void>,
-    loginRequest: {} as PropOptions<() => void>,
-  },
+    loginEntity: {},
++   loginError: {},
+    updateLogin: {},
+    loginRequest: {},
+  } as FormProps,
   render(h): VNode {
     return (
       <div class="container-fluid">
@@ -847,9 +936,10 @@ export const LoginPage = Vue.extend({
 
 ```
 
-- Create reusable `input with validation`:
+- Before update `FormComponent`, we are going to create reusable `input with validation`:
 
 ### ./src/common/components/form/validation.tsx
+
 ```javascript
 import Vue, { VNode } from 'vue';
 
@@ -860,24 +950,32 @@ export const Validation = Vue.extend({
     'className',
   ],
   render(h): VNode {
-    let wrapperClass = `${this.className}`;
-
-    if (this.hasError) {
-      wrapperClass = `${wrapperClass} has-error`;
-    }
-
     return (
-      <div class={wrapperClass}>
+      <div class={`${this.errorClassName} ${this.className}`}>
         {this.$slots.default}
-        <div class="help-block">
-          {this.errorMessage}
-        </div>
+        {
+          this.errorMessage &&
+          <div class="help-block">
+            {this.errorMessage}
+          </div>
+        }
       </div>
     );
   },
+  computed: {
+    errorClassName(): string {
+      return (
+        this.hasError ?
+          'has-error' :
+          ''
+      )
+    },
+  }
 });
 
 ```
+
+>Reference: [Computed Caching vs Methods](https://vuejs.org/v2/guide/computed.html#Computed-Caching-vs-Methods)
 
 ### ./src/common/components/form/input.tsx
 
@@ -969,18 +1067,16 @@ export * from './button';
 ### ./src/pages/login/components/form.tsx
 ```diff
 import Vue, { VNode, PropOptions } from 'vue';
-- import { LoginEntity } from '../viewModel';
-+ import { LoginEntity, LoginError } from '../viewModel';
+import { FormProps } from '../formProps';
 + import { Validation, Input, Button } from '../../../common/components/form';
 
 export const FormComponent = Vue.extend({
   props: {
-    loginEntity: {} as PropOptions<LoginEntity>,
-+   loginError: {} as PropOptions<LoginError>,
--   updateLogin: {} as PropOptions<(login: string, password: string) => void>,
-+   updateLogin: {} as PropOptions<(field: string, value: string) => void>,
-    loginRequest: {} as PropOptions<() => void>,
-  },
+    loginEntity: {},
++   loginError: {},
+    updateLogin: {},
+    loginRequest: {},
+  } as FormProps,
   render(h): VNode {
     return (
       <div class="panel-body">
