@@ -71,7 +71,7 @@ export const EditRecipeContainer = Vue.extend({
             this.recipeError = {
               ...this.recipeError,
               [error.key as string]: error,
-            }
+            };
           });
 
           if (result.succeeded) {
