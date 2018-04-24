@@ -32,7 +32,7 @@ export const EditRecipePage = Vue.extend({
           removeIngredient={this.removeIngredient}
           save={this.save}
         />
-      </div >
+      </div>
     );
   }
 });
