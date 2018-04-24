@@ -1,12 +1,13 @@
 import Vue, { VNode, PropOptions } from 'vue';
 import { LoginEntity } from '../viewModel';
+import { FormProps } from '../formProps';
 
 export const FormComponent = Vue.extend({
   props: {
-    loginEntity: {} as PropOptions<LoginEntity>,
-    updateLogin: {} as PropOptions<(login: string, password: string) => void>,
-    loginRequest: {} as PropOptions<() => void>,
-  },
+    loginEntity: {},
+    updateLogin: {},
+    loginRequest: {},
+  } as FormProps,
   render(h): VNode {
     return (
       <div class="panel-body">

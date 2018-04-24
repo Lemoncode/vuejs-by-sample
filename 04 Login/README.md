@@ -604,6 +604,67 @@ export const router = new Router({
 
 ```
 
+- We could define props like interface:
+
+### ./src/pages/login/formProps.ts
+
+```javascript
+import { PropOptions } from 'vue';
+import { LoginEntity } from './viewModel';
+
+export interface FormProps {
+  loginEntity: PropOptions<LoginEntity>,
+  updateLogin: PropOptions<(login: string, password: string) => void>,
+  loginRequest: PropOptions<() => void>,
+}
+
+```
+
+- And use it in `form.tsx` and `page.tsx`:
+
+### ./src/pages/login/components/form.tsx
+
+```diff
+import Vue, { VNode, PropOptions } from 'vue';
+import { LoginEntity } from '../viewModel';
++ import { FormProps } from '../formProps';
+
+export const FormComponent = Vue.extend({
+  props: {
+-   loginEntity: {} as PropOptions<LoginEntity>,
++   loginEntity: {},
+-   updateLogin: {} as PropOptions<(login: string, password: string) => void>,
++   updateLogin: {},
+-   loginRequest: {} as PropOptions<() => void>,
++   loginRequest: {},
+- },
++ } as FormProps,
+  ...
+
+```
+
+### ./src/pages/login/page.tsx
+
+```diff
+import Vue, { VNode, PropOptions } from 'vue';
+import { LoginEntity } from './viewModel';
+import { HeaderComponent, FormComponent } from './components';
++ import { FormProps } from './formProps';
+
+export const LoginPage = Vue.extend({
+  props: {
+-   loginEntity: {} as PropOptions<LoginEntity>,
++   loginEntity: {},
+-   updateLogin: {} as PropOptions<(login: string, password: string) => void>,
++   updateLogin: {},
+-   loginRequest: {} as PropOptions<() => void>,
++   loginRequest: {},
+- },
++ } as FormProps,
+  ...
+
+```
+
 - As example about `data` property in a `Vue` component, we could define an object with all app state:
 
 ### ./src/state.ts
