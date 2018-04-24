@@ -1,13 +1,11 @@
 import Router, { RouteConfig } from 'vue-router';
 import { LoginPageContainer } from './pages/login';
-import { RecipeListPageContainer } from './pages/recipe/list';
-import { EditRecipePage } from './pages/recipe/edit';
+import { RecipeListPage } from './pages/recipe/list';
 
 const routes: RouteConfig[] = [
   { path: '/', redirect: '/login' },
   { path: '/login', component: LoginPageContainer },
-  { path: '/recipe', component: RecipeListPageContainer },
-  { path: '/recipe/:id', component: EditRecipePage, props: true },
+  { path: '/recipe', component: RecipeListPage },
 ];
 
 export const router = new Router({

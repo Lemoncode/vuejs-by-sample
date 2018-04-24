@@ -7,19 +7,25 @@ export const Validation = Vue.extend({
     'className',
   ],
   render(h): VNode {
-    let wrapperClass = `${this.className}`;
-
-    if (this.hasError) {
-      wrapperClass = `${wrapperClass} has-error`;
-    }
-
     return (
-      <div class={wrapperClass}>
+      <div class={`${this.errorClassName} ${this.className}`}>
         {this.$slots.default}
-        <div class="help-block">
-          {this.errorMessage}
-        </div>
+        {
+          this.errorMessage &&
+          <div class="help-block">
+            {this.errorMessage}
+          </div>
+        }
       </div>
     );
   },
+  computed: {
+    errorClassName(): string {
+      return (
+        this.hasError ?
+          'has-error' :
+          ''
+      )
+    },
+  }
 });
