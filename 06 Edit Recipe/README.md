@@ -28,7 +28,7 @@ npm install
 
 - Create `API` methods:
 
-### ./src/rest-api/api/recipe/index.ts
+### ./src/rest-api/api/recipe/recipe.ts
 
 ```diff
 import { Recipe } from '../../model';

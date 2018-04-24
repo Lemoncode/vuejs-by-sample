@@ -9,10 +9,7 @@
     "noLib": false,
     "suppressImplicitAnyIndexErrors": true,
     "strict": true,
-    "jsx": "preserve",
-    "types": [
-      "webpack-env"
-    ]
+    "jsx": "preserve"
   },
   "compileOnSave": false,
   "exclude": [
