@@ -8,7 +8,6 @@ import {
 import { mapLoginEntityVmToModel } from './mappers';
 import { validations } from './validations';
 import { LoginPage } from './page';
-import { FieldValidationResult } from 'lc-form-validation';
 
 export const LoginPageContainer = Vue.extend({
   render(h): VNode {
