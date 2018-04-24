@@ -1,9 +1,29 @@
-import Vue, { VNode } from 'vue';
+import Vue, { VNode, PropOptions } from 'vue';
+import { Recipe } from './viewModel';
+import { HeaderComponent, RowComponent } from './components';
 
 export const RecipeListPage = Vue.extend({
+  props: {
+    recipes: {} as PropOptions<Recipe[]>,
+  },
   render(h): VNode {
     return (
-      <h1>Recipe List Page</h1>
+      <div class="container-fluid">
+        <h2>Recipes</h2>
+        <table class="table table-striped">
+          <HeaderComponent />
+          <tbody>
+            {
+              this.recipes.map((recipe) =>
+                <RowComponent
+                  key={recipe.id}
+                  recipe={recipe}
+                />
+              )
+            }
+          </tbody>
+        </table>
+      </div>
     );
   },
 });
