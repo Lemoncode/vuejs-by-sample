@@ -723,6 +723,8 @@ export const validations = createFormValidation(constraints);
 ### ./src/pages/recipe/edit/viewModel.ts
 
 ```diff
++ import { FieldValidationResult } from 'lc-form-validation';
+
 export interface Recipe {
   id: number;
   name: string;
