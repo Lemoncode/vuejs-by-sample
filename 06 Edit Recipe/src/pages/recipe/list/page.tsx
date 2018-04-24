@@ -1,4 +1,4 @@
-import Vue, { VNode, PropOptions, ComputedOptions } from 'vue';
+import Vue, { VNode, PropOptions } from 'vue';
 import { Recipe } from './viewModel';
 import { HeaderComponent, RowComponent, SearchBarComponent } from './components';
 import { filterRecipesByCommaSeparatedText } from './business/filterRecipeBusiness';
@@ -32,16 +32,16 @@ export const RecipeListPage = Vue.extend({
           <HeaderComponent />
           <tbody>
             {
-              this.filteredRecipes.map((recipe) => (
+              this.filteredRecipes.map((recipe) =>
                 <RowComponent
                   key={recipe.id}
                   recipe={recipe}
                 />
-              ))
+              )
             }
           </tbody>
         </table>
       </div>
     );
-  }
+  },
 });

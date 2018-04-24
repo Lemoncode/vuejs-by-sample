@@ -55,4 +55,4 @@ export const mockRecipes: Recipe[] = [
       'salt',
     ],
   },
-]
+];

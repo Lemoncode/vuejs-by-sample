@@ -1,14 +1,14 @@
 import Vue, { VNode, PropOptions } from 'vue';
-import { LoginEntity, LoginError } from './viewModel';
 import { HeaderComponent, FormComponent } from './components';
+import { FormProps } from './formProps';
 
 export const LoginPage = Vue.extend({
   props: {
-    loginEntity: {} as PropOptions<LoginEntity>,
-    loginError: {} as PropOptions<LoginError>,
-    updateLogin: {} as PropOptions<(field: string, value: string) => void>,
-    loginRequest: {} as PropOptions<() => void>,
-  },
+    loginEntity: {},
+    loginError: {},
+    updateLogin: {},
+    loginRequest: {},
+  } as FormProps,
   render(h): VNode {
     return (
       <div class="container-fluid">
@@ -27,5 +27,5 @@ export const LoginPage = Vue.extend({
         </div>
       </div>
     );
-  }
+  },
 });

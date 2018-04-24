@@ -73,6 +73,7 @@ export const EditRecipeContainer = Vue.extend({
               [error.key as string]: error,
             };
           });
+
           if (result.succeeded) {
             save(this.recipe)
               .then((message) => {

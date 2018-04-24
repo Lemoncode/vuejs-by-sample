@@ -33,4 +33,3 @@ export const createEmptyRecipeError = (): RecipeError => ({
     type: '',
   },
 });
-

@@ -28,7 +28,7 @@ npm install
 
 - Create `API` methods:
 
-### ./src/rest-api/api/recipe/index.ts
+### ./src/rest-api/api/recipe/recipe.ts
 
 ```diff
 import { Recipe } from '../../model';
@@ -723,6 +723,8 @@ export const validations = createFormValidation(constraints);
 ### ./src/pages/recipe/edit/viewModel.ts
 
 ```diff
++ import { FieldValidationResult } from 'lc-form-validation';
+
 export interface Recipe {
   id: number;
   name: string;

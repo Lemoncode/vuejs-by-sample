@@ -52,7 +52,7 @@ export const FormComponent = Vue.extend({
           <InputButton
             type="text"
             label="Ingredients"
-            name="ingredient"
+            name="ingredients"
             placeholder="Add ingredient"
             value={this.ingredient}
             inputHandler={this.updateIngredient}
