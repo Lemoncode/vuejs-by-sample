@@ -1,0 +1,42 @@
+{
+  "name": "sample-vue-js",
+  "version": "1.0.0",
+  "description": "Sample working SFC with Typescript and Webpack",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lemoncode/vuejs-by-sample.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Lemoncode/vuejs-by-sample/issues"
+  },
+  "homepage": "https://github.com/Lemoncode/vuejs-by-sample#readme",
+  "keywords": [
+    "vue.js",
+    "samples",
+    "sfc",
+    "typescript",
+    "decorators",
+    "webpack"
+  ],
+  "author": "Lemoncode",
+  "license": "MIT",
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "vue": "^2.5.16"
+  },
+  "devDependencies": {
+    "css-loader": "^1.0.0",
+    "ts-loader": "^4.4.2",
+    "typescript": "^2.9.2",
+    "vue-loader": "^15.2.6",
+    "vue-template-compiler": "^2.5.16",
+    "vue-template-loader": "^1.0.0",
+    "webpack": "^4.16.1",
+    "webpack-cli": "^2.1.5",
+    "webpack-dev-server": "^3.1.4"
+  }
+}
