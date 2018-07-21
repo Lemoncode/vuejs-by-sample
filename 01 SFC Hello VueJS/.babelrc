@@ -1,6 +1,11 @@
 {
-    "presets": [
-      "env"
-    ]
-  }
-  
+  "presets": [
+    [
+      "env",
+      {
+        "modules": false
+      }
+    ],
+    "stage-3"
+  ]
+}
