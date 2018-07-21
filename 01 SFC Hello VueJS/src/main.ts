@@ -1,9 +1,8 @@
 import Vue from 'vue';
 
+import App from './App.vue';
+
 new Vue({
   el: '#root',
-  template: '<h1>{{message}}</h1>',
-  data: {
-    message: 'Hello from Vue.js',
-  },
+  render: h => h(App)
 });
