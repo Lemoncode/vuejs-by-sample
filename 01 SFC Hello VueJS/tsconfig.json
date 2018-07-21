@@ -9,11 +9,6 @@
       "noLib": false,
       "suppressImplicitAnyIndexErrors": true,
       "strict": true,
-      "paths": {
-        "@/*": [
-          "src/*"
-        ]
-      }
     },
     "compileOnSave": false,
     "exclude": [
