@@ -5,6 +5,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const basePath = __dirname;
+const env = process.env.NODE_ENV;
+const sourceMap = env === 'development';
 
 module.exports = {
   context: path.join(basePath, 'src'),
@@ -14,7 +16,7 @@ module.exports = {
       'vue$': 'vue/dist/vue.esm.js'
     },
   },
-  mode: 'development',
+  mode: env,
   entry: {
     app: './main.ts',
     vendor: [
@@ -26,7 +28,7 @@ module.exports = {
   },
   output: {
     path: path.join(basePath, 'dist'),
-    filename: '[name].js',
+    filename: '[name].bundle.js',
   },
   module: {
     rules: [
@@ -57,26 +59,30 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          // MiniCssExtractPlugin.loader,
-          'vue-style-loader',
+          env !== 'production'
+            ? 'vue-style-loader'
+            : MiniCssExtractPlugin.loader,
           'css-loader'
         ],
       },
       // this will apply to both plain .scss files
       // AND <style lang="scss"> blocks in vue files
       {
-        test: /\.scss$/,
+        test: /\.sass$/,
         use: [
-          // MiniCssExtractPlugin.loader,
-          'vue-style-loader',
+          env !== 'production'
+            ? 'vue-style-loader'
+            : MiniCssExtractPlugin.loader,
           'css-loader',
           {
             loader: 'sass-loader',
             options: {
-              data: '$color: red;'
+              indentedSyntax: true,
+              // you can also read from a file, e.g. `variables.scss`
+              data: `$color: red;`
             }
           }
-        ],
+        ]
       },
       // Loading glyphicons => https://github.com/gowravshekar/bootstrap-webpack
       // Using here url-loader and file-loader
@@ -98,7 +104,8 @@ module.exports = {
       },
     ]
   },
-  devtool: 'inline-source-map',
+  // devtool: 'inline-source-map',
+  devtool: sourceMap ? 'cheap-module-eval-source-map' : undefined,
   plugins: [
     new VueLoaderPlugin(),
     //Generate index.html in /dist => https://github.com/ampedandwired/html-webpack-plugin
@@ -108,8 +115,8 @@ module.exports = {
       hash: true,
     }),
     new webpack.HashedModuleIdsPlugin(),
-    // new MiniCssExtractPlugin({
-    //   filename: '[name].css',
-    // }),
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+    }),
   ]
 };

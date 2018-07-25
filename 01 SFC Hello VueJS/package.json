@@ -4,8 +4,8 @@
   "description": "Sample working SFC with Typescript and Webpack",
   "main": "webpack.config.js",
   "scripts": {
-    "dev": "webpack-dev-server --mode development --progress --hot --open",
-    "build": "webpack"
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --mode development --progress --hot --open",
+    "build": "cross-env NODE_ENV=production webpack --mode production"
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,7 @@
     "babel-loader": "^7.1.5",
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-3": "^6.24.1",
+    "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
