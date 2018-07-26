@@ -1,30 +1,15 @@
 <template>
-  <div>
-    <h1>{{message}}</h1>
-    <hello-component
-      :message="message"
-      :onChange="onChange"
-    />
-  </div>
+  <login-page />
 </template>
 
-<script>
-import HelloComponent from './Hello.vue';
+<script lang="ts">
+import Vue from 'vue';
+import { LoginPage } from './pages/login';
 
-export default {
-  name: 'app',
+export default Vue.extend({
+  name: 'App',
   components: {
-    HelloComponent,
+    LoginPage,
   },
-  data() {
-    return {
-      message: 'Hello from Vue.js',
-    };
-  },
-  methods: {
-    onChange: function(value) {
-      this.message = value;
-    },
-  },
-};
+});
 </script>
