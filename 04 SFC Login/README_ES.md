@@ -209,6 +209,7 @@ export default Vue.extend({
 
 - The official router for `Vue.js` is [`vue-router`](https://github.com/vuejs/vue-router) and it has TypeScript typings:
 
+// TODO: VOY POR AQUÍ
 ```
 npm install vue-router --save
 ```
