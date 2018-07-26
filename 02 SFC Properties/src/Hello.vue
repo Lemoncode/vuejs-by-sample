@@ -1,6 +1,6 @@
 <template>
   <input
-    :value="value"
+    :value="message"
     @input="onChange($event.target.value)"
   />
 </template>
@@ -9,12 +9,8 @@
 export default {
   name: 'hello',
   props: {
-    value: String,
-  },
-  methods: {
-    onChange: function(value) {
-      this.$emit('input', value);
-    },
+    message: String,
+    onChange: Function,
   },
 };
 </script>

@@ -2,7 +2,8 @@
   <div>
     <h1>{{message}}</h1>
     <hello-component
-      v-model="message"
+      :message="message"
+      :onChange="onChange"
     />
   </div>
 </template>
@@ -19,6 +20,11 @@ export default {
     return {
       message: 'Hello from Vue.js',
     };
+  },
+  methods: {
+    onChange: function(value) {
+      this.message = value;
+    },
   },
 };
 </script>
