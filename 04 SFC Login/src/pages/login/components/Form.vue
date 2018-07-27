@@ -6,6 +6,8 @@
           class="form-control"
           placeholder="e-mail"
           type="text"
+          :value="loginEntity.login"
+          @input="updateLogin(loginEntity.password)"
         />
       </div>
       <div class="form-group">
@@ -13,23 +15,31 @@
           class="form-control"
           placeholder="password"
           type="password"
+          :value="loginEntity.password"
+          @input="updateLogin(loginEntity.login)"         
         />
       </div>
-      <button
-        type="button"
-        class="btn btn-lg btn-success btn-block"
-      >
-        Login
-      </button>
+        <button
+          class="btn btn-lg btn-success btn-block"
+          @click="loginRequest"
+        >
+          Login
+        </button>
     </form>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue, { PropOptions } from 'vue';
+import { FormProps } from '../formProps';
 
 export default Vue.extend({
   name: 'FormComponent',
+  props: {
+    loginEntity: {},
+    updateLogin: {},
+    loginRequest: {},
+  } as FormProps,
 });
 </script>
 

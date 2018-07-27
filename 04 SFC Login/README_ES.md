@@ -209,7 +209,6 @@ export default Vue.extend({
 
 - The official router for `Vue.js` is [`vue-router`](https://github.com/vuejs/vue-router) and it has TypeScript typings:
 
-// TODO: VOY POR AQUÍ
 ```
 npm install vue-router --save
 ```
@@ -230,6 +229,7 @@ npm install vue-router --save
 - Create `router.ts`:
 
 ### ./src/router.ts
+
 ```javascript
 import Router, { RouteConfig } from 'vue-router';
 import { LoginPage } from './pages/login';
@@ -240,7 +240,7 @@ const routes: RouteConfig[] = [
 ];
 
 export const router = new Router({
-  routes
+  routes,
 });
 
 ```
