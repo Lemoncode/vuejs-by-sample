@@ -17,8 +17,8 @@
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue';
-import { LoginEntity } from './viewModel';
 import { HeaderComponent, FormComponent } from './components';
+import { FormProps } from './formProps';
 
 export default Vue.extend({
   name: 'LoginPage',
@@ -26,9 +26,9 @@ export default Vue.extend({
     HeaderComponent, FormComponent,
   },
   props: {
-    loginEntity: {} as PropOptions<LoginEntity>,
-    updateLogin: {} as PropOptions<(login: string, password: string) => void>,
-    loginRequest: {} as PropOptions<() => void>,
-  },  
+    loginEntity: {},
+    updateLogin: {},
+    loginRequest: {},
+  } as FormProps,
 });
 </script>
