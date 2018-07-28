@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-md-4 col-md-offset-4">
         <div class="panel panel-default">
-          <header-component />
+          <header-component /> <!-- <HeaderComponent /> Its the same -->
           <form-component />
         </div>
       </div>
