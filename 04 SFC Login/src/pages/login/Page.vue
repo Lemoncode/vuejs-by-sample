@@ -16,7 +16,7 @@ import Vue from 'vue';
 import { HeaderComponent, FormComponent } from './components';
 
 export default Vue.extend({
-  name: 'PageComponent',
+  name: 'LoginPage',
   components: {
     HeaderComponent, FormComponent,
   },
