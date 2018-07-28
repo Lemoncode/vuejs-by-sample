@@ -389,15 +389,17 @@ export * from './login';
 ### ./src/pages/login/viewModel.ts
 
 ```javascript
-export interface LoginEntity {
+interface LoginEntity {
   login: string;
   password: string;
 }
 
-export const createEmptyLoginEntity = (): LoginEntity => ({
+const createEmptyLoginEntity = (): LoginEntity => ({
   login: '',
   password: '',
 });
+
+export { LoginEntity, createEmptyLoginEntity };
 
 ```
 
@@ -420,22 +422,26 @@ export const mapLoginEntityVmToModel = (loginEntity: vm.LoginEntity): model.Logi
 ### ./src/pages/login/pageContainer.tsx
 
 ```javascript
-import Vue, { VNode } from 'vue';
-import { router } from '../../router';
+<template>
+  <login-page
+    :login-entity="loginEntity"
+    :update-login="updateLogin"
+    :login-request="loginRequest"
+  />
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
 import { loginRequest } from '../../rest-api/api/login';
 import { LoginEntity, createEmptyLoginEntity } from './viewModel';
 import { mapLoginEntityVmToModel } from './mappers';
-import { LoginPage } from './page';
+import LoginPage from './Page.vue';
 
-export const LoginPageContainer = Vue.extend({
-  render(h): VNode {
-    return (
-      <LoginPage
-        loginEntity={this.loginEntity}
-        updateLogin={this.updateLogin}
-        loginRequest={this.loginRequest}
-      />
-    );
+// export default class PageContainer extends Vue.extend({
+export default Vue.extend({  
+  name: 'PageContainer',
+  components: {
+    LoginPage,
   },
   data: () => ({
     loginEntity: createEmptyLoginEntity(),
@@ -451,7 +457,7 @@ export const LoginPageContainer = Vue.extend({
       const loginEntityModel = mapLoginEntityVmToModel(this.loginEntity);
       loginRequest(loginEntityModel)
         .then(() => {
-          router.push('/recipe');
+          this.$router.push('/recipe');
         })
         .catch((error) => {
           console.log(error);
@@ -459,6 +465,7 @@ export const LoginPageContainer = Vue.extend({
     },
   },
 });
+</script>
 
 ```
 
@@ -466,97 +473,103 @@ export const LoginPageContainer = Vue.extend({
 
 - Update `LoginPage`:
 
-### ./src/pages/login/page.tsx
+### ./src/pages/login/Page.vue
 
 ```diff
-- import Vue, { VNode } from 'vue';
-+ import Vue, { VNode, PropOptions } from 'vue';
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-4 col-md-offset-4">
+        <div class="panel panel-default">
+          <header-component /> <!-- <HeaderComponent /> Its the same -->
+-          <form-component />
++          <form-component
++            :login-entity="loginEntity"
++            :update-login="updateLogin"
++            :login-request="loginRequest"
++          />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+- import Vue from 'vue';
++ import Vue, { PropOptions } from 'vue';
 + import { LoginEntity } from './viewModel';
 import { HeaderComponent, FormComponent } from './components';
 
-export const LoginPage = Vue.extend({
-+ props: {
-+   loginEntity: {} as PropOptions<LoginEntity>,
-+   updateLogin: {} as PropOptions<(login: string, password: string) => void>,
-+   loginRequest: {} as PropOptions<() => void>,
-+ },
-  render(h): VNode {
-    return (
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-4 col-md-offset-4">
-            <div class="panel panel-default">
-              <HeaderComponent />
--             <FormComponent />
-+             <FormComponent
-+               loginEntity={this.loginEntity}
-+               updateLogin={this.updateLogin}
-+               loginRequest={this.loginRequest}
-+             />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+export default Vue.extend({
+  name: 'LoginPage',
+  components: {
+    HeaderComponent, FormComponent,
+  },
++  props: {
++    loginEntity: {} as PropOptions<LoginEntity>,
++    updateLogin: {} as PropOptions<(login: string, password: string) => void>,
++    loginRequest: {} as PropOptions<() => void>,
++  },  
 });
+</script>
 
 ```
 
-- Update `form.tsx`:
+- Update `Form.vue`:
 
-### ./src/pages/login/components/form.tsx
+### ./src/pages/login/components/Form.vue
 ```diff
-- import Vue, { VNode } from 'vue';
-+ import Vue, { VNode, PropOptions } from 'vue';
+<template>
+  <div class="panel-body">
+    <form role="form">
+      <div class="form-group">
+        <input
+          class="form-control"
+          placeholder="e-mail"
+          type="text"
++          :value="loginEntity.login"
++          @input="(e) => updateLogin(e.target.value, loginEntity.password)"
+        />
+      </div>
+      <div class="form-group">
+        <input
+          class="form-control"
+          placeholder="password"
+          type="password"
++          :value="loginEntity.password"
++          @input="(e) => updateLogin(loginEntity.login, e.target.value)"
+        />
+      </div>
+-      <router-link
+-        to="/recipe"      
++      <button
+        class="btn btn-lg btn-success btn-block"
++        @click="(e) => {
++            e.preventDefault();
++            this.loginRequest();
++          }"
+        >
+        Login
+-      </router-link>        
++      </button>
+    </form>
+  </div>
+</template>
+
+<script lang="ts">
+- import Vue from 'vue';
++ import Vue, { PropOptions } from 'vue';
 + import { LoginEntity } from '../viewModel';
 
-export const FormComponent = Vue.extend({
-+ props: {
-+   loginEntity: {} as PropOptions<LoginEntity>,
-+   updateLogin: {} as PropOptions<(login: string, password: string) => void>,
-+   loginRequest: {} as PropOptions<() => void>,
-+ },
-  render(h): VNode {
-    return (
-      <div class="panel-body">
-        <form role="form">
-          <div class="form-group">
-            <input
-              class="form-control"
-              placeholder="e-mail"
-              type="text"
-+             value={this.loginEntity.login}
-+             onInput={(e) => this.updateLogin(e.target.value, this.loginEntity.password)}
-            />
-          </div>
-          <div class="form-group">
-            <input
-              class="form-control"
-              placeholder="password"
-              type="password"
-+             value={this.loginEntity.password}
-+             onInput={(e) => this.updateLogin(this.loginEntity.login, e.target.value)}
-            />
-          </div>
--         <router-link
--           to="/recipe"
-+         <button
-            class="btn btn-lg btn-success btn-block"
-+           onClick={(e) => {
-+               e.preventDefault();
-+               this.loginRequest();
-+             }
-+           }
-          >
-            Login
--         </router-link>
-+         </button>
-        </form>
-      </div>
-    );
-  }
+export default Vue.extend({
+  name: 'FormComponent',
++  props: {
++    loginEntity: {} as PropOptions<LoginEntity>,
++    updateLogin: {} as PropOptions<(login: string, password: string) => void>,
++    loginRequest: {} as PropOptions<() => void>,
++  },  
 });
+</script>
 
 ```
 
@@ -565,8 +578,10 @@ export const FormComponent = Vue.extend({
 ### ./src/pages/login/index.ts
 
 ```diff
-- export * from './page';
-+ export * from './pageContainer';
+- import LoginPage from './Page.vue';
+- export { LoginPage };
++ import PageContainer from './PageContainer.vue';
++ export { PageContainer };
 
 ```
 

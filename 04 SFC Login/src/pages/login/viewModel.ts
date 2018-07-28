@@ -1,9 +1,11 @@
-export interface LoginEntity {
+interface LoginEntity {
   login: string;
   password: string;
 }
 
-export const createEmptyLoginEntity = (): LoginEntity => ({
+const createEmptyLoginEntity = (): LoginEntity => ({
   login: '',
   password: '',
 });
+
+export { LoginEntity, createEmptyLoginEntity };

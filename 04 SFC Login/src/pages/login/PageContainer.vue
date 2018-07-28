@@ -14,7 +14,7 @@ import { mapLoginEntityVmToModel } from './mappers';
 import LoginPage from './Page.vue';
 
 // export default class PageContainer extends Vue.extend({
-export default   Vue.extend({  
+export default Vue.extend({  
   name: 'PageContainer',
   components: {
     LoginPage,
