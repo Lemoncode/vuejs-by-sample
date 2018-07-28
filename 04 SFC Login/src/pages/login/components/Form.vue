@@ -23,7 +23,7 @@
         class="btn btn-lg btn-success btn-block"
         @click="(e) => {
             e.preventDefault();
-            this.loginRequest();
+            loginRequest();
           }"      
         >
         Login
@@ -34,14 +34,14 @@
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue';
-import { LoginEntity } from '../viewModel';
+import { FormProps } from '../formProps';
 
 export default Vue.extend({
   name: 'FormComponent',
   props: {
-    loginEntity: {} as PropOptions<LoginEntity>,
-    updateLogin: {} as PropOptions<(login: string, password: string) => void>,
-    loginRequest: {} as PropOptions<() => void>,
-  },  
+    loginEntity: {},
+    updateLogin: {},
+    loginRequest: {},
+  } as FormProps, 
 });
 </script>
