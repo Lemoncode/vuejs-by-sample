@@ -211,87 +211,66 @@ export const router = new Router({
 
 ```
 
-- Update `main.tsx` to work with router:
+- Update `main.ts` to work with router:
 
-### ./src/main.tsx
+### ./src/main.ts
 ```diff
-import Vue, { VNode } from 'vue';
-- import { LoginPage } from './pages/login';
+import Vue from 'vue';
 + import Router from 'vue-router';
 + import { router } from './router';
+import App from './App.vue';
 
 + Vue.use(Router);
 
 new Vue({
-- el: '#root',
-  render(h): VNode {
-    return (
--     <LoginPage />
-+     <router-view />
-    );
-  },
-+ router,
--});
-+}).$mount('#root');
-
-```
-
-- We can extract render method to `app.tsx` file:
-
-### ./src/app.tsx
-```javascript
-import Vue, { VNode } from 'vue';
-
-export const App = Vue.extend({
-  render(h): VNode {
-    return (
-      <router-view />
-    );
-  },
+  el: '#root',
++  router,
+  components: { App },
+  template: '<App/>'
 });
 
 ```
 
-### ./src/main.tsx
-```diff
+- We can extract render method to `App.vue` file:
+
+### ./src/App.vue
+```javascript
+<template>
+  <router-view />
+</template>
+
+<script lang="ts">
 import Vue from 'vue';
-import Router from 'vue-router';
-import { router } from './router';
-+ import { App } from './app';
 
-Vue.use(Router);
-
-new Vue({
-- render(h): VNode {
--   return (
--     <router-view />
--   );
-- },
-+ render: (h) => h(App),
-  router,
-}).$mount('#root');
+export default Vue.extend({
+  name: 'app',
+});
+</script>
 
 ```
 
 - Create a second page to navigate:
 
-### ./src/pages/recipe/list/page.tsx
+### ./src/pages/recipe/list/Page.vue
 ```javascript
-import Vue, { VNode } from 'vue';
+<template>
+  <h1>Recipe List Page </h1>
+</template>
 
-export const RecipeListPage = Vue.extend({
-  render(h): VNode {
-    return (
-      <h1>Recipe List Page </h1>
-    );
-  },
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  name: 'RecipeListPage',
 });
+</script>
 
 ```
 
 ### ./src/pages/recipe/list/index.ts
 ```javascript
-export * from './page';
+import RecipeListPage from './Page.vue';
+export { RecipeListPage };
 
 ```
 
@@ -317,28 +296,45 @@ export const router = new Router({
 
 - Navigate using `router-link`:
 
-### ./src/pages/login/components/form.tsx
+### ./src/pages/login/components/Form.vue
 ```diff
-import Vue, { VNode } from 'vue';
-
-export const FormComponent = Vue.extend({
-  render(h): VNode {
-    return (
-      ...
--         <button
--           type="button"
-+         <router-link
-+           to="/recipe"
-            class="btn btn-lg btn-success btn-block"
-          >
-            Login
--         </button>
-+         </router-link>
-        </form>
+<template>
+  <div class="panel-body">
+    <form role="form">
+      <div class="form-group">
+        <input
+          class="form-control"
+          placeholder="e-mail"
+          type="text"
+        />
       </div>
-    );
-  }
+      <div class="form-group">
+        <input
+          class="form-control"
+          placeholder="password"
+          type="password"
+        />
+      </div>
+-      <button
+-        type="button"      
++      <router-link
++        to="/recipe"
+        class="btn btn-lg btn-success btn-block"
+      >
+        Login
+-      </button>        
++      </router-link>
+    </form>
+  </div>
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  name: 'FormComponent',
 });
+</script>
 
 ```
 
