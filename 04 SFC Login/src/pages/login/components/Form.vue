@@ -15,12 +15,12 @@
           type="password"
         />
       </div>
-      <button
-        type="button"
+      <router-link
+        to="/recipe"
         class="btn btn-lg btn-success btn-block"
       >
         Login
-      </button>
+      </router-link>
     </form>
   </div>
 </template>
