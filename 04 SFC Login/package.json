@@ -21,15 +21,13 @@
     "sfc",
     "typescript",
     "decorators",
-    "webpack",
-    "vue-router"
+    "webpack"
   ],
   "author": "Lemoncode",
   "license": "MIT",
   "dependencies": {
     "bootstrap": "^3.3.7",
-    "vue": "^2.5.16",
-    "vue-router": "^3.0.1"
+    "vue": "^2.5.16"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
