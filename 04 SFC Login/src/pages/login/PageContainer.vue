@@ -12,15 +12,14 @@ import { loginRequest } from '../../rest-api/api/login';
 import { LoginEntity, createEmptyLoginEntity } from './viewModel';
 import { mapLoginEntityVmToModel } from './mappers';
 import LoginPage from './Page.vue';
+import { state } from '../../state';
 
 export default Vue.extend({  
   name: 'PageContainer',
   components: {
     LoginPage,
   },
-  data: () => ({
-    loginEntity: createEmptyLoginEntity(),
-  }),
+  data: () => state,
   methods: {
     updateLogin(login: string, password: string) {
       this.loginEntity = {
