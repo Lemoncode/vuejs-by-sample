@@ -624,16 +624,19 @@ export interface FormProps {
 
 ```
 
-- And use it in `form.tsx` and `page.tsx`:
+- And use it in `Form.vue` and `Page.vue`:
 
-### ./src/pages/login/components/form.tsx
+### ./src/pages/login/components/Form.vue
 
 ```diff
-import Vue, { VNode, PropOptions } from 'vue';
+  ...
+
+<script lang="ts">
 - import { LoginEntity } from '../viewModel';
 + import { FormProps } from '../formProps';
 
-export const FormComponent = Vue.extend({
+export default Vue.extend({
+  name: 'FormComponent',
   props: {
 -   loginEntity: {} as PropOptions<LoginEntity>,
 +   loginEntity: {},
@@ -643,19 +646,27 @@ export const FormComponent = Vue.extend({
 +   loginRequest: {},
 - },
 + } as FormProps,
-  ...
+});
+</script>
 
 ```
 
 ### ./src/pages/login/page.tsx
 
 ```diff
-import Vue, { VNode, PropOptions } from 'vue';
+  ...
+
+<script lang="ts">
+import Vue, { PropOptions } from 'vue';
 - import { LoginEntity } from './viewModel';
 import { HeaderComponent, FormComponent } from './components';
 + import { FormProps } from './formProps';
 
-export const LoginPage = Vue.extend({
+export default Vue.extend({
+  name: 'LoginPage',
+  components: {
+    HeaderComponent, FormComponent,
+  },
   props: {
 -   loginEntity: {} as PropOptions<LoginEntity>,
 +   loginEntity: {},
@@ -665,7 +676,8 @@ export const LoginPage = Vue.extend({
 +   loginRequest: {},
 - },
 + } as FormProps,
-  ...
+});
+</script>
 
 ```
 
