@@ -1,2 +1,2 @@
-import LoginPage from './Page.vue';
-export { LoginPage };
+import PageContainer from './PageContainer.vue';
+export { PageContainer };
