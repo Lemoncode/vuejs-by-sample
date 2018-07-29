@@ -12,7 +12,7 @@ import { fetchRecipes } from '../../../rest-api/api/recipe';
 import RecipeListPage from './Page.vue';
 
 export default Vue.extend({
-  name: 'PageContainer',
+  name: 'RecipeListPageContainer',
   components: {
     RecipeListPage,
   },
