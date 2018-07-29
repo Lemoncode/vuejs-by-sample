@@ -27,7 +27,7 @@ export default Vue.extend({
   name: 'EditRecipePage',
   components: {
     FormComponent,
-  }
+  },
   props: {
     recipe: {},
     updateRecipe: {},
