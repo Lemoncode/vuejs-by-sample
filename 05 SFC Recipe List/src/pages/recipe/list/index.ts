@@ -1,2 +1,2 @@
-import RecipeListPage from './Page.vue';
-export { RecipeListPage };
+import RecipeListPageContainer from './PageContainer.vue';
+export { RecipeListPageContainer };
