@@ -22,7 +22,7 @@ module.exports = {
     vendor: [
       'vue',
       'vue-router',
-      'lc-form-validation',   
+      'lc-form-validation',
     ],
     vendorStyles: [
       '../node_modules/bootstrap/dist/css/bootstrap.css',
@@ -67,16 +67,30 @@ module.exports = {
       {
         test: /\.css$/,
         exclude: /node_modules/,
-        use: [
-          MiniCssExtractPlugin.loader,
+        oneOf: [
+          // this matches `<style module>`
           {
-            loader: 'css-loader',
-            options: {
-              module: true,
-              localIdentName: '[name]__[local]___[hash:base64:5]',
-              camelCase: true,
-            },
+            resourceQuery: /module/,
+            use: [
+              'vue-style-loader',
+              {
+                loader: 'css-loader',
+                options: {
+                  modules: true,
+                  localIdentName: '[name]__[local]__[hash:base64:5]'
+                }
+              }
+            ]
           },
+          // this matches plain `<style>` or `<style scoped>`
+          {
+            use: [
+              env !== 'production'
+                ? 'vue-style-loader'
+                : MiniCssExtractPlugin.loader,
+              'css-loader'
+            ],
+          }
         ],
       },
       {
@@ -116,7 +130,7 @@ module.exports = {
   },
   devtool: sourceMap ? 'cheap-module-eval-source-map' : undefined,
   plugins: [
-    new VueLoaderPlugin(),    
+    new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html', //Name of file in ./dist/
       template: 'index.html', //Name of template in ./src
