@@ -1,33 +1,37 @@
 <template>
   <div class="panel-body">
     <form role="form">
-      <div class="form-group">
-        <input
-          class="form-control"
+      <validation-component
+        :hasError="!loginError.login.succeeded"
+        :errorMessage="loginError.login.errorMessage"
+      >
+        <input-component
           placeholder="e-mail"
           type="text"
+          label="Login"
+          name="login"
           :value="loginEntity.login"
-          @input="(e) => updateLogin(e.target.value, loginEntity.password)"
+          :inputHandler="updateLogin"
         />
-      </div>
-      <div class="form-group">
-        <input
-          class="form-control"
+      </validation-component>
+      <validation-component
+        :hasError="!loginError.password.succeeded"
+        :errorMessage="loginError.password.errorMessage"
+      >
+        <input-component
           placeholder="password"
           type="password"
+          label="Password"
+          name="password"
           :value="loginEntity.password"
-          @input="(e) => updateLogin(loginEntity.login, e.target.value)"
+          :inputHandler="updateLogin"
         />
-      </div>
-      <button
-        class="btn btn-lg btn-success btn-block"
-        @click="(e) => {
-            e.preventDefault();
-            loginRequest();
-          }"      
-        >
-        Login
-      </button>
+      </validation-component>      
+      <button-component
+        className="btn btn-lg btn-success btn-block"
+        label="Login"
+        :clickHandler="loginRequest"
+      />
     </form>
   </div>
 </template>
@@ -35,11 +39,16 @@
 <script lang="ts">
 import Vue, { PropOptions } from 'vue';
 import { FormProps } from '../formProps';
+import { ValidationComponent, InputComponent, ButtonComponent } from '../../../common/components/form';
 
 export default Vue.extend({
   name: 'FormComponent',
+  components: {
+    ValidationComponent, InputComponent, ButtonComponent,
+  },
   props: {
     loginEntity: {},
+    loginError: {},
     updateLogin: {},
     loginRequest: {},
   } as FormProps, 
