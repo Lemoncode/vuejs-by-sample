@@ -21,7 +21,8 @@ module.exports = {
     app: './main.ts',
     vendor: [
       'vue',
-      'vue-router',      
+      'vue-router',
+      'lc-form-validation',   
     ],
     vendorStyles: [
       '../node_modules/bootstrap/dist/css/bootstrap.css',
