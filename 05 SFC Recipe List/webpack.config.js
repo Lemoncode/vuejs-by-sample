@@ -56,11 +56,27 @@ module.exports = {
       },
       {
         test: /\.css$/,
+        include: /node_modules/,
         use: [
           env !== 'production'
             ? 'vue-style-loader'
             : MiniCssExtractPlugin.loader,
           'css-loader'
+        ],
+      },
+      {
+        test: /\.css$/,
+        exclude: /node_modules/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
+              module: true,
+              localIdentName: '[name]__[local]___[hash:base64:5]',
+              camelCase: true,
+            },
+          },
         ],
       },
       {
