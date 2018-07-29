@@ -101,34 +101,40 @@ export const mapRecipeModelToVm = (recipe: model.Recipe): vm.Recipe => ({
 
 - Create `pageContainer`:
 
-### ./src/pages/recipe/edit/pageContainer.tsx
+### ./src/pages/recipe/edit/PageContainer.vue
 
 ```javascript
-import Vue, { VNode } from 'vue';
+<template>
+  <edit-recipe-page
+    :recipe="recipe"
+    :updateRecipe="updateRecipe"
+    :addIngredient="addIngredient"
+    :removeIngredient="removeIngredient"
+    :save="save"  
+  />  
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
 import { router } from '../../../router';
 import { fetchRecipeById, save } from '../../../rest-api/api/recipe';
 import { Recipe, createEmptyRecipe } from './viewModel';
 import { mapRecipeModelToVm } from './mappers';
-import { EditRecipePage } from './page';
+import EditRecipePage from './Page.vue';
 
-export const EditRecipeContainer = Vue.extend({
-  render(h): VNode {
-    return (
-      <EditRecipePage
-        recipe={this.recipe}
-        updateRecipe={this.updateRecipe}
-        addIngredient={this.addIngredient}
-        removeIngredient={this.removeIngredient}
-        save={this.save}
-      />
-    );
+export default Vue.extend({
+  name: 'EditRecipePageContainer',
+  components: {
+    EditRecipePage,
   },
   props: {
     id: String,
   },
-  data: () => ({
-    recipe: createEmptyRecipe(),
-  }),
+  data() {
+    return {
+      recipe: createEmptyRecipe(),
+    };
+  },
   beforeMount() {
     const id = Number(this.id || 0);
     fetchRecipeById(id)
@@ -168,6 +174,7 @@ export const EditRecipeContainer = Vue.extend({
     },
   },
 });
+</script>
 
 ```
 
@@ -176,15 +183,17 @@ export const EditRecipeContainer = Vue.extend({
 ### ./src/pages/recipe/edit/index.ts
 
 ```diff
-- export * from './page';
-+ export * from './pageContainer';
-
+- import EditRecipePage from './Page.vue';
++ import EditRecipeContainer from './PageContainer.vue';
+- export { EditRecipePage };
++ import { EditRecipeContainer };
 
 ```
 
 - Update `router`:
 
 ### ./src/pages/recipe/edit/index.ts
+
 ```diff
 import Router, { RouteConfig } from 'vue-router';
 import { LoginPageContainer } from './pages/login';
@@ -211,9 +220,37 @@ export const router = new Router({
 ### ./src/common/components/form/inputButton.tsx
 
 ```javascript
-import Vue, { VNode } from 'vue';
+<template>
+  <div :class="`form-group ${className}`">
+    <label :for="name">
+      {{ label }}
+    </label>
+    <div class="input-group">
+      <input
+        class="form-control"
+        :placeholder="placeholder"
+        :type="type"
+        :value="value"
+        :name="name"
+        @input="onInput"
+      />
+      <div class="input-group-btn">
+        <button
+          :class="buttonClassName"
+          @click="onButtonClick"
+        >
+          {{ buttonText }}
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
 
-export const InputButton = Vue.extend({
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  name: 'InputButtonComponent',
   props: [
     'className',
     'placeholder',
@@ -226,33 +263,6 @@ export const InputButton = Vue.extend({
     'buttonClickHandler',
     'buttonClassName',
   ],
-  render(h): VNode {
-    return (
-      <div class={`form-group ${this.className}`}>
-        <label for={this.name}>
-          {this.label}
-        </label>
-        <div class="input-group">
-          <input
-            class="form-control"
-            placeholder={this.placeholder}
-            type={this.type}
-            value={this.value}
-            name={this.name}
-            onInput={this.onInput}
-          />
-          <div class="input-group-btn">
-            <button
-              class={this.buttonClassName}
-              onClick={this.onButtonClick}
-            >
-              {this.buttonText}
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  },
   methods: {
     onInput(e) {
       this.inputHandler(e.target.name, e.target.value);
@@ -261,30 +271,74 @@ export const InputButton = Vue.extend({
       e.preventDefault();
       this.buttonClickHandler(this.value);
     },
-  }
+  },
 });
+</script>
 
 ```
 
 ### ./src/common/components/form/index.tsx
 
 ```diff
-export * from './validation';
-export * from './input';
-export * from './button';
-+ export * from './inputButton';
-
+import ValidationComponent from './Validation.vue';
+import InputComponent from './Input.vue';
+import ButtonComponent from './Button.vue';
++ import InputButtonComponent from './InputButton.vue';
+- export { ValidationComponent, InputComponent, ButtonComponent };
++ export { ValidationComponent, InputComponent, ButtonComponent, InputButtonComponent };
 
 ```
 
 - Create `edit recipe` form:
 
-### ./src/pages/recipe/edit/components/form.tsx
+### ./src/pages/recipe/edit/components/Form.vue
 
 ```javascript
-import Vue, { VNode, PropOptions } from 'vue';
+<template>
+  <form class="container">
+    <div class="row">
+      <validation-component
+        :hasError="true"
+        errorMessage="Test error"
+      >
+        <Input
+          type="text"
+          label="Name"
+          name="name"
+          :value="recipe.name"
+          :inputHandler="updateRecipe"
+        />
+      </validation-component>
+    </div>
+    <div class="row">
+      <input-button-component
+        type="text"
+        label="Ingredients"
+        name="ingredients"
+        placeholder="Add ingredient"
+        :value="ingredient"
+        :inputHandler="updateIngredient"
+        buttonText="Add"
+        buttonClassName="btn btn-primary"
+        :buttonClickHandler="addIngredient"
+      />
+    </div>
+    <div class="row">
+      <div class="form-group pull-right">
+        <button-component
+          className="btn btn-lg btn-success"
+          label="Save"
+          :clickHandler="save"
+        />
+      </div>
+    </div>
+  </form>
+</template>
+
+<script lang="ts">
+import Vue, { PropOptions } from 'vue';
 import { Recipe } from '../viewModel';
-import { Validation, Input, InputButton, Button } from '../../../../common/components/form';
+import { ValidationComponent, InputComponent, InputButtonComponent, ButtonComponent } from '../../../../common/components/form';
 
 interface Props {
   recipe: PropOptions<Recipe>;
@@ -294,7 +348,11 @@ interface Props {
   save: PropOptions<() => void>;
 }
 
-export const FormComponent = Vue.extend({
+export default Vue.extend({
+  name: 'FormComponent',
+  components: {
+    ValidationComponent, InputComponent, InputButtonComponent, ButtonComponent,
+  },
   props: {
     recipe: {},
     updateRecipe: {},
@@ -310,66 +368,40 @@ export const FormComponent = Vue.extend({
       this.ingredient = value;
     },
   },
-  render(h): VNode {
-    return (
-      <form class="container">
-        <div class="row">
-          <Validation
-            hasError={true}
-            errorMessage="Test error"
-          >
-            <Input
-              type="text"
-              label="Name"
-              name="name"
-              value={this.recipe.name}
-              inputHandler={this.updateRecipe}
-            />
-          </Validation>
-        </div>
-        <div class="row">
-          <InputButton
-            type="text"
-            label="Ingredients"
-            name="ingredients"
-            placeholder="Add ingredient"
-            value={this.ingredient}
-            inputHandler={this.updateIngredient}
-            buttonText="Add"
-            buttonClassName="btn btn-primary"
-            buttonClickHandler={this.addIngredient}
-          />
-        </div>
-        <div class="row">
-          <div class="form-group pull-right">
-            <Button
-              className="btn btn-lg btn-success"
-              label="Save"
-              clickHandler={this.save}
-            />
-          </div>
-        </div>
-      </form>
-    );
-  },
-});
+})
+</script>
 
 ```
 
 ### ./src/pages/recipe/edit/components/index.ts
 
 ```javascript
-export * from './form';
+import EditRecipeForm from './Form.vue';
+export { EditRecipeForm };
 
 ```
 
 - Update `page`:
 
-### ./src/pages/recipe/edit/page.tsx
+### ./src/pages/recipe/edit/Page.vue
 
 ```diff
-- import Vue, { VNode } from 'vue';
-+ import Vue, { VNode, PropOptions } from 'vue';
+<template>
++  <div>
+-  <h1> Edit Recipe Page {{ id }}</h1>
++    <form-component
++      :recipe="recipe"
++      :updateRecipe="updateRecipe"
++      :addIngredient="addIngredient"
++      :removeIngredient="removeIngredient"
++      :save="save"
++    />
++  </div>
+</template>
+
+<script lang="ts">
+- import Vue from 'vue';
++ import Vue, { PropOptions } from 'vue';
 + import { Recipe } from './viewModel';
 + import { FormComponent } from './components';
 
@@ -381,7 +413,11 @@ export * from './form';
 +   save: PropOptions<() => void>;
 + }
 
-export const EditRecipePage = Vue.extend({
+export default Vue.extend({
+  name: 'EditRecipePage',
++ components: {
++   FormComponent,
++ },
   props: {
 -   id: String,
 +   recipe: {},
@@ -391,33 +427,35 @@ export const EditRecipePage = Vue.extend({
 +   save: {},
 - },
 + } as Props,
-  render(h): VNode {
-    return (
-+     <div>
--     <h1> Edit Recipe Page {this.id}</h1>
-+       <h1>Recipe {this.recipe.name}</h1>
-+       <FormComponent
-+         recipe={this.recipe}
-+         updateRecipe={this.updateRecipe}
-+         addIngredient={this.addIngredient}
-+         removeIngredient={this.removeIngredient}
-+         save={this.save}
-+       />
-+     </div>
-    );
-  }
 });
+</script>
 
 ```
 
 - Create `ingredients` row and list
 
-### ./src/pages/recipe/edit/components/ingredientRow.tsx
+### ./src/pages/recipe/edit/components/IngredientRow.vue
 
 ```javascript
-import Vue, { VNode, PropOptions } from 'vue';
+<template>
+  <div class="col-sm-3">
+    <label class="col-xs-8">
+      {{ ingredient }}
+    </label>
+    <span
+      class="btn btn-default"
+      @click="onClick"
+    >
+      <i class="glyphicon glyphicon-remove"></i>
+    </span>
+  </div>  
+</template>
 
-export const IngredientRowComponent = Vue.extend({
+<script lang="ts">
+import Vue, { PropOptions } from 'vue';
+
+export default Vue.extend({
+  name: 'IngredientRowComponent',
   props: {
     ingredient: String,
     removeIngredient: {} as PropOptions<(ingredient) => void>,
@@ -427,108 +465,140 @@ export const IngredientRowComponent = Vue.extend({
       this.removeIngredient(this.ingredient);
     },
   },
-  render(h): VNode {
-    return (
-      <div class="col-sm-3">
-        <label class="col-xs-8">
-          {this.ingredient}
-        </label>
-        <span
-          class="btn btn-default"
-          onClick={this.onClick}
-        >
-          <i class="glyphicon glyphicon-remove"></i>
-        </span>
-      </div>
-    );
-  },
 });
+</script>
 
 ```
 
-### ./src/pages/recipe/edit/components/ingredientList.tsx
+### ./src/pages/recipe/edit/components/IngredientList.vue
 
 ```javascript
-import Vue, { VNode, PropOptions } from 'vue';
-import { IngredientRowComponent } from './ingredientRow';
+<template>
+  <div class="form-group panel panel-default">
+    <div class="panel-body">
+      <template v-for="(ingredient, index) in ingredients">
+        <ingredient-row-component
+          :key="index"
+          :ingredient="ingredient"
+          :removeIngredient="removeIngredient"
+        />
+      </template>
+    </div>
+  </div>
+</template>
 
-export const IngredientListComponent = Vue.extend({
+<script lang="ts">
+import Vue, { PropOptions } from 'vue';
+import IngredientRowComponent from './IngredientRow.vue';
+
+export default Vue.extend({
+  name: 'IngredientListComponent',
+  components: {
+    IngredientRowComponent,
+  },
   props: {
     ingredients: {} as PropOptions<string[]>,
     removeIngredient: {} as PropOptions<(ingredient) => void>,
   },
-  render(h): VNode {
-    return (
-      <div class="form-group panel panel-default">
-        <div class="panel-body">
-          {
-            this.ingredients.map((ingredient, index) => (
-              <IngredientRowComponent
-                key={index}
-                ingredient={ingredient}
-                removeIngredient={this.removeIngredient}
-              />
-            ))
-          }
-        </div>
-      </div>
-    );
-  },
 });
+</script>
 
 ```
 
 - Update `edit recipe` form:
 
-### ./src/pages/recipe/edit/components/form.tsx
+### ./src/pages/recipe/edit/components/Form.vue
 
 ```diff
-import Vue, { VNode, PropOptions } from 'vue';
-import { Recipe } from '../viewModel';
-import { Validation, Input, InputButton, Button } from '../../../../common/components/form';
-+ import { IngredientListComponent } from './ingredientList';
+<template>
+  <form class="container">
+    <div class="row">
+      <validation-component
+        :hasError="true"
+        errorMessage="Test error"
+      >
+        <Input
+          type="text"
+          label="Name"
+          name="name"
+          :value="recipe.name"
+          :inputHandler="updateRecipe"
+        />
+      </validation-component>
+    </div>
+    <div class="row">
+      <input-button-component
+        type="text"
+        label="Ingredients"
+        name="ingredients"
+        placeholder="Add ingredient"
+        :value="ingredient"
+        :inputHandler="updateIngredient"
+        buttonText="Add"
+        buttonClassName="btn btn-primary"
+        :buttonClickHandler="addIngredient"
+      />
+    </div>
++    <div class="row">    
++      <validation-component
++        :hasError="true"
++        errorMessage="Test error"
++      >
++        <ingredient-list-component
++          :ingredients="recipe.ingredients"
++          :removeIngredient="removeIngredient"
++        />
++      </validation-component>
++    </div>
+    <div class="row">
+      <div class="form-group pull-right">
+        <button-component
+          className="btn btn-lg btn-success"
+          label="Save"
+          :clickHandler="save"
+        />
+      </div>
+    </div>
+  </form>
+</template>
 
-...
-  render: function(h) {
-    return (
-...
-        <div class="row">
-          <InputButton
-            type="text"
-            label="Ingredients"
-            name="ingredients"
-            placeholder="Add ingredient"
-            value={this.ingredient}
-            inputHandler={this.updateIngredient}
-            buttonText="Add"
-            buttonClassName="btn btn-primary"
-            buttonClickHandler={this.addIngredient}
-          />
-        </div>
-+       <div class="row">
-+         <Validation
-+           hasError={true}
-+           errorMessage="Test error"
-+         >
-+           <IngredientListComponent
-+             ingredients={this.recipe.ingredients}
-+             removeIngredient={this.removeIngredient}
-+           />
-+         </Validation>
-+       </div>
-        <div class="row">
-          <div class="form-group pull-right">
-            <Button
-              className="btn btn-lg btn-success"
-              label="Save"
-              clickHandler={this.save}
-            />
-          </div>
-        </div>
-      </form>
-    );
+<script lang="ts">
+import Vue, { PropOptions } from 'vue';
+import { Recipe } from '../viewModel';
+import { ValidationComponent, InputComponent, InputButtonComponent, ButtonComponent } from '../../../../common/components/form';
++ import IngredientListComponent from './IngredientList.vue';
+
+interface Props {
+  recipe: PropOptions<Recipe>;
+  updateRecipe: PropOptions<(field, value) => void>;
+  addIngredient: PropOptions<(ingredient) => void>;
+  removeIngredient: PropOptions<(ingredient) => void>;
+  save: PropOptions<() => void>;
+}
+
+export default Vue.extend({
+  name: 'FormComponent',
+  components: {
+-    ValidationComponent, InputComponent, InputButtonComponent, ButtonComponent,
++    ValidationComponent, InputComponent, InputButtonComponent, ButtonComponent, IngredientListComponent,
   },
-});
+  props: {
+    recipe: {},
+    updateRecipe: {},
+    addIngredient: {},
+    removeIngredient: {},
+    save: {},
+  } as Props,
+  data: () => ({
+    ingredient: '',
+  }),
+  methods: {
+    updateIngredient(fieldName, value) {
+      this.ingredient = value;
+    },
+  },
+})
+</script>
 
 ```
 

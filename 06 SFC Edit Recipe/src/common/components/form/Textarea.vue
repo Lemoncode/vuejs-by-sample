@@ -1,0 +1,40 @@
+<template>
+  <div :class="`form-group ${this.className}`">
+    <label :for="name">
+      {{ label }}
+    </label>
+    <textarea
+      class="form-control"
+      :name="name"
+      :placeholder="placeholder"
+      :rows="rows"
+      @input="onInput"
+      :v-model="value"
+    >
+      <!-- {{ value }} -->
+    </textarea>
+  </div>  
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  name: 'TextareaComponent',
+  props: [
+    'className',
+    'placeholder',
+    'value',
+    'inputHandler',
+    'label',
+    'name',
+    'rows',
+  ],
+  methods: {
+    onInput(e) {
+      this.inputHandler(e.target.name, e.target.value);
+    },
+  },  
+})
+</script>
+

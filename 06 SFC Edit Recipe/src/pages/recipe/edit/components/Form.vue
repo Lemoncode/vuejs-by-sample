@@ -86,3 +86,9 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style scoped>
+.description textarea {
+  resize: none;
+}
+</style>
