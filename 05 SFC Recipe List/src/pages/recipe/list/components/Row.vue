@@ -11,9 +11,12 @@
       </span>
     </td>
     <td>
-      <a class="btn btn-primary pull-right">
+      <router-link
+        :to="`recipe/${recipe.id}`"
+        class="btn btn-primary pull-right"
+      >
         <i class="glyphicon glyphicon-pencil" />
-      </a>
+      </router-link>
     </td>
   </tr>
 </template>
