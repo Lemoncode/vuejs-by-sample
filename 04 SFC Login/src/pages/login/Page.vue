@@ -6,8 +6,9 @@
           <header-component /> <!-- <HeaderComponent /> Its the same -->
           <form-component
             :login-entity="loginEntity"
+            :login-error="loginError"
             :update-login="updateLogin"
-            :login-request="loginRequest"        
+            :login-request="loginRequest"
           />
         </div>
       </div>
@@ -27,6 +28,7 @@ export default Vue.extend({
   },
   props: {
     loginEntity: {},
+    loginError: {},
     updateLogin: {},
     loginRequest: {},
   } as FormProps,
