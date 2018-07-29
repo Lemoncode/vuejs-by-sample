@@ -1,5 +1,5 @@
 <template>
-  <RecipeListPage
+  <recipe-list-page
     :recipes="recipes"
   />
 </template>
@@ -13,6 +13,9 @@ import RecipeListPage from './Page.vue';
 
 export default Vue.extend({
   name: 'PageContainer',
+  components: {
+    RecipeListPage,
+  },
   data: () => ({
     recipes: [] as Recipe[],
   }),
