@@ -167,20 +167,25 @@ const mapRecipeModelToVm = (recipe: model.Recipe): vm.Recipe => ({
 - Create `recipe list` page container:
 
 ### ./src/pages/recipe/list/pageContainer.tsx
+
 ```javascript
-import Vue, { VNode } from 'vue';
+<template>
+  <recipe-list-page
+    :recipes="recipes"
+  />
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
 import { Recipe } from './viewModel';
 import { mapRecipeListModelToVm } from './mappers';
 import { fetchRecipes } from '../../../rest-api/api/recipe';
-import { RecipeListPage } from './page';
+import RecipeListPage from './Page.vue';
 
-export const RecipeListPageContainer = Vue.extend({
-  render(h): VNode {
-    return (
-      <RecipeListPage
-        recipes={this.recipes}
-      />
-    );
+export default Vue.extend({
+  name: 'RecipeListPageContainer',
+  components: {
+    RecipeListPage,
   },
   data: () => ({
     recipes: [] as Recipe[],
@@ -193,31 +198,35 @@ export const RecipeListPageContainer = Vue.extend({
       .catch((error) => console.log(error));
   },
 });
+</script>
 
 ```
 
 - Create `header`:
 
-### ./src/pages/recipe/list/components/header.tsx
-```javascript
-import Vue, { VNode } from 'vue';
+### ./src/pages/recipe/list/components/Header.vue
 
-export const HeaderComponent = Vue.extend({
-  render(h): VNode {
-    return (
-      <thead>
-        <th>
-          Name
-        </th>
-        <th>
-          Description
-        </th>
-        <th>
-        </th>
-      </thead>
-    );
-  }
+```javascript
+<template>
+  <thead>
+    <th>
+      Name
+    </th>
+    <th>
+      Description
+    </th>
+    <th>
+    </th>
+  </thead>
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  name: 'HeaderComponent',
 });
+</script>
 
 ```
 
@@ -230,6 +239,7 @@ npm install @types/webpack-env --save-dev
 - Configure CSS modules:
 
 ### ./webpack.config.js
+
 ```diff
   ...
   ...
@@ -240,32 +250,82 @@ npm install @types/webpack-env --save-dev
         test: /\.css$/,
 +       include: /node_modules/,
         use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
+          env !== 'production'
+            ? 'vue-style-loader'
+            : MiniCssExtractPlugin.loader,
+          'css-loader'
         ],
       },
 +     {
 +       test: /\.css$/,
 +       exclude: /node_modules/,
-+       use: [
-+         MiniCssExtractPlugin.loader,
++       oneOf: [
 +         {
-+           loader: 'css-loader',
-+           options: {
-+             module: true,
-+             localIdentName: '[name]__[local]___[hash:base64:5]',
-+             camelCase: true,
-+           },
++           resourceQuery: /module/,
++           use: [
++             'vue-style-loader',
++             {
++               loader: 'css-loader',
++               options: {
++                 modules: true,
++                 localIdentName: '[name]__[local]__[hash:base64:5]'
++               }
++             }
++           ]
 +         },
-+        ],
++         {
++           use: [
++             env !== 'production'
++               ? 'vue-style-loader'
++               : MiniCssExtractPlugin.loader,
++             'css-loader'
++           ],
++         }
++       ],
 +     },
-      ...
+  ...
 ```
 
-- Create `row.css` styles:
+[More info about CSS Modules with `vue-loader`](https://vue-loader.vuejs.org/guide/css-modules.html#usage)
 
-### ./src/pages/recipe/list/components/row.css
-```css
+- Create `row`:
+
+### ./src/pages/recipe/list/components/Row.vue
+
+```javascript
+<template>
+  <tr>
+    <td :class="$style.name">
+      <span>
+        {{ recipe.name }}
+      </span>
+    </td>
+    <td :class="$style.description">
+      <span>
+        {{ recipe.description }}
+      </span>
+    </td>
+    <td>
+      <a class="btn btn-primary pull-right">
+        <i class="glyphicon glyphicon-pencil" />
+      </a>
+    </td>
+  </tr>
+</template>
+
+<script lang="ts">
+import Vue, { PropOptions } from "vue";
+import { Recipe } from "../viewModel";
+
+export default Vue.extend({
+  name: "RowComponent",
+  props: {
+    recipe: {} as PropOptions<Recipe>
+  }
+});
+</script>
+
+<style module>
 .name {
   width: 25%;
 }
@@ -281,90 +341,59 @@ npm install @types/webpack-env --save-dev
   display: inline-block;
   max-width: 100%;
 }
-
-```
-
-- Create `row`:
-
-### ./src/pages/recipe/list/components/row.tsx
-
-```javascript
-import Vue, { VNode, PropOptions } from 'vue';
-import { Recipe } from '../viewModel';
-const styles = require('./row.css');
-
-export const RowComponent = Vue.extend({
-  props: {
-    recipe: {} as PropOptions<Recipe>
-  },
-  render(h): VNode {
-    return (
-      <tr>
-        <td class={styles.name}>
-          <span>
-            {this.recipe.name}
-          </span>
-        </td>
-        <td class={styles.description}>
-          <span>
-            {this.recipe.description}
-          </span>
-        </td>
-        <td>
-          <a class="btn btn-primary pull-right">
-            <i class="glyphicon glyphicon-pencil" />
-          </a>
-        </td>
-      </tr>
-    );
-  },
-});
+</style>
 
 ```
 
 ### ./src/pages/recipe/list/components/index.ts
 
 ```javascript
-export * from './header';
-export * from './row';
+import HeaderComponent from './Header.vue';
+import RowComponent from './Row.vue';
+
+export { HeaderComponent, RowComponent };
 
 ```
 
 - Update `recipe list` page:
 
-### ./src/pages/recipe/list/page.tsx
+### ./src/pages/recipe/list/Page.vue
+
 ```diff
-- import Vue, { VNode } from 'vue';
-+ import Vue, { VNode, PropOptions } from 'vue';
+<template>
+  <div class="container-fluid">
+-    <h1> Recipe List Page </h1>  
++    <h2>Recipes</h2>
++    <table class="table table-striped">
++      <header-component />
++      <tbody>
++        <template v-for="recipe in recipes">
++          <row-component
++            :key="recipe.id"
++            :recipe="recipe"
++          />
++        </template>
++      </tbody>
++    </table>
+  </div>  
+</template>
+
+<script lang="ts">
+- import Vue from 'vue';
++ import Vue, { PropOptions } from 'vue';
 + import { Recipe } from './viewModel';
 + import { HeaderComponent, RowComponent } from './components';
 
-export const RecipeListPage = Vue.extend({
+export default Vue.extend({
+  name: 'RecipeListPage',
+  components: {
+    HeaderComponent, RowComponent,
+  },
 + props: {
 +   recipes: {} as PropOptions<Recipe[]>,
-+ },
-  render(h): VNode {
-    return (
--     <h1> Recipe List Page </h1>
-+     <div class="container-fluid">
-+       <h2>Recipes</h2>
-+       <table class="table table-striped">
-+         <HeaderComponent />
-+         <tbody>
-+           {
-+             this.recipes.map((recipe) =>
-+               <RowComponent
-+                 key={recipe.id}
-+                 recipe={recipe}
-+               />
-+             )
-+           }
-+         </tbody>
-+       </table>
-+     </div>
-    );
-  }
++ },  
 });
+</script>
 
 ```
 
@@ -373,14 +402,17 @@ export const RecipeListPage = Vue.extend({
 ### ./src/pages/recipe/list/index.ts
 
 ```diff
-- export * from './page';
-+ export * from './pageContainer';
+- import RecipeListPage from './Page.vue';
+- export { RecipeListPage };
++ import RecipeListPageContainer from './PageContainer.vue';
++ export { RecipeListPageContainer };
 
 ```
 
 - Update `router.ts`:
 
 ### ./src/router.ts
+
 ```diff
 import Router, { RouteConfig } from 'vue-router';
 import { LoginPageContainer } from './pages/login';
