@@ -6,12 +6,11 @@
     :addIngredient="addIngredient"
     :removeIngredient="removeIngredient"
     :save="save"  
-  />  
+  />
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { router } from "../../../router";
 import { fetchRecipeById, save } from "../../../rest-api/api/recipe";
 import { Recipe, createEmptyRecipe, RecipeError, createEmptyRecipeError } from "./viewModel";
 import { mapRecipeModelToVm } from "./mappers";
@@ -87,7 +86,7 @@ export default Vue.extend({
             save(this.recipe)
               .then((message) => {
                 console.log(message);
-                router.back();
+                this.$router.back();
               })
               .catch((error) => console.log(error));
           } else {
@@ -100,4 +99,3 @@ export default Vue.extend({
   },
 });
 </script>
-
