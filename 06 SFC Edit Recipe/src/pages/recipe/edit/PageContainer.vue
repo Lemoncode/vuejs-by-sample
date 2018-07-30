@@ -19,7 +19,7 @@ import EditRecipePage from "./Page.vue";
 import { validations } from './validations';
 
 export default Vue.extend({
-  name: "EditRecipePageContainer",
+  name: 'EditRecipePageContainer',
   components: {
     EditRecipePage,
   },
@@ -47,7 +47,7 @@ export default Vue.extend({
         [field]: value,
       };
 
-      this.validateRecipeField(field, value);     
+      this.validateRecipeField(field, value);
     },
     addIngredient(ingredient: string) {
       this.recipe = {
