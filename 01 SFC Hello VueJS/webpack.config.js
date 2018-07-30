@@ -104,7 +104,6 @@ module.exports = {
       },
     ]
   },
-  // devtool: 'inline-source-map',
   devtool: sourceMap ? 'cheap-module-eval-source-map' : undefined,
   plugins: [
     new VueLoaderPlugin(),
