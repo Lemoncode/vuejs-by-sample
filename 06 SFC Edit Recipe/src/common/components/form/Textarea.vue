@@ -9,9 +9,8 @@
       :placeholder="placeholder"
       :rows="rows"
       @input="onInput"
-      :v-model="value"
     >
-      <!-- {{ value }} -->
+      {{ value }}
     </textarea>
   </div>  
 </template>
