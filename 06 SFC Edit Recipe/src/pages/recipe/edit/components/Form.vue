@@ -39,6 +39,17 @@
       </validation-component>
     </div>
     <div class="row">
+      <textarea-component
+        class-name="description"
+        label="Description"
+        name="description"
+        placeholder="Description..."
+        rows="10"
+        :value="recipe.description"
+        :input-handler="updateRecipe"
+      />
+    </div>
+    <div class="row">
       <div class="form-group pull-right">
         <button-component
           className="btn btn-lg btn-success"
@@ -53,7 +64,7 @@
 <script lang="ts">
 import Vue, { PropOptions } from 'vue';
 import { Recipe } from '../viewModel';
-import { ValidationComponent, InputComponent, InputButtonComponent, ButtonComponent } from '../../../../common/components/form';
+import { ValidationComponent, InputComponent, InputButtonComponent, ButtonComponent, TextareaComponent } from '../../../../common/components/form';
 import IngredientListComponent from './IngredientList.vue';
 
 interface Props {
@@ -67,7 +78,7 @@ interface Props {
 export default Vue.extend({
   name: 'FormComponent',
   components: {
-    ValidationComponent, InputComponent, InputButtonComponent, ButtonComponent, IngredientListComponent,
+    ValidationComponent, InputComponent, InputButtonComponent, ButtonComponent, IngredientListComponent, TextareaComponent,
   },
   props: {
     recipe: {},
