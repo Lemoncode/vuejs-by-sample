@@ -2,10 +2,10 @@
   <form class="container">
     <div class="row">
       <validation-component
-        :hasError="true"
-        errorMessage="Test error"
+        :hasError="!recipeError.name.succeeded"
+        :errorMessage="recipeError.name.errorMessage"
       >
-        <Input
+        <input-component
           type="text"
           label="Name"
           name="name"
@@ -29,8 +29,8 @@
     </div>
     <div class="row">
       <validation-component
-        :hasError="true"
-        errorMessage="Test error"
+        :hasError="!recipeError.ingredients.succeeded"
+        :errorMessage="recipeError.ingredients.errorMessage"
       >
         <ingredient-list-component
           :ingredients="recipe.ingredients"
@@ -63,12 +63,13 @@
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue';
-import { Recipe } from '../viewModel';
+import { Recipe, RecipeError } from '../viewModel';
 import { ValidationComponent, InputComponent, InputButtonComponent, ButtonComponent, TextareaComponent } from '../../../../common/components/form';
 import IngredientListComponent from './IngredientList.vue';
 
 interface Props {
   recipe: PropOptions<Recipe>;
+  recipeError: PropOptions<RecipeError>;
   updateRecipe: PropOptions<(field, value) => void>;
   addIngredient: PropOptions<(ingredient) => void>;
   removeIngredient: PropOptions<(ingredient) => void>;
@@ -82,14 +83,17 @@ export default Vue.extend({
   },
   props: {
     recipe: {},
+    recipeError: {},
     updateRecipe: {},
     addIngredient: {},
     removeIngredient: {},
     save: {},
   } as Props,
-  data: () => ({
-    ingredient: '',
-  }),
+  data() {
+    return {
+      ingredient: '',
+    };
+  },
   methods: {
     updateIngredient(fieldName, value) {
       this.ingredient = value;

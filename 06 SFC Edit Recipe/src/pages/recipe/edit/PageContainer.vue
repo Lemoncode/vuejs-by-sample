@@ -1,6 +1,7 @@
 <template>
   <edit-recipe-page
     :recipe="recipe"
+    :recipeError="recipeError"
     :updateRecipe="updateRecipe"
     :addIngredient="addIngredient"
     :removeIngredient="removeIngredient"
@@ -12,9 +13,10 @@
 import Vue from "vue";
 import { router } from "../../../router";
 import { fetchRecipeById, save } from "../../../rest-api/api/recipe";
-import { Recipe, createEmptyRecipe } from "./viewModel";
+import { Recipe, createEmptyRecipe, RecipeError, createEmptyRecipeError } from "./viewModel";
 import { mapRecipeModelToVm } from "./mappers";
 import EditRecipePage from "./Page.vue";
+import { validations } from './validations';
 
 export default Vue.extend({
   name: "EditRecipePageContainer",
@@ -27,6 +29,7 @@ export default Vue.extend({
   data() {
     return {
       recipe: createEmptyRecipe(),
+      recipeError: createEmptyRecipeError(),
     };
   },
   beforeMount() {
@@ -43,6 +46,15 @@ export default Vue.extend({
         ...this.recipe,
         [field]: value,
       };
+
+      validations.validateField(this.recipe, field, value)
+        .then((result) => {
+          this.recipeError = {
+            ...this.recipeError,
+            [field]: result,
+          };
+        })
+        .catch((error) => console.log(error));      
     },
     addIngredient(ingredient: string) {
       this.recipe = {
@@ -59,12 +71,25 @@ export default Vue.extend({
       };
     },
     save() {
-      save(this.recipe)
-        .then((message) => {
-          console.log(message);
-          router.back();
+      validations.validateForm(this.recipe)
+        .then((result) => {
+          result.fieldErrors.map((error) => {
+            this.recipeError = {
+              ...this.recipeError,
+              [error.key as string]: error,
+            }
+          });
+          
+          if (result.succeeded) {
+            save(this.recipe)
+              .then((message) => {
+                console.log(message);
+                router.back();
+              })
+              .catch((error) => console.log(error));
+          }
         })
-        .catch((error) => console.log(error));
+        .catch(error => console.log(error));
     },
   },
 });
