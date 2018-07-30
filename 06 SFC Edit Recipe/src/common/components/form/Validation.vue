@@ -1,7 +1,6 @@
 <template>
   <div :class="`${errorClassName} ${className}`">
     <slot />
-    {{ errorMessage }}
     <div class="help-block">
       {{ errorMessage }}
     </div>
