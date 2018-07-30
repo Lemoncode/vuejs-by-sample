@@ -5,12 +5,13 @@ In this sample we are going to create a `edit recipe` page.
 We will take a startup point sample _05 Recipe List_.
 
 Summary steps:
- - Create `API` methods.
- - Create `pageContainer`.
- - Update `page`.
- - Create `common` components.
- - Create `edit recipe` form.
- - Add `form validations` with `lc-form-validation`.
+
+- Create `API` methods.
+- Create `pageContainer`.
+- Update `page`.
+- Create `common` components.
+- Create `edit recipe` form.
+- Add `form validations` with `lc-form-validation`.
 
 # Steps to build it
 
@@ -809,11 +810,14 @@ export const validations = createFormValidation(constraints);
 ```javascript
 import { FieldValidationResult } from 'lc-form-validation';
 
-const hasItems = (message) => (value: any[]): FieldValidationResult => ({
-  type: 'ARRAY_HAS_ITEMS',
-  succeeded: value.length > 0,
-  errorMessage: message,
-});
+const hasItems = (message) => (value: any[]): FieldValidationResult => {
+  const isValid = value.length > 0;
+  return {
+    type: 'ARRAY_HAS_ITEMS',
+    succeeded: isValid,
+    errorMessage: isValid ? '' : message,
+  };
+};
 
 export { hasItems };
 
@@ -840,7 +844,7 @@ const constraints: ValidationConstraints = {
       { validator: Validators.required }
     ],
 +   ingredients: [
-+     { validator: hasItems('Should has one or more ingredients') },
++     { validator: hasItems('Should has one or more ingredients.') },
 +   ],
   },
 };
@@ -947,20 +951,15 @@ export default Vue.extend({
         [field]: value,
       };
 
-+     validations.validateField(this.recipe, field, value)
-+       .then((result) => {
-+         this.recipeError = {
-+           ...this.recipeError,
-+           [field]: result,
-+         };
-+       })
-+       .catch((error) => console.log(error));
++     this.validateRecipeField(field, value);
     },
     addIngredient(ingredient: string) {
       this.recipe = {
         ...this.recipe,
         ingredients: [...this.recipe.ingredients, ingredient],
       };
+
++     this.validateRecipeField('ingredients', this.recipe.ingredients);
     },
     removeIngredient(ingredient: string) {
       this.recipe = {
@@ -969,17 +968,15 @@ export default Vue.extend({
           return i !== ingredient;
         }),
       };
+
++     this.validateRecipeField('ingredients', this.recipe.ingredients);
     },
     save() {
 +     validations.validateForm(this.recipe)
 +       .then((result) => {
-+         result.fieldErrors.map((error) => {
-+           this.recipeError = {
-+             ...this.recipeError,
-+             [error.key as string]: error,
-+           }
-+         });
-
++         result.fieldErrors
++           .map((error) => this.updateRecipeError(error.key, error));
++
 +         if (result.succeeded) {
             save(this.recipe)
               .then((message) => {
@@ -987,9 +984,12 @@ export default Vue.extend({
                 router.back();
               })
               .catch((error) => console.log(error));
++         } else {
++           result.fieldErrors
++             .filter(error => !error.succeeded)
++             .map(error => console.log(`Error in ${error.key}: ${error.errorMessage}`));
 +         }
-+       })
-+       .catch(error => console.log(error));
++       });
     },
   },
 });
