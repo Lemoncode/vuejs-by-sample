@@ -5,7 +5,4 @@ new Vue({
   el: '#root',
   template: '<App/>',
   components: { App },
-  data: {
-    message: 'Hello from Vue.js',
-  },
 });

@@ -249,9 +249,6 @@ declare module '*.vue' {
 +   el: '#root',
 +   template: '<App/>',
 +   components: { App }
-+   data: {
-+     message: 'Hello from Vue.js',
-+   },
 + });
 
 ```
