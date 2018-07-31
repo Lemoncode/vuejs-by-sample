@@ -1,7 +1,7 @@
 {
   "name": "sample-vue-js",
   "version": "1.0.0",
-  "description": "Sample working SFC with Typescript and Webpack",
+  "description": "Sample working SFC VueJs with Typescript and Webpack",
   "main": "webpack.config.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --mode development --progress --hot --open",
