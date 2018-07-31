@@ -218,11 +218,11 @@ export const router = new Router({
 
 - Create `common components`:
 
-### ./src/common/components/form/inputButton.tsx
+### ./src/common/components/form/InputButton.vue
 
 ```javascript
 <template>
-  <div :class="`form-group ${className}`">
+  <div :class="`form-group ${className || ''}`">
     <label :for="name">
       {{ label }}
     </label>
@@ -540,7 +540,7 @@ export default Vue.extend({
         :buttonClickHandler="addIngredient"
       />
     </div>
-+    <div class="row">    
++    <div class="row">
 +      <validation-component
 +        :hasError="true"
 +        errorMessage="Test error"
@@ -605,12 +605,31 @@ export default Vue.extend({
 
 - Create `textarea` common component:
 
-### ./src/common/components/form/textarea.tsx
+### ./src/common/components/form/Textarea.vue
 
 ```javascript
-import Vue, { VNode } from 'vue';
+<template>
+  <div :class="`form-group ${this.className}`">
+    <label :for="name">
+      {{ label }}
+    </label>
+    <textarea
+      class="form-control"
+      :name="name"
+      :placeholder="placeholder"
+      :rows="rows"
+      @input="onInput"
+    >
+      {{ value }}
+    </textarea>
+  </div>  
+</template>
 
-export const Textarea = Vue.extend({
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  name: 'TextareaComponent',
   props: [
     'className',
     'placeholder',
@@ -620,58 +639,49 @@ export const Textarea = Vue.extend({
     'name',
     'rows',
   ],
-  render(h): VNode {
-    return (
-      <div class={`form-group ${this.className}`}>
-        <label for={this.name}>
-          {this.label}
-        </label>
-        <textarea
-          class="form-control"
-          name={this.name}
-          placeholder={this.placeholder}
-          rows={this.rows}
-          onInput={this.onInput}
-        >
-          {this.value}
-        </textarea>
-      </div>
-    );
-  },
   methods: {
     onInput(e) {
       this.inputHandler(e.target.name, e.target.value);
     },
-  },
-});
+  },  
+})
+</script>
 
 ```
 
-### ./src/common/components/form/index.tsx
+### ./src/common/components/form/index.ts
 
 ```diff
-export * from './validation';
-export * from './input';
-export * from './button';
-export * from './inputButton';
-+ export * from './textarea';
+import ValidationComponent from './Validation.vue';
+import InputComponent from './Input.vue';
+import ButtonComponent from './Button.vue';
+import InputButtonComponent from './InputButton.vue';
++ import TextareaComponent from './Textarea.vue';
+
+- export { ValidationComponent, InputComponent, ButtonComponent, InputButtonComponent };
++ export { ValidationComponent, InputComponent, ButtonComponent, InputButtonComponent, TextareaComponent };
 
 ```
 
-- Add `form styles`:
+- Add `form styles` in Form.vue:
 
-### ./src/pages/recipe/edit/components/form.css
+### ./src/pages/recipe/edit/components/Form.vue
 
-```css
-.description textarea {
-  resize: none;
-}
+```diff
+  ···
+</script>
+
++ <style scoped>
++ .description textarea {
++   resize: none;
++ }
++ </style>
 
 ```
 
 - Update `edit recipe` form:
 
-### ./src/pages/recipe/edit/components/form.tsx
+### ./src/pages/recipe/edit/components/Form.vue
 
 ```diff
 <template>
@@ -724,7 +734,7 @@ export * from './inputButton';
 +       :value="recipe.description"
 +       :input-handler="updateRecipe"
 +     />
-+   </div>    
++   </div>
     <div class="row">
       <div class="form-group pull-right">
         <button-component
@@ -971,11 +981,21 @@ export default Vue.extend({
 
 +     this.validateRecipeField('ingredients', this.recipe.ingredients);
     },
++   validateRecipeField: function(field, value) {
++     validations.validateField(this.recipe, field, value)
++       .then(result => this.updateRecipeError(field, result));
++   },
++   updateRecipeError: function(field, result) {
++     this.recipeError = {
++       ...this.recipeError,
++       [field]: result,
++     };
++   },
     save() {
 +     validations.validateForm(this.recipe)
-+       .then((result) => {
++       .then(result => {
 +         result.fieldErrors
-+           .map((error) => this.updateRecipeError(error.key, error));
++           .map(error => this.updateRecipeError(error.key, error));
 +
 +         if (result.succeeded) {
             save(this.recipe)
