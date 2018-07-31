@@ -214,8 +214,8 @@ document.write("Hello from main.ts !");
  - Generating the build under a **dist** folder.
 
 ### ./webpack.config.js
- 
- ```javascript
+
+```javascript
 var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
