@@ -1,16 +1,18 @@
 <template>
   <input
     :value="message"
-    @input="onChange($event.target.value)"
+    @input="onChange"
   />
 </template>
 
-<script>
-export default {
-  name: 'hello',
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  name: 'HelloComponent',
   props: {
     message: String,
     onChange: Function,
   },
-};
+});
 </script>

@@ -1,54 +1,47 @@
 {
   "name": "sample-vue-js",
   "version": "1.0.0",
-  "description": "Sample working SFC with Typescript and Webpack",
-  "main": "webpack.config.js",
+  "description": "Sample working with TypeScript and Webpack",
+  "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --mode development --progress --hot --open",
-    "build": "rimraf dist && cross-env NODE_ENV=production webpack --mode production"
+    "start": "webpack-dev-server",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Lemoncode/vuejs-by-sample.git"
   },
-  "bugs": {
-    "url": "https://github.com/Lemoncode/vuejs-by-sample/issues"
-  },
-  "homepage": "https://github.com/Lemoncode/vuejs-by-sample#readme",
   "keywords": [
     "vue.js",
     "samples",
-    "sfc",
     "typescript",
-    "decorators",
     "webpack"
   ],
   "author": "Lemoncode",
   "license": "MIT",
-  "dependencies": {
-    "bootstrap": "^3.3.7",
-    "vue": "^2.5.16"
+  "bugs": {
+    "url": "https://github.com/Lemoncode/vuejs-by-sample/issues"
   },
+  "homepage": "https://github.com/Lemoncode/vuejs-by-sample#readme",
   "devDependencies": {
     "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.5",
     "babel-preset-env": "^1.7.0",
-    "babel-preset-stage-3": "^6.24.1",
-    "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
     "file-loader": "^1.1.11",
+    "fork-ts-checker-webpack-plugin": "^0.4.3",
     "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "^0.4.1",
-    "rimraf": "^2.6.2",
     "ts-loader": "^4.4.2",
     "typescript": "^2.9.2",
     "url-loader": "^1.0.1",
     "vue-loader": "^15.2.6",
-    "vue-style-loader": "^4.1.1",
     "vue-template-compiler": "^2.5.16",
-    "vue-template-loader": "^1.0.0",
-    "webpack": "^4.16.1",
+    "webpack": "^4.16.3",
     "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.4"
+    "webpack-dev-server": "^3.1.5"
+  },
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "vue": "^2.5.16"
   }
 }

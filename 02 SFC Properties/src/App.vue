@@ -8,11 +8,12 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import HelloComponent from './Hello.vue';
 
-export default {
-  name: 'app',
+export default Vue.extend({
+  name: 'App',
   components: {
     HelloComponent,
   },
@@ -22,9 +23,9 @@ export default {
     };
   },
   methods: {
-    onChange: function(value) {
-      this.message = value;
-    },
+    onChange(event) {
+      this.message = event.target.value;
+    }
   },
-};
+});
 </script>
