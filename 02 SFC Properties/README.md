@@ -289,7 +289,7 @@ export default {
     <hello-component
 -       v-model="message"
 +       :message="message"
-+       :onChange="onChange"
++       :on-change="onChange"
     />
   </div>
 </template>

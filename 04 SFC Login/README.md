@@ -2,23 +2,25 @@
 
 In this sample we are going to create a `login` page.
 
-We will take a startup point sample _03 Render_.
+We will take a startup point sample _02 SFC Properties_.
 
 Summary steps:
- - Delete `hello.tsx`.
- - Update `index.html`.
- - Create `login` page.
- - Configure router navigation.
- - Create `recipe list` page.
- - Create `LoginEntity` model.
- - Create fake `login` API.
- - Check valid login.
+
+- Delete `Hello.vue`.
+- Update `App.vue`.
+- Update `index.html`.
+- Create `login` page.
+- Configure router navigation.
+- Create `recipe list` page.
+- Create `LoginEntity` model.
+- Create fake `login` API.
+- Check valid login.
 
 # Steps to build it
 
 ## Prerequisites
 
-You will need to have Node.js installed in your computer. In order to follow this step guides you will also need to take sample _03 Render_ as a starting point.
+You will need to have Node.js installed in your computer. In order to follow this step guides you will also need to take sample _02 SFC Properties_ as a starting point.
 
 ## Steps
 
@@ -30,9 +32,49 @@ npm install
 
 - Delete `Hello.vue`.
 
+- Update `App.vue`:
+
+### ./src/App.vue
+
+```diff
+<template>
+  <div>
+    <h1>{{message}}</h1>
+-    <hello-component
+-      :message="message"
+-      :onChange="onChange"
+-    />
+  </div>
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+- import HelloComponent from './Hello.vue';
+
+export default Vue.extend({
+  name: 'App',
+- components: {
+-   HelloComponent,
+- },
+  data() {
+    return {
+      message: 'Hello from Vue.js',
+    };
+  },
+- methods: {
+-   onChange(event) {
+-     this.message = event.target.value;
+-   }
+- },
+});
+</script>
+
+```
+
 - Update `index.html`:
 
 ### ./src/index.html
+
 ```diff
 <html lang="en">
   <head>
@@ -54,6 +96,7 @@ npm install
 - Create `login` page:
 
 ### ./src/pages/login/components/Header.vue
+
 ```javascript
 <template>
   <div class="panel-heading">
@@ -75,6 +118,7 @@ export default Vue.extend({
 ```
 
 ### ./src/pages/login/components/Form.vue
+
 ```javascript
 <template>
   <div class="panel-body">
@@ -124,13 +168,14 @@ export { HeaderComponent, FormComponent };
 ```
 
 ### ./src/pages/login/Page.vue
+
 ```javascript
 <template>
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-4 col-md-offset-4">
         <div class="panel panel-default">
-          <header-component /> <!-- <HeaderComponent /> Its the same -->
+          <header-component />
           <form-component />
         </div>
       </div>
@@ -153,24 +198,10 @@ export default Vue.extend({
 ```
 
 ### ./src/pages/login/index.ts
+
 ```javascript
 import LoginPage from './Page.vue';
 export { LoginPage };
-
-```
-
-- Update `main.tsx`:
-
-### ./src/main.tsx
-```diff
-import Vue from 'vue';
-import App from './App.vue';
-
-new Vue({
-  el: '#root',
-  components: { App },
-  template: '<App/>'
-});
 
 ```
 
