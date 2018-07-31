@@ -78,17 +78,17 @@ export default Vue.extend({
     },
     save() {
       validations.validateForm(this.recipe)
-        .then((result) => {
+        .then(result => {
           result.fieldErrors
-            .map((error) => this.updateRecipeError(error.key, error));
+            .map(error => this.updateRecipeError(error.key, error));
 
           if (result.succeeded) {
             save(this.recipe)
-              .then((message) => {
+              .then(message => {
                 console.log(message);
                 this.$router.back();
               })
-              .catch((error) => console.log(error));
+              .catch(error => console.log(error));
           } else {
             result.fieldErrors
               .filter(error => !error.succeeded)
