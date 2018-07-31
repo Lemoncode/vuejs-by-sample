@@ -71,7 +71,7 @@ Once you have successfully fullfilled them a **package.json** file we will gener
  npm install typescript@2 --save-dev
  ```
 
-- We need as well to drop a **tsconfig.json** file in the root folder of our project with recommended config to VueJs
+- We need as well to drop a **tsconfig.json** file in the root folder of our project
 
 ### ./tsconfig.json
  ```json
