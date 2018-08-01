@@ -3,7 +3,7 @@
     <h1>{{message}}</h1>
     <hello-component
       :message="message"
-      :onChange="onChange"
+      :on-change="onChange"
     />
   </div>
 </template>

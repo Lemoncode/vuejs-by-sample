@@ -42,7 +42,7 @@ npm install
     <h1>{{message}}</h1>
 -    <hello-component
 -      :message="message"
--      :onChange="onChange"
+-      :on-change="onChange"
 -    />
   </div>
 </template>
@@ -188,7 +188,7 @@ import Vue from 'vue';
 import { HeaderComponent, FormComponent } from './components';
 
 export default Vue.extend({
-  name: 'PageComponent',
+  name: 'LoginPage',
   components: {
     HeaderComponent, FormComponent,
   },
@@ -227,6 +227,7 @@ npm install vue-router --save
 - Create `router.ts`:
 
 ### ./src/router.ts
+
 ```javascript
 import Router, { RouteConfig } from 'vue-router';
 import { LoginPage } from './pages/login';
@@ -245,6 +246,7 @@ export const router = new Router({
 - Update `main.ts` to work with router:
 
 ### ./src/main.ts
+
 ```diff
 import Vue from 'vue';
 + import Router from 'vue-router';
@@ -256,36 +258,46 @@ import App from './App.vue';
 new Vue({
   el: '#root',
 +  router,
-  components: { App },
-  template: '<App/>'
+  render: (h) => h(App),
 });
 
 ```
 
-- We can extract render method to `App.vue` file:
+- We can extract view render method to `App.vue` file:
 
 ### ./src/App.vue
-```javascript
+
+```diff
 <template>
-  <router-view />
+- <div>
+-   <h1>{{message}}</h1>
+- </div>
++ <router-view />
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 
 export default Vue.extend({
-  name: 'app',
+  name: 'App',
+  data() {
+-   return {
+-     message: 'Hello from Vue.js',
+-   };
+- },
 });
 </script>
+
 
 ```
 
 - Create a second page to navigate:
 
 ### ./src/pages/recipe/list/Page.vue
+
 ```javascript
 <template>
-  <h1>Recipe List Page </h1>
+  <h1>Recipe List Page</h1>
 </template>
 
 <script lang="ts">
@@ -299,6 +311,7 @@ export default Vue.extend({
 ```
 
 ### ./src/pages/recipe/list/index.ts
+
 ```javascript
 import RecipeListPage from './Page.vue';
 export { RecipeListPage };
@@ -308,6 +321,7 @@ export { RecipeListPage };
 - Create route for `RecipeListPage`:
 
 ### ./src/router.ts
+
 ```diff
 import Router, { RouteConfig } from 'vue-router';
 import { LoginPage } from './pages/login';
@@ -328,6 +342,7 @@ export const router = new Router({
 - Navigate using `router-link`:
 
 ### ./src/pages/login/components/Form.vue
+
 ```diff
 <template>
   <div class="panel-body">
@@ -347,13 +362,13 @@ export const router = new Router({
         />
       </div>
 -      <button
--        type="button"      
+-        type="button"
 +      <router-link
 +        to="/recipe"
         class="btn btn-lg btn-success btn-block"
       >
         Login
--      </button>        
+-      </button>
 +      </router-link>
     </form>
   </div>
@@ -386,6 +401,39 @@ export interface LoginEntity {
 ```javascript
 export * from './login';
 
+```
+
+- Update `tsconfig.json` to support `Promise`:
+
+### ./tsconfig.json
+
+```diff
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "es2015",
+    "moduleResolution": "node",
+    "declaration": false,
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "noLib": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "strict": true,
++   "lib": [
++     "dom",
++     "es5",  
++     "es2015.promise"
++   ]
+  },
+  "compileOnSave": false,
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
 ```
 
 - Create fake `login` API.
@@ -450,7 +498,7 @@ export const mapLoginEntityVmToModel = (loginEntity: vm.LoginEntity): model.Logi
 
 - Create `LoginPageContainer`:
 
-### ./src/pages/login/pageContainer.tsx
+### ./src/pages/login/PageContainer.vue
 
 ```javascript
 <template>
@@ -468,15 +516,16 @@ import { LoginEntity, createEmptyLoginEntity } from './viewModel';
 import { mapLoginEntityVmToModel } from './mappers';
 import LoginPage from './Page.vue';
 
-// export default class PageContainer extends Vue.extend({
 export default Vue.extend({  
-  name: 'PageContainer',
+  name: 'LoginPageContainer',
   components: {
     LoginPage,
   },
-  data: () => ({
-    loginEntity: createEmptyLoginEntity(),
-  }),
+  data() {
+    return {
+      loginEntity: createEmptyLoginEntity(),
+    };
+  },
   methods: {
     updateLogin(login: string, password: string) {
       this.loginEntity = {
@@ -490,9 +539,7 @@ export default Vue.extend({
         .then(() => {
           this.$router.push('/recipe');
         })
-        .catch((error) => {
-          console.log(error);
-        });
+        .catch(error => console.log(error));
     },
   },
 });
@@ -549,6 +596,7 @@ export default Vue.extend({
 - Update `Form.vue`:
 
 ### ./src/pages/login/components/Form.vue
+
 ```diff
 <template>
   <div class="panel-body">
