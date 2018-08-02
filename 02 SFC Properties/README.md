@@ -1,4 +1,4 @@
-# 02 Properties
+# 02 SFC Properties
 
 In this sample we are going to learn a basic concept, handling properties.
 

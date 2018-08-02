@@ -8,6 +8,5 @@ Vue.use(Router);
 new Vue({
   el: '#root',
   router,
-  components: { App },
-  template: '<App/>'
+  render: (h) => h(App),
 });

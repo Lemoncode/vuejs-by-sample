@@ -1,23 +1,26 @@
 {
-    "compilerOptions": {
-      "target": "es6",
-      "module": "es6",
-      "moduleResolution": "node",
-      "declaration": false,
-      "noImplicitAny": false,
-      "sourceMap": true,
-      "noLib": false,
-      "suppressImplicitAnyIndexErrors": true,
-      "allowSyntheticDefaultImports": true,
-      "strict": true,
-      "lib": [
-        "dom",
-        "es5",
-        "es2015.promise"
-      ]
-    },
-    "compileOnSave": false,
-    "exclude": [
-      "node_modules"
+  "compilerOptions": {
+    "target": "es5",
+    "module": "es2015",
+    "moduleResolution": "node",
+    "declaration": false,
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "noLib": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "strict": true,
+    "lib": [
+      "dom",
+      "es5",
+      "es2015.promise"
     ]
-  }
+  },
+  "compileOnSave": false,
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

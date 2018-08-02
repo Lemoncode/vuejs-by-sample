@@ -2,7 +2,7 @@
   <button
     :class="className"
     :type="type"
-    @click="onClick"
+    @click.prevent="clickHandler"
     :disabled="disabled"
   >
     {{ label }}
@@ -21,11 +21,5 @@ export default Vue.extend({
     'clickHandler',
     'disabled',
   ],
-  methods: {
-    onClick(e) {
-      e.preventDefault();
-      this.clickHandler();
-    }
-  },
 });
 </script>

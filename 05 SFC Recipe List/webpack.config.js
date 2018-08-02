@@ -1,28 +1,27 @@
-const path = require('path');
-const webpack = require('webpack');
+var path = require('path');
+var webpack = require('webpack');
 const { VueLoaderPlugin } = require('vue-loader');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var MiniCssExtractPlugin = require('mini-css-extract-plugin');
+var ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
-const basePath = __dirname;
-const env = process.env.NODE_ENV;
-const sourceMap = env === 'development';
+var basePath = __dirname;
 
 module.exports = {
   context: path.join(basePath, 'src'),
   resolve: {
-    extensions: ['.js', '.ts', '.vue'],
+    extensions: ['.js', '.ts', 'vue'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js'
     },
   },
-  mode: env,
+  mode: 'development',
   entry: {
     app: './main.ts',
     vendor: [
+      'lc-form-validation',
       'vue',
       'vue-router',
-      'lc-form-validation',
     ],
     vendorStyles: [
       '../node_modules/bootstrap/dist/css/bootstrap.css',
@@ -30,7 +29,7 @@ module.exports = {
   },
   output: {
     path: path.join(basePath, 'dist'),
-    filename: '[name].bundle.js',
+    filename: '[name].js',
   },
   module: {
     rules: [
@@ -40,35 +39,28 @@ module.exports = {
         loader: 'vue-loader'
       },
       {
-        test: /\.tsx?$/,
-        loader: 'ts-loader',
-        exclude: /node_modules/,
-        options: {
-          appendTsSuffixTo: [/\.vue$/],
-        }
-      },
-      {
-        test: /\.js$/,
+        test: /\.ts$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader'
-        }
+          loader: 'ts-loader',
+          options: {
+            appendTsSuffixTo: [/\.vue$/],
+            transpileOnly: true,
+          },
+        },
       },
       {
         test: /\.css$/,
         include: /node_modules/,
         use: [
-          env !== 'production'
-            ? 'vue-style-loader'
-            : MiniCssExtractPlugin.loader,
-          'css-loader'
+          MiniCssExtractPlugin.loader,
+          'css-loader',
         ],
       },
       {
         test: /\.css$/,
         exclude: /node_modules/,
         oneOf: [
-          // this matches `<style module>`
           {
             resourceQuery: /module/,
             use: [
@@ -82,34 +74,16 @@ module.exports = {
               }
             ]
           },
-          // this matches plain `<style>` or `<style scoped>`
           {
             use: [
-              env !== 'production'
-                ? 'vue-style-loader'
-                : MiniCssExtractPlugin.loader,
-              'css-loader'
+              MiniCssExtractPlugin.loader,
+              'css-loader',
             ],
           }
         ],
       },
-      {
-        test: /\.sass$/,
-        use: [
-          env !== 'production'
-            ? 'vue-style-loader'
-            : MiniCssExtractPlugin.loader,
-          'css-loader',
-          {
-            loader: 'sass-loader',
-            options: {
-              indentedSyntax: true,
-              // you can also read from a file, e.g. `variables.scss`
-              data: `$color: red;`
-            }
-          }
-        ]
-      },
+      // Loading glyphicons => https://github.com/gowravshekar/bootstrap-webpack
+      // Using here url-loader and file-loader
       {
         test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader?limit=10000&mimetype=application/font-woff'
@@ -128,9 +102,10 @@ module.exports = {
       },
     ]
   },
-  devtool: sourceMap ? 'cheap-module-eval-source-map' : undefined,
+  devtool: 'inline-source-map',
   plugins: [
     new VueLoaderPlugin(),
+    //Generate index.html in /dist => https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
       filename: 'index.html', //Name of file in ./dist/
       template: 'index.html', //Name of template in ./src
@@ -140,5 +115,9 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: '[name].css',
     }),
-  ]
+    new ForkTsCheckerWebpackPlugin({
+      tsconfig: path.join(__dirname, './tsconfig.json'),
+      vue: true
+    }),
+  ],
 };

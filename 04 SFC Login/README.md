@@ -1,4 +1,4 @@
-# 04 Login
+# 04 SFC Login
 
 In this sample we are going to create a `login` page.
 

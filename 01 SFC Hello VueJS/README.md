@@ -1,4 +1,4 @@
-# 01 Hello VueJS SFC
+# 01 SFC Hello VueJS
 
 ## Why SFC?
 
