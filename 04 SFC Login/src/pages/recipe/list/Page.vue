@@ -1,5 +1,5 @@
 <template>
-  <h1>Recipe List Page </h1>
+  <h1>Recipe List Page</h1>
 </template>
 
 <script lang="ts">

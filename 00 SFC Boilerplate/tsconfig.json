@@ -3,6 +3,14 @@
     "target": "es6",
     "module": "es6",
     "moduleResolution": "node",
-    "strict": true
-  }
+    "declaration": false,
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "noLib": false,
+    "suppressImplicitAnyIndexErrors": true
+  },
+  "compileOnSave": false,
+  "exclude": [
+    "node_modules"
+  ]
 }

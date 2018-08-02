@@ -1,4 +1,4 @@
-# 00 Boilerplate
+# 00 SFC Boilerplate
 
 In this sample we are going to setup a web project that can be easily managed
 by webpack.
@@ -71,17 +71,25 @@ Once you have successfully fullfilled them a **package.json** file we will gener
  npm install typescript@2 --save-dev
  ```
 
-- We need as well to drop a **tsconfig.json** file in the root folder of our project with recommended config to VueJs
+- We need as well to drop a **tsconfig.json** file in the root folder of our project
 
 ### ./tsconfig.json
  ```json
 {
   "compilerOptions": {
-    "target": "es5",
-    "strict": true,
-    "module": "es2015",
-    "moduleResolution": "node"
-  }
+    "target": "es6",
+    "module": "es6",
+    "moduleResolution": "node",
+    "declaration": false,
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "noLib": false,
+    "suppressImplicitAnyIndexErrors": true
+  },
+  "compileOnSave": false,
+  "exclude": [
+    "node_modules"
+  ]
 }
 
  ```
@@ -214,8 +222,8 @@ document.write("Hello from main.ts !");
  - Generating the build under a **dist** folder.
 
 ### ./webpack.config.js
- 
- ```javascript
+
+```javascript
 var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');

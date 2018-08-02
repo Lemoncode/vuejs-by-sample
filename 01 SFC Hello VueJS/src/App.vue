@@ -1,15 +1,16 @@
-
 <template>
   <h1>{{ message }}</h1>
 </template>
 
-<script>
-export default {
-  name: 'app',
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  name: 'App',
   data() {
     return {
       message: 'Hello from Vue.js',
     };
-  }
-};
+  },  
+});
 </script>

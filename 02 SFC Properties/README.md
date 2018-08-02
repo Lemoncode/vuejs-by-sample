@@ -1,21 +1,22 @@
-# 02 Properties
+# 02 SFC Properties
 
 In this sample we are going to learn a basic concept, handling properties.
 
-We will take a startup point sample _01 Hello VueJS_.
+We will take a startup point sample _01 SFC Hello VueJS_.
 
 Summary steps:
- - Update `main.ts` with and input element.
- - Use `v-model` directive.
- - Create our first component.
- - Passing properties from `main.ts` to `hello.ts`.
- - Other approach to work with properties.
+
+- Update `App.vue` with and input element.
+- Use `v-model` directive.
+- Create our first component.
+- Passing properties from `main.ts` to `hello.ts`.
+- Other approach to work with properties.
 
 # Steps to build it
 
 ## Prerequisites
 
-You will need to have Node.js installed in your computer. In order to follow this step guides you will also need to take sample _01 Hello VueJS_ as a starting point.
+You will need to have Node.js installed in your computer. In order to follow this step guides you will also need to take sample _01 SFC Hello VueJS_ as a starting point.
 
 ## Steps
 
@@ -25,16 +26,15 @@ You will need to have Node.js installed in your computer. In order to follow thi
 npm install
 ```
 
-- Update `main.ts` with an input element:
+- Update `App.vue` with an input element:
 
 ### ./src/App.vue
 
 ```diff
-
 <template>
-  <h1>{{message}}</h1>
+-  <h1>{{message}}</h1>
 +  <div>
--    <h1>{{message}}</h1>
++    <h1>{{message}}</h1>
 +    <input
 +      v-bind:value="message"
 +      v-on:input="message = $event.target.value"
@@ -42,9 +42,11 @@ npm install
 +  </div>
 </template>
 
-<script>
-export default {
-  name: 'app',
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  name: 'App',
   data() {
     return {
       message: 'Hello from Vue.js',
@@ -57,9 +59,9 @@ export default {
 
 - We can use too the shorthands:
 
-### ./src/main.ts
-```diff
+### ./src/App.vue
 
+```diff
 <template>
   <div>
     <h1>{{message}}</h1>
@@ -72,9 +74,11 @@ export default {
   </div>
 </template>
 
-<script>
-export default {
-  name: 'app',
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  name: 'App',
   data() {
     return {
       message: 'Hello from Vue.js',
@@ -87,7 +91,7 @@ export default {
 
 - And finally, use method instead of inline function:
 
-### ./src/main.ts
+### ./src/App.vue
 
 ```diff
 <template>
@@ -96,22 +100,24 @@ export default {
     <input
       :value="message"
 -      @input="message = $event.target.value"
-+      @input="onChange($event.target.value)"
++      @input="onChange"
     />
   </div>
 </template>
 
-<script>
-export default {
-  name: 'app',
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  name: 'App',
   data() {
     return {
       message: 'Hello from Vue.js',
     };
   },
 + methods: {
-+   onChange: function(value) {
-+     this.message = value;
++   onChange(event) {
++     this.message = event.target.value;
 +   },
 + },  
 };
@@ -123,7 +129,7 @@ export default {
 
 - Using syntactic sugar `v-model`:
 
-### ./src/main.ts
+### ./src/App.vue
 
 ```diff
 <template>
@@ -131,23 +137,25 @@ export default {
     <h1>{{message}}</h1>
     <input
 -       :value="message"
--       @input="onChange($event.target.value)"
+-       @input="onChange"
 +       v-model="message"
     />
   </div>
 </template>
 
-<script>
-export default {
-  name: 'app',
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  name: 'App',
   data() {
     return {
       message: 'Hello from Vue.js',
     };
   },
--  methods: {
--   onChange: function(value) {
--     this.message = value;
+- methods: {
+-   onChange(event) {
+-     this.message = event.target.value;
 -   },
 - },
 };
@@ -155,9 +163,10 @@ export default {
 
 ```
 
-- Create our first component `hello.ts`:
+- Create our first component `Hello.vue`:
 
 ### ./src/Hello.vue
+
 ```javascript
 <template>
   <input
@@ -178,7 +187,7 @@ export default {
 
 - Update `App.vue`:
 
-### ./src/Hello.vue
+### ./src/App.vue
 
 ```diff
 <template>
@@ -195,10 +204,10 @@ export default {
 + import HelloComponent from './Hello.vue';
 
 export default {
-  name: 'app',
-+  components: {
-+    HelloComponent,
-+  },
+  name: 'App',
++ components: {
++   HelloComponent,
++ },
   data() {
     return {
       message: 'Hello from Vue.js',
@@ -209,6 +218,8 @@ export default {
 
 ```
 
+Vue
+
 - Since we are using `v-model` in `HelloComponent` we are mutating `value` prop and it's forbidden. To solve this:
 
 ### ./src/Hello.vue
@@ -218,7 +229,7 @@ export default {
   <input
 -     v-model="value"
 +     :value="value"
-+     @input="onChange($event.target.value)"
++     @input="onChange"
   />
 </template>
 
@@ -229,8 +240,8 @@ export default {
     value: String,
   },
 +  methods: {
-+    onChange: function(value) {
-+      this.$emit('input', value);
++    onChange: function(event) {
++      this.$emit('input', event.target.value);
 +    },
 +  },  
 };
@@ -245,9 +256,9 @@ export default {
 ```diff
 <template>
   <input
--     :value="value"
-+     :value="message"
-    @input="onChange($event.target.value)"
+-   :value="value"
++   :value="message"
+    @input="onChange"
   />
 </template>
 
@@ -278,7 +289,7 @@ export default {
     <hello-component
 -       v-model="message"
 +       :message="message"
-+       :onChange="onChange"
++       :on-change="onChange"
     />
   </div>
 </template>
@@ -287,7 +298,7 @@ export default {
 import HelloComponent from './Hello.vue';
 
 export default {
-  name: 'app',
+  name: 'App',
   components: {
     HelloComponent,
   },
@@ -297,8 +308,8 @@ export default {
     };
   },
 + methods: {
-+   onChange: function(value) {
-+     this.message = value;
++   onChange(event) {
++     this.message = event.target.value;
 +   },
 + },
 };

@@ -1,21 +1,22 @@
-# 05 Recipe List
+# 05 SFC Recipe List
 
 In this sample we are going to create a `recipe list` page.
 
-We will take a startup point sample _04 Login_.
+We will take a startup point sample _04 SFC Login_.
 
 Summary steps:
- - Create `recipe` model.
- - Create fake `recipe` API.
- - Create `recipe list` page container.
- - Update `recipe list` page.
- - Navigate to `edit recipe` page.
+
+- Create `recipe` model.
+- Create fake `recipe` API.
+- Create `recipe list` page container.
+- Update `recipe list` page.
+- Navigate to `edit recipe` page.
 
 # Steps to build it
 
 ## Prerequisites
 
-You will need to have Node.js installed in your computer. In order to follow this step guides you will also need to take sample _04 Login_ as a starting point.
+You will need to have Node.js installed in your computer. In order to follow this step guides you will also need to take sample _04 SFC Login_ as a starting point.
 
 ## Steps
 
@@ -166,7 +167,7 @@ const mapRecipeModelToVm = (recipe: model.Recipe): vm.Recipe => ({
 
 - Create `recipe list` page container:
 
-### ./src/pages/recipe/list/pageContainer.tsx
+### ./src/pages/recipe/list/PageContainer.vue
 
 ```javascript
 <template>
@@ -187,15 +188,17 @@ export default Vue.extend({
   components: {
     RecipeListPage,
   },
-  data: () => ({
-    recipes: [] as Recipe[],
-  }),
-  created: function() {
+  data() {
+    return {
+      recipes: [] as Recipe[],
+    };
+  },
+  created() {
     fetchRecipes()
-      .then((recipes) => {
+      .then(recipes => {
         this.recipes = mapRecipeListModelToVm(recipes);
       })
-      .catch((error) => console.log(error));
+      .catch(error => console.log(error));
   },
 });
 </script>
@@ -275,10 +278,8 @@ npm install @types/webpack-env --save-dev
 +         },
 +         {
 +           use: [
-+             env !== 'production'
-+               ? 'vue-style-loader'
-+               : MiniCssExtractPlugin.loader,
-+             'css-loader'
++             MiniCssExtractPlugin.loader,
++             'css-loader',
 +           ],
 +         }
 +       ],
@@ -361,8 +362,8 @@ export { HeaderComponent, RowComponent };
 
 ```diff
 <template>
-  <div class="container-fluid">
--    <h1> Recipe List Page </h1>  
++  <div class="container-fluid">
+-    <h1> Recipe List Page</h1>  
 +    <h2>Recipes</h2>
 +    <table class="table table-striped">
 +      <header-component />
@@ -375,7 +376,7 @@ export { HeaderComponent, RowComponent };
 +        </template>
 +      </tbody>
 +    </table>
-  </div>  
++  </div>  
 </template>
 
 <script lang="ts">
@@ -386,9 +387,9 @@ export { HeaderComponent, RowComponent };
 
 export default Vue.extend({
   name: 'RecipeListPage',
-  components: {
-    HeaderComponent, RowComponent,
-  },
++ components: {
++   HeaderComponent, RowComponent,
++ },
 + props: {
 +   recipes: {} as PropOptions<Recipe[]>,
 + },  
@@ -434,16 +435,16 @@ export const router = new Router({
 
 - Create `SearchBar`:
 
-### ./src/pages/recipe/list/components/searchBar.tsx
+### ./src/pages/recipe/list/components/SearchBar.vue
 
 ```javascript
 <template>
   <input-component
     type="text"
     name="searchText"
-    :value="searchText"
     placeholder="Search for ingredients comma separated..."
-    :inputHandler="inputHandler"
+    :value="searchText"
+    :input-handler="inputHandler"
 />
 </template>
 
@@ -464,7 +465,7 @@ export default Vue.extend({
     inputHandler(field: string, value: string) {
       this.searchInputHandler(value);
     }
-  }    
+  }
 });
 </script>
 
@@ -539,7 +540,7 @@ const matchIngredient = (ingredient, searchedIngredient) => {
 +    <search-bar-component
 +      :search-text="searchText"
 +      :search-input-handler="searchInputHandler"
-+    />    
++    />
     <table class="table table-striped">
       <header-component />
       <tbody>
@@ -593,15 +594,15 @@ export default Vue.extend({
 
 - Finally, we are going to create a dummy `edit recipe` page to navigate:
 
-### ./src/pages/recipe/edit/page.tsx
+### ./src/pages/recipe/edit/Page.vue
 
 ```javascript
 <template>
-  <h1> Edit Recipe Page {{ id }}</h1>
+  <h1>Edit Recipe Page {{ id }}</h1>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue from 'vue';
 
 export default Vue.extend({
   name: 'RecipeEditPage',
@@ -646,7 +647,7 @@ export const router = new Router({
 
 - Finally, we need to update the `row` component:
 
-### ./src/pages/recipe/list/components/row.tsx
+### ./src/pages/recipe/list/components/Row.vue
 
 ```diff
 <template>
@@ -662,14 +663,14 @@ export const router = new Router({
       </span>
     </td>
     <td>
--      <a class="btn btn-primary pull-right">
-+         <router-link
-+           :to="`recipe/${recipe.id}`"
-+           class="btn btn-primary pull-right"
-+         >
+-     <a class="btn btn-primary pull-right">
++     <router-link
++       :to="`recipe/${recipe.id}`"
++       class="btn btn-primary pull-right"
++     >
         <i class="glyphicon glyphicon-pencil" />
--      </a>
-+         </router-link>
+-     </a>
++     </router-link>
     </td>
   </tr>
 </template>

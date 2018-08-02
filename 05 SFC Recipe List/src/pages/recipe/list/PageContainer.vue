@@ -16,15 +16,17 @@ export default Vue.extend({
   components: {
     RecipeListPage,
   },
-  data: () => ({
-    recipes: [] as Recipe[],
-  }),
-  created: function() {
+  data() {
+    return {
+      recipes: [] as Recipe[],
+    };
+  },
+  created() {
     fetchRecipes()
-      .then((recipes) => {
+      .then(recipes => {
         this.recipes = mapRecipeListModelToVm(recipes);
       })
-      .catch((error) => console.log(error));
+      .catch(error => console.log(error));
   },
 });
 </script>

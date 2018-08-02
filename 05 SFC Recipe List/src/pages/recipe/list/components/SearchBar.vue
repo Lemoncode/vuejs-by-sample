@@ -2,9 +2,9 @@
   <input-component
     type="text"
     name="searchText"
-    :value="searchText"
     placeholder="Search for ingredients comma separated..."
-    :inputHandler="inputHandler"
+    :value="searchText"
+    :input-handler="inputHandler"
 />
 </template>
 
