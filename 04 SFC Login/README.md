@@ -808,9 +808,9 @@ npm install lc-form-validation --save
 ```diff
 ...
 vendor: [
-+ 'lc-form-validation',
   'vue',
   'vue-router',
++ 'lc-form-validation',
 ],
 ...
 
