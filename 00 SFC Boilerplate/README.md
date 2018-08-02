@@ -1,4 +1,4 @@
-# 00 Boilerplate
+# 00 SFC Boilerplate
 
 In this sample we are going to setup a web project that can be easily managed
 by webpack.
