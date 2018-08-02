@@ -583,11 +583,11 @@ export default Vue.extend({
   components: {
     HeaderComponent, FormComponent,
   },
-+  props: {
-+    loginEntity: {} as PropOptions<LoginEntity>,
-+    updateLogin: {} as PropOptions<(login: string, password: string) => void>,
-+    loginRequest: {} as PropOptions<() => void>,
-+  },  
++ props: {
++   loginEntity: {} as PropOptions<LoginEntity>,
++   updateLogin: {} as PropOptions<(login: string, password: string) => void>,
++   loginRequest: {} as PropOptions<() => void>,
++ },  
 });
 </script>
 
@@ -607,7 +607,7 @@ export default Vue.extend({
           placeholder="e-mail"
           type="text"
 +          :value="loginEntity.login"
-+          @input="(e) => updateLogin(e.target.value, loginEntity.password)"
++          @input="updateLogin($event.target.value, loginEntity.password)"
         />
       </div>
       <div class="form-group">
@@ -616,21 +616,18 @@ export default Vue.extend({
           placeholder="password"
           type="password"
 +          :value="loginEntity.password"
-+          @input="(e) => updateLogin(loginEntity.login, e.target.value)"
++          @input="updateLogin(loginEntity.login, $event.target.value)"
         />
       </div>
--      <router-link
--        to="/recipe"      
-+      <button
+-     <router-link
+-       to="/recipe"
++     <button
         class="btn btn-lg btn-success btn-block"
-+        @click="(e) => {
-+            e.preventDefault();
-+            this.loginRequest();
-+          }"
-        >
++       @click.prevent="loginRequest"
+      >
         Login
--      </router-link>        
-+      </button>
+-     </router-link>
++     </button>
     </form>
   </div>
 </template>
@@ -642,11 +639,11 @@ export default Vue.extend({
 
 export default Vue.extend({
   name: 'FormComponent',
-+  props: {
-+    loginEntity: {} as PropOptions<LoginEntity>,
-+    updateLogin: {} as PropOptions<(login: string, password: string) => void>,
-+    loginRequest: {} as PropOptions<() => void>,
-+  },  
++ props: {
++   loginEntity: {} as PropOptions<LoginEntity>,
++   updateLogin: {} as PropOptions<(login: string, password: string) => void>,
++   loginRequest: {} as PropOptions<() => void>,
++ },  
 });
 </script>
 
@@ -659,8 +656,8 @@ export default Vue.extend({
 ```diff
 - import LoginPage from './Page.vue';
 - export { LoginPage };
-+ import PageContainer from './PageContainer.vue';
-+ export { PageContainer };
++ import LoginPageContainer from './PageContainer.vue';
++ export { LoginPageContainer };
 
 ```
 
@@ -730,7 +727,7 @@ export default Vue.extend({
 
 ```
 
-### ./src/pages/login/page.tsx
+### ./src/pages/login/Page.vue
 
 ```diff
   ...
@@ -789,13 +786,16 @@ import Vue from 'vue';
 
 export default Vue.extend({
   name: 'app',
-+ data: () => state,
++ data() {
++   return state;
++ },
 });
 </script>
 
 ```
 
 ### ./src/pages/login/PageContainer.vue
+
 ```diff
   ...
 
@@ -812,10 +812,14 @@ export default Vue.extend({
   components: {
     LoginPage,
   },
-- data: () => ({
--   loginEntity: createEmptyLoginEntity(),
-- }),
-+ data: () => state,
+- data() {
+-   return {
+-     loginEntity: createEmptyLoginEntity(),
+-   };
+- },
++ data() {
++   return state;
++ },
   ...
 
 ```
@@ -833,6 +837,7 @@ npm install lc-form-validation --save
 - Add it as `vendor`:
 
 ### ./webpack.config.js
+
 ```diff
 ...
 vendor: [
@@ -915,7 +920,7 @@ const createEmptyLoginEntity = (): LoginEntity => ({
 <template>
   <login-page
     :login-entity="loginEntity"
-+    :login-error="loginError"
++   :login-error="loginError"
     :update-login="updateLogin"
     :login-request="loginRequest"
   />
@@ -925,10 +930,7 @@ const createEmptyLoginEntity = (): LoginEntity => ({
 import Vue from 'vue';
 import { loginRequest } from '../../rest-api/api/login';
 - import { LoginEntity, createEmptyLoginEntity } from './viewModel';
-+ import {
-+   LoginEntity, createEmptyLoginEntity,
-+   LoginError, createEmptyLoginError,
-+ } from './viewModel';
++ import { LoginEntity, createEmptyLoginEntity, LoginError, createEmptyLoginError } from './viewModel';
 import { mapLoginEntityVmToModel } from './mappers';
 + import { validations } from './validations';
 import LoginPage from './Page.vue';
@@ -938,10 +940,12 @@ export default Vue.extend({
   components: {
     LoginPage,
   },
-  data: () => ({
-    loginEntity: createEmptyLoginEntity(),
-+    loginError: createEmptyLoginError(),
-  }),
+  data() {
+    return {
+      loginEntity: createEmptyLoginEntity(),
++     loginError: createEmptyLoginError(),
+    };
+  },  
   methods: {
 -   updateLogin(login: string, password: string) {
 +   updateLogin(field: string, value: string) {
@@ -953,31 +957,32 @@ export default Vue.extend({
 +       ...this.loginEntity,
 +       [field]: value,
 +     };
-
-+     validations.validateField(this.loginEntity, field, value)
-+       .then((fieldValidationResult) => {
-+         this.loginError = {
-+           ...this.loginError,
-+           [field]: fieldValidationResult,
-+         };
-+       })
-+       .catch((error) => console.log(error));
++    validations.validateField(this.loginEntity, field, value)
++     .then(fieldValidationResult => {
++       this.loginError = {
++         ...this.loginError,
++         [field]: fieldValidationResult,
++       };
++     })
++     .catch(error => console.log(error));
     },
     loginRequest() {
 +     validations.validateForm(this.loginEntity)
-+       .then((formValidationResult) => {
++       .then(formValidationResult => {
 +         if (formValidationResult.succeeded) {
             const loginEntityModel = mapLoginEntityVmToModel(this.loginEntity);
             loginRequest(loginEntityModel)
               .then(() => {
                 this.$router.push('/recipe');
               })
-              .catch((error) => {
-                console.log(error);
-              });
+              .catch(error => console.log(error));
++         } else {
++           for (const obj in this.loginEntity) {
++             this.updateLogin(obj, this.loginEntity[obj]);
++           }
 +         }
 +       })
-+       .catch((error) => console.log(error));
++       .catch(error => console.log(error));
     }
   },
 });
@@ -1055,7 +1060,6 @@ export default Vue.extend({
 <template>
   <div :class="`${errorClassName} ${className}`">
     <slot />
-    {{ errorMessage }}
     <div class="help-block">
       {{ errorMessage }}
     </div>
@@ -1137,7 +1141,7 @@ export default Vue.extend({
   <button
     :class="className"
     :type="type"
-    @click="onClick"
+    @click="clickHandler"
     :disabled="disabled"
   >
     {{ label }}
@@ -1156,12 +1160,6 @@ export default Vue.extend({
     'clickHandler',
     'disabled',
   ],
-  methods: {
-    onClick(e) {
-      e.preventDefault();
-      this.clickHandler();
-    }
-  },
 });
 </script>
 
@@ -1192,12 +1190,12 @@ export { ValidationComponent, InputComponent, ButtonComponent };
 -             placeholder="e-mail"
 -             type="text"
 -             :value="loginEntity.login"
--             @input="(e) => updateLogin(e.target.value, loginEntity.password)"
+-             @input="updateLogin($event.target.value, loginEntity.password)"
 -           />
--         </div>    
+-         </div>
 +      <validation-component
-+        :hasError="!loginError.login.succeeded"
-+        :errorMessage="loginError.login.errorMessage"
++        :has-error="!loginError.login.succeeded"
++        :error-message="loginError.login.errorMessage"
 +      >
 +        <input-component
 +          placeholder="e-mail"
@@ -1205,7 +1203,7 @@ export { ValidationComponent, InputComponent, ButtonComponent };
 +          label="Login"
 +          name="login"
 +          :value="loginEntity.login"
-+          :inputHandler="updateLogin"
++          :input-handler="updateLogin"
 +        />
 +      </validation-component>
 -         <div class="form-group">
@@ -1214,12 +1212,12 @@ export { ValidationComponent, InputComponent, ButtonComponent };
 -             placeholder="password"
 -             type="password"
 -             :value="loginEntity.password"
--             @input="(e) => updateLogin(loginEntity.login, e.target.value)"
+-             @input="updateLogin(loginEntity.login, $event.target.value)"
 -           />
 -         </div>
 +      <validation-component
-+        :hasError="!loginError.password.succeeded"
-+        :errorMessage="loginError.password.errorMessage"
++        :has-error="!loginError.password.succeeded"
++        :error-message="loginError.password.errorMessage"
 +      >
 +        <input-component
 +          placeholder="password"
@@ -1227,20 +1225,17 @@ export { ValidationComponent, InputComponent, ButtonComponent };
 +          label="Password"
 +          name="password"
 +          :value="loginEntity.password"
-+          :inputHandler="updateLogin"
++          :input-handler="updateLogin"
 +        />
 +      </validation-component>
 -         <button-component
 -           class="btn btn-lg btn-success btn-block"
--           @click="(e) => {
--             e.preventDefault();
--             loginRequest();
--           }"
+-           @click.prevent="loginRequest"
 -         >
 -           Login
 -         </button-component>
 +      <button-component
-+        className="btn btn-lg btn-success btn-block"
++        class-name="btn btn-lg btn-success btn-block"
 +        label="Login"
 +        :clickHandler="loginRequest"
 +      />
@@ -1255,9 +1250,9 @@ import { FormProps } from '../formProps';
 
 export default Vue.extend({
   name: 'FormComponent',
-  components: {
-    ValidationComponent, InputComponent, ButtonComponent,
-  },
++ components: {
++   ValidationComponent, InputComponent, ButtonComponent,
++ },
   props: {
     loginEntity: {},
 +   loginError: {},
