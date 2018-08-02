@@ -403,39 +403,6 @@ export * from './login';
 
 ```
 
-- Update `tsconfig.json` to support `Promise`:
-
-### ./tsconfig.json
-
-```diff
-{
-  "compilerOptions": {
-    "target": "es5",
-    "module": "es2015",
-    "moduleResolution": "node",
-    "declaration": false,
-    "noImplicitAny": false,
-    "sourceMap": true,
-    "noLib": false,
-    "suppressImplicitAnyIndexErrors": true,
-    "strict": true,
-+   "lib": [
-+     "dom",
-+     "es5",  
-+     "es2015.promise"
-+   ]
-  },
-  "compileOnSave": false,
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.vue"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
-}
-```
-
 - Create fake `login` API.
 
 ### ./src/rest-api/api/login/login.ts

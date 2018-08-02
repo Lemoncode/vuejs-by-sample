@@ -8,7 +8,7 @@ const constraints: ValidationConstraints = {
     ],
     ingredients: [
       { validator: hasItems('Should has one or more ingredients.') },
-    ],
+    ],    
   },
 };
 

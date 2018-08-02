@@ -1,8 +1,8 @@
-# 06 Edit Recipe
+# 06 SFC Edit Recipe
 
 In this sample we are going to create a `edit recipe` page.
 
-We will take a startup point sample _05 Recipe List_.
+We will take a startup point sample _05 SFC Recipe List_.
 
 Summary steps:
 
@@ -17,7 +17,7 @@ Summary steps:
 
 ## Prerequisites
 
-You will need to have Node.js installed in your computer. In order to follow this step guides you will also need to take sample _05 Recipe List_ as a starting point.
+You will need to have Node.js installed in your computer. In order to follow this step guides you will also need to take sample _05 SFC Recipe List_ as a starting point.
 
 ## Steps
 
@@ -100,17 +100,17 @@ export const mapRecipeModelToVm = (recipe: model.Recipe): vm.Recipe => ({
 
 ```
 
-- Create `pageContainer`:
+- Create `PageContainer`:
 
 ### ./src/pages/recipe/edit/PageContainer.vue
 
 ```javascript
 <template>
-  <edit-recipe-page
+  <recipe-edit-page
     :recipe="recipe"
-    :updateRecipe="updateRecipe"
-    :addIngredient="addIngredient"
-    :removeIngredient="removeIngredient"
+    :update-recipe="updateRecipe"
+    :add-ingredient="addIngredient"
+    :remove-ingredient="removeIngredient"
     :save="save"  
   />  
 </template>
@@ -121,12 +121,12 @@ import { router } from '../../../router';
 import { fetchRecipeById, save } from '../../../rest-api/api/recipe';
 import { Recipe, createEmptyRecipe } from './viewModel';
 import { mapRecipeModelToVm } from './mappers';
-import EditRecipePage from './Page.vue';
+import RecipeEditPage from './Page.vue';
 
 export default Vue.extend({
-  name: 'EditRecipePageContainer',
+  name: 'RecipeEditPageContainer',
   components: {
-    EditRecipePage,
+    RecipeEditPage,
   },
   props: {
     id: String,
@@ -139,10 +139,10 @@ export default Vue.extend({
   beforeMount() {
     const id = Number(this.id || 0);
     fetchRecipeById(id)
-      .then((recipe) => {
+      .then(recipe => {
         this.recipe = mapRecipeModelToVm(recipe);
       })
-      .catch((error) => console.log(error));
+      .catch(error => console.log(error));
   },
   methods: {
     updateRecipe(field: string, value) {
@@ -167,11 +167,11 @@ export default Vue.extend({
     },
     save() {
       save(this.recipe)
-        .then((message) => {
+        .then(message => {
           console.log(message);
-          router.back();
+          this.$router.back();
         })
-        .catch((error) => console.log(error));
+        .catch(error => console.log(error));
     },
   },
 });
@@ -184,10 +184,10 @@ export default Vue.extend({
 ### ./src/pages/recipe/edit/index.ts
 
 ```diff
-- import EditRecipePage from './Page.vue';
-+ import EditRecipeContainer from './PageContainer.vue';
-- export { EditRecipePage };
-+ import { EditRecipeContainer };
+- import RecipeEditPage from './Page.vue';
++ import RecipeEditPageContainer from './PageContainer.vue';
+- export { RecipeEditPage };
++ import { RecipeEditPageContainer };
 
 ```
 
@@ -199,15 +199,15 @@ export default Vue.extend({
 import Router, { RouteConfig } from 'vue-router';
 import { LoginPageContainer } from './pages/login';
 import { RecipeListPageContainer } from './pages/recipe/list';
-- import { EditRecipePage } from './pages/recipe/edit';
-+ import { EditRecipeContainer } from './pages/recipe/edit';
+- import { RecipeEditPage } from './pages/recipe/edit';
++ import { RecipeEditPageContainer } from './pages/recipe/edit';
 
 const routes: RouteConfig[] = [
   { path: '/', redirect: '/login' },
   { path: '/login', component: LoginPageContainer },
   { path: '/recipe', component: RecipeListPageContainer },
-- { path: '/recipe/:id', component: EditRecipePage, props: true },
-+ { path: '/recipe/:id', component: EditRecipeContainer, props: true },
+- { path: '/recipe/:id', component: RecipeEditPage, props: true },
++ { path: '/recipe/:id', component: RecipeEditPageContainer, props: true },
 ];
 
 export const router = new Router({
@@ -222,7 +222,7 @@ export const router = new Router({
 
 ```javascript
 <template>
-  <div :class="`form-group ${className || ''}`">
+  <div :class="`form-group ${className}`">
     <label :for="name">
       {{ label }}
     </label>
@@ -238,7 +238,7 @@ export const router = new Router({
       <div class="input-group-btn">
         <button
           :class="buttonClassName"
-          @click="onButtonClick"
+          @click.prevent="buttonClickHandler(value)"
         >
           {{ buttonText }}
         </button>
@@ -268,17 +268,13 @@ export default Vue.extend({
     onInput(e) {
       this.inputHandler(e.target.name, e.target.value);
     },
-    onButtonClick(e) {
-      e.preventDefault();
-      this.buttonClickHandler(this.value);
-    },
   },
 });
 </script>
 
 ```
 
-### ./src/common/components/form/index.tsx
+### ./src/common/components/form/index.ts
 
 ```diff
 import ValidationComponent from './Validation.vue';
@@ -299,15 +295,15 @@ import ButtonComponent from './Button.vue';
   <form class="container">
     <div class="row">
       <validation-component
-        :hasError="true"
-        errorMessage="Test error"
+        :has-error="true"
+        error-message="Test error"
       >
-        <Input
+        <input-component
           type="text"
           label="Name"
           name="name"
           :value="recipe.name"
-          :inputHandler="updateRecipe"
+          :input-handler="updateRecipe"
         />
       </validation-component>
     </div>
@@ -317,19 +313,19 @@ import ButtonComponent from './Button.vue';
         label="Ingredients"
         name="ingredients"
         placeholder="Add ingredient"
+        button-text="Add"
+        button-class-name="btn btn-primary"
         :value="ingredient"
-        :inputHandler="updateIngredient"
-        buttonText="Add"
-        buttonClassName="btn btn-primary"
-        :buttonClickHandler="addIngredient"
+        :input-handler="updateIngredient"
+        :button-click-handler="addIngredient"
       />
     </div>
     <div class="row">
       <div class="form-group pull-right">
         <button-component
-          className="btn btn-lg btn-success"
+          class-name="btn btn-lg btn-success"
           label="Save"
-          :clickHandler="save"
+          :click-handler="save"
         />
       </div>
     </div>
@@ -377,8 +373,8 @@ export default Vue.extend({
 ### ./src/pages/recipe/edit/components/index.ts
 
 ```javascript
-import EditRecipeForm from './Form.vue';
-export { EditRecipeForm };
+import FormComponent from './Form.vue';
+export { FormComponent };
 
 ```
 
@@ -389,12 +385,12 @@ export { EditRecipeForm };
 ```diff
 <template>
 +  <div>
--  <h1> Edit Recipe Page {{ id }}</h1>
+-  <h1>Edit Recipe Page {{ id }}</h1>
 +    <form-component
 +      :recipe="recipe"
-+      :updateRecipe="updateRecipe"
-+      :addIngredient="addIngredient"
-+      :removeIngredient="removeIngredient"
++      :update-recipe="updateRecipe"
++      :add-ingredient="addIngredient"
++      :remove-ingredient="removeIngredient"
 +      :save="save"
 +    />
 +  </div>
@@ -415,7 +411,7 @@ export { EditRecipeForm };
 + }
 
 export default Vue.extend({
-  name: 'EditRecipePage',
+  name: 'RecipeEditPage',
 + components: {
 +   FormComponent,
 + },
@@ -445,7 +441,7 @@ export default Vue.extend({
     </label>
     <span
       class="btn btn-default"
-      @click="onClick"
+      @click="removeIngredient(ingredient)"
     >
       <i class="glyphicon glyphicon-remove"></i>
     </span>
@@ -460,11 +456,6 @@ export default Vue.extend({
   props: {
     ingredient: String,
     removeIngredient: {} as PropOptions<(ingredient) => void>,
-  },
-  methods: {
-    onClick() {
-      this.removeIngredient(this.ingredient);
-    },
   },
 });
 </script>
@@ -515,15 +506,15 @@ export default Vue.extend({
   <form class="container">
     <div class="row">
       <validation-component
-        :hasError="true"
-        errorMessage="Test error"
+        :has-error="true"
+        error-message="Test error"
       >
-        <Input
+        <input-component
           type="text"
           label="Name"
           name="name"
           :value="recipe.name"
-          :inputHandler="updateRecipe"
+          :input-handler="updateRecipe"
         />
       </validation-component>
     </div>
@@ -533,30 +524,30 @@ export default Vue.extend({
         label="Ingredients"
         name="ingredients"
         placeholder="Add ingredient"
+        button-text="Add"
+        button-class-name="btn btn-primary"
         :value="ingredient"
         :inputHandler="updateIngredient"
-        buttonText="Add"
-        buttonClassName="btn btn-primary"
-        :buttonClickHandler="addIngredient"
+        :button-click-handler="addIngredient"
       />
     </div>
 +    <div class="row">
 +      <validation-component
 +        :hasError="true"
-+        errorMessage="Test error"
++        error-message="Test error"
 +      >
 +        <ingredient-list-component
 +          :ingredients="recipe.ingredients"
-+          :removeIngredient="removeIngredient"
++          :remove-ingredient="removeIngredient"
 +        />
 +      </validation-component>
 +    </div>
     <div class="row">
       <div class="form-group pull-right">
         <button-component
-          className="btn btn-lg btn-success"
+          class-name="btn btn-lg btn-success"
           label="Save"
-          :clickHandler="save"
+          :click-handler="save"
         />
       </div>
     </div>
@@ -609,7 +600,7 @@ export default Vue.extend({
 
 ```javascript
 <template>
-  <div :class="`form-group ${this.className}`">
+  <div :class="`form-group ${className}`">
     <label :for="name">
       {{ label }}
     </label>
@@ -688,15 +679,15 @@ import InputButtonComponent from './InputButton.vue';
   <form class="container">
     <div class="row">
       <validation-component
-        :hasError="true"
-        errorMessage="Test error"
+        :has-error="true"
+        error-message="Test error"
       >
-        <Input
+        <input-component
           type="text"
           label="Name"
           name="name"
           :value="recipe.name"
-          :inputHandler="updateRecipe"
+          :input-handler="updateRecipe"
         />
       </validation-component>
     </div>
@@ -706,21 +697,21 @@ import InputButtonComponent from './InputButton.vue';
         label="Ingredients"
         name="ingredients"
         placeholder="Add ingredient"
+        button-text="Add"
+        button-class-name="btn btn-primary"
         :value="ingredient"
-        :inputHandler="updateIngredient"
-        buttonText="Add"
-        buttonClassName="btn btn-primary"
-        :buttonClickHandler="addIngredient"
+        :input-handler="updateIngredient"
+        :button-click-handler="addIngredient"
       />
     </div>
     <div class="row">
       <validation-component
-        :hasError="true"
-        errorMessage="Test error"
+        :has-error="true"
+        error-message="Test error"
       >
         <ingredient-list-component
           :ingredients="recipe.ingredients"
-          :removeIngredient="removeIngredient"
+          :remove-ingredient="removeIngredient"
         />
       </validation-component>
     </div>
@@ -914,7 +905,7 @@ export const createEmptyRecipe = (): Recipe => ({
 <template>
   <edit-recipe-page
     :recipe="recipe"
-+   :recipeError="recipeError"
++   :recipe-error="recipeError"
     :updateRecipe="updateRecipe"
     :addIngredient="addIngredient"
     :removeIngredient="removeIngredient"
@@ -933,7 +924,7 @@ import EditRecipePage from "./Page.vue";
 + import { validations } from './validations';
 
 export default Vue.extend({
-  name: "EditRecipePageContainer",
+  name: 'RecipeEditPageContainer',
   components: {
     EditRecipePage,
   },
@@ -949,10 +940,10 @@ export default Vue.extend({
   beforeMount() {
     const id = Number(this.id || 0);
     fetchRecipeById(id)
-      .then((recipe) => {
+      .then(recipe => {
         this.recipe = mapRecipeModelToVm(recipe);
       })
-      .catch((error) => console.log(error));
+      .catch(error => console.log(error));
   },
   methods: {
     updateRecipe(field: string, value) {
@@ -1001,7 +992,7 @@ export default Vue.extend({
             save(this.recipe)
               .then((message) => {
                 console.log(message);
-                router.back();
+                this.$router.back();
               })
               .catch((error) => console.log(error));
 +         } else {
@@ -1027,9 +1018,9 @@ export default Vue.extend({
     <form-component
       :recipe="recipe"
 +     :recipeError="recipeError"
-      :updateRecipe="updateRecipe"
-      :addIngredient="addIngredient"
-      :removeIngredient="removeIngredient"
+      :update-recipe="updateRecipe"
+      :add-ingredient="addIngredient"
+      :remove-ingredient="removeIngredient"
       :save="save"
     />
   </div>
@@ -1051,7 +1042,7 @@ interface Props {
 }
 
 export default Vue.extend({
-  name: 'EditRecipePage',
+  name: 'RecipeEditPage',
   components: {
     FormComponent,
   },
@@ -1077,17 +1068,17 @@ export default Vue.extend({
   <form class="container">
     <div class="row">
       <validation-component
--       :hasError="true"
-+       :hasError="!recipeError.name.succeeded"
--       errorMessage="Test error"
-+       :errorMessage="recipeError.name.errorMessage"
+-       :has-error="true"
++       :has-error="!recipeError.name.succeeded"
+-       error-message="Test error"
++       :error-message="recipeError.name.errorMessage"
       >
-        <Input
+        <input-component
           type="text"
           label="Name"
           name="name"
           :value="recipe.name"
-          :inputHandler="updateRecipe"
+          :input-handler="updateRecipe"
         />
       </validation-component>
     </div>
@@ -1097,27 +1088,27 @@ export default Vue.extend({
         label="Ingredients"
         name="ingredients"
         placeholder="Add ingredient"
+        button-text="Add"
+        button-class-name="btn btn-primary"
         :value="ingredient"
-        :inputHandler="updateIngredient"
-        buttonText="Add"
-        buttonClassName="btn btn-primary"
-        :buttonClickHandler="addIngredient"
+        :input-handler="updateIngredient"
+        :button-click-handler="addIngredient"
       />
     </div>
     <div class="row">
       <validation-component
--       :hasError="true"
-+       :hasError="!recipeError.ingredients.succeeded"
--       errorMessage="Test error"
-+       :errorMessage="recipeError.ingredients.errorMessage"
-      >
+-       :has-error="true"
++       :has-error="!recipeError.ingredients.succeeded"
+-       error-message="Test error"
++       :error-message="recipeError.ingredients.errorMessage"
+>
         <ingredient-list-component
           :ingredients="recipe.ingredients"
-          :removeIngredient="removeIngredient"
+          :remove-ingredient="removeIngredient"
         />
       </validation-component>
     </div>
-    <div class="row">
+   <div class="row">
       <textarea-component
         class-name="description"
         label="Description"
@@ -1131,9 +1122,9 @@ export default Vue.extend({
     <div class="row">
       <div class="form-group pull-right">
         <button-component
-          className="btn btn-lg btn-success"
+          class-name="btn btn-lg btn-success"
           label="Save"
-          :clickHandler="save"
+          :click-handler="save"
         />
       </div>
     </div>

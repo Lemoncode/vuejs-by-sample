@@ -1,1 +1,1 @@
-export { hasItems } from './hasItem';
+export { hasItems } from './hasItems';

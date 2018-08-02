@@ -5,7 +5,7 @@
         <ingredient-row-component
           :key="index"
           :ingredient="ingredient"
-          :removeIngredient="removeIngredient"
+          :remove-ingredient="removeIngredient"
         />
       </template>
     </div>

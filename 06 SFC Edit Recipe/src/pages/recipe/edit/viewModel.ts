@@ -18,7 +18,7 @@ export interface RecipeError {
   name: FieldValidationResult;
   ingredients: FieldValidationResult;
 }
-
+  
 export const createEmptyRecipeError = (): RecipeError => ({
   name: {
     key: 'name',

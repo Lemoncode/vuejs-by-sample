@@ -1,5 +1,5 @@
 <template>
-  <div :class="`form-group ${className || ''}`">
+  <div :class="`form-group ${className}`">
     <label :for="name">
       {{ label }}
     </label>
@@ -15,7 +15,7 @@
       <div class="input-group-btn">
         <button
           :class="buttonClassName"
-          @click="onButtonClick"
+          @click.prevent="buttonClickHandler(value)"
         >
           {{ buttonText }}
         </button>
@@ -45,11 +45,6 @@ export default Vue.extend({
     onInput(e) {
       this.inputHandler(e.target.name, e.target.value);
     },
-    onButtonClick(e) {
-      e.preventDefault();
-      this.buttonClickHandler(this.value);
-    },
   },
 });
 </script>
-

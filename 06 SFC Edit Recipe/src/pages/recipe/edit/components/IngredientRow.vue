@@ -5,7 +5,7 @@
     </label>
     <span
       class="btn btn-default"
-      @click="onClick"
+      @click="removeIngredient(ingredient)"
     >
       <i class="glyphicon glyphicon-remove"></i>
     </span>
@@ -21,11 +21,5 @@ export default Vue.extend({
     ingredient: String,
     removeIngredient: {} as PropOptions<(ingredient) => void>,
   },
-  methods: {
-    onClick() {
-      this.removeIngredient(this.ingredient);
-    },
-  },
 });
 </script>
-

@@ -1,5 +1,5 @@
 <template>
-  <div :class="`form-group ${this.className}`">
+  <div :class="`form-group ${className}`">
     <label :for="name">
       {{ label }}
     </label>
@@ -36,4 +36,3 @@ export default Vue.extend({
   },  
 })
 </script>
-

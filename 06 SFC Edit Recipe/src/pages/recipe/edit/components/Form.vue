@@ -2,15 +2,15 @@
   <form class="container">
     <div class="row">
       <validation-component
-        :hasError="!recipeError.name.succeeded"
-        :errorMessage="recipeError.name.errorMessage"
+        :has-error="!recipeError.name.succeeded"
+        :error-message="recipeError.name.errorMessage"
       >
         <input-component
           type="text"
           label="Name"
           name="name"
           :value="recipe.name"
-          :inputHandler="updateRecipe"
+          :input-handler="updateRecipe"
         />
       </validation-component>
     </div>
@@ -20,25 +20,25 @@
         label="Ingredients"
         name="ingredients"
         placeholder="Add ingredient"
+        button-text="Add"
+        button-class-name="btn btn-primary"
         :value="ingredient"
-        :inputHandler="updateIngredient"
-        buttonText="Add"
-        buttonClassName="btn btn-primary"
-        :buttonClickHandler="addIngredient"
+        :input-handler="updateIngredient"
+        :button-click-handler="addIngredient"
       />
     </div>
     <div class="row">
       <validation-component
-        :hasError="!recipeError.ingredients.succeeded"
-        :errorMessage="recipeError.ingredients.errorMessage"
+        :has-error="!recipeError.ingredients.succeeded"
+        :error-message="recipeError.ingredients.errorMessage"
       >
         <ingredient-list-component
           :ingredients="recipe.ingredients"
-          :removeIngredient="removeIngredient"
+          :remove-ingredient="removeIngredient"
         />
       </validation-component>
     </div>
-    <div class="row">
+   <div class="row">
       <textarea-component
         class-name="description"
         label="Description"
@@ -52,9 +52,9 @@
     <div class="row">
       <div class="form-group pull-right">
         <button-component
-          className="btn btn-lg btn-success"
+          class-name="btn btn-lg btn-success"
           label="Save"
-          :clickHandler="save"
+          :click-handler="save"
         />
       </div>
     </div>
@@ -89,11 +89,9 @@ export default Vue.extend({
     removeIngredient: {},
     save: {},
   } as Props,
-  data() {
-    return {
-      ingredient: '',
-    };
-  },
+  data: () => ({
+    ingredient: '',
+  }),
   methods: {
     updateIngredient(fieldName, value) {
       this.ingredient = value;

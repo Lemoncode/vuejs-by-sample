@@ -77,11 +77,19 @@ Once you have successfully fullfilled them a **package.json** file we will gener
  ```json
 {
   "compilerOptions": {
-    "target": "es5",
-    "strict": true,
-    "module": "es2015",
-    "moduleResolution": "node"
-  }
+    "target": "es6",
+    "module": "es6",
+    "moduleResolution": "node",
+    "declaration": false,
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "noLib": false,
+    "suppressImplicitAnyIndexErrors": true
+  },
+  "compileOnSave": false,
+  "exclude": [
+    "node_modules"
+  ]
 }
 
  ```
