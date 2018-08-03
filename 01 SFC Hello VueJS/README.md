@@ -17,7 +17,7 @@ All of these are solved by **single-file components** with a `.vue` extension, m
 
 Here’s an example of a file we’ll call `Hello.vue`:
 
-![Vue SFC](../Extra/pics/01-vue-component.png)
+![Vue SFC](../Misc/pics/01-vue-component.png)
 
 Now we get:
 
