@@ -809,20 +809,15 @@ export const EditRecipeContainer = Vue.extend({
         [field]: value,
       };
 
-+     validations.validateField(this.recipe, field, value)
-+       .then((result) => {
-+         this.recipeError = {
-+           ...this.recipeError,
-+           [field]: result,
-+         };
-+       })
-+       .catch((error) => console.log(error));
++     this.validateRecipeField(field, value);
     },
     addIngredient(ingredient: string) {
       this.recipe = {
         ...this.recipe,
         ingredients: [...this.recipe.ingredients, ingredient],
       };
+
++     this.validateRecipeField('ingredients', this.recipe.ingredients);
     },
     removeIngredient(ingredient: string) {
       this.recipe = {
@@ -831,16 +826,24 @@ export const EditRecipeContainer = Vue.extend({
           return i !== ingredient;
         }),
       };
+
++     this.validateRecipeField('ingredients', this.recipe.ingredients);
     },
++   validateRecipeField: function(field, value) {
++     validations.validateField(this.recipe, field, value)
++       .then(result => this.updateRecipeError(field, result));
++   },
++   updateRecipeError: function(field, result) {
++     this.recipeError = {
++       ...this.recipeError,
++       [field]: result,
++     };
++   },
     save() {
 +     validations.validateForm(this.recipe)
-+       .then((result) => {
-+         result.fieldErrors.map((error) => {
-+           this.recipeError = {
-+             ...this.recipeError,
-+             [error.key as string]: error,
-+           }
-+         });
++       .then(result => {
++         result.fieldErrors
++           .map(error => this.updateRecipeError(error.key, error));
 
 +         if(result.succeeded) {
             save(this.recipe)
@@ -849,9 +852,12 @@ export const EditRecipeContainer = Vue.extend({
                 router.back();
               })
               .catch((error) => console.log(error));
++         } else {
++           result.fieldErrors
++             .filter(error => !error.succeeded)
++             .map(error => console.log(`Error in ${error.key}: ${error.errorMessage}`));
 +         }
-+       })
-+       .catch((error) => console.log(error));
++       });
     },
   },
 });
