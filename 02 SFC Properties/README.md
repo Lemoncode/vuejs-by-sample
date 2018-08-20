@@ -51,7 +51,7 @@ export default Vue.extend({
     return {
       message: 'Hello from Vue.js',
     };
-  }
+  },
 };
 </script>
 
@@ -83,7 +83,7 @@ export default Vue.extend({
     return {
       message: 'Hello from Vue.js',
     };
-  }
+  },
 };
 </script>
 
@@ -174,13 +174,15 @@ export default Vue.extend({
   />
 </template>
 
-<script>
-export default {
-  name: 'hello',
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  name: 'HelloComponent',
   props: {
     value: String,
   },
-};
+});
 </script>
 
 ```
@@ -200,25 +202,24 @@ export default {
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 + import HelloComponent from './Hello.vue';
 
-export default {
+export default Vue.extend({
   name: 'App',
 + components: {
 +   HelloComponent,
-+ },
++ },  
   data() {
     return {
       message: 'Hello from Vue.js',
     };
   },
-};
+});
 </script>
 
 ```
-
-Vue
 
 - Since we are using `v-model` in `HelloComponent` we are mutating `value` prop and it's forbidden. To solve this:
 
@@ -227,24 +228,26 @@ Vue
 ```diff
 <template>
   <input
--     v-model="value"
-+     :value="value"
-+     @input="onChange"
+-    v-model="value"  
++   :value="value"
++   @input="onChange"
   />
 </template>
 
-<script>
-export default {
-  name: 'hello',
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  name: 'HelloComponent',
   props: {
     value: String,
   },
-+  methods: {
-+    onChange: function(event) {
-+      this.$emit('input', event.target.value);
-+    },
-+  },  
-};
++ methods: {
++   onChange: function(event) {
++     this.$emit('input', event.target.value);
++   },
++ },
+});
 </script>
 
 ```
@@ -262,20 +265,22 @@ export default {
   />
 </template>
 
-<script>
-export default {
-  name: 'hello',
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  name: 'HelloComponent',
   props: {
--   value: String
+-   value: String,
 +   message: String,
 +   onChange: Function,
   },
 - methods: {
--   onChange: function(value) {
--     this.$emit('input', value);
+-   onChange: function(event) {
+-     this.$emit('input', event.target.value);
 -   },
 - },
-};
+});
 </script>
 
 ```
@@ -313,6 +318,41 @@ export default {
 +   },
 + },
 };
+</script>
+
+
+
+<template>
+  <div>
+    <h1>{{message}}</h1>
+    <hello-component
+-     v-model="message"
++     :message="message"
++     :on-change="onChange"
+    />
+  </div>
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+import HelloComponent from './Hello.vue';
+
+export default Vue.extend({
+  name: 'App',
+  components: {
+    HelloComponent,
+  },
+  data() {
+    return {
+      message: 'Hello from Vue.js',
+    };
+  },
++ methods: {
++   onChange(event) {
++     this.message = event.target.value;
++   },
++ },
+});
 </script>
 
 ```
