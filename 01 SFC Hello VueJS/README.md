@@ -118,17 +118,23 @@ npm install vue-loader vue-template-compiler --save-dev
   - `Runtime + Compiler`: needed to compile templates on the client side, e.g. passing a string to `template` property.
   - `Runtime-only`: when using a `pre-compiler` like `vue-loader`, `vueify`, etc.
 
-- For now, we could start using `first one` to keep this sample as simple as possible. To configure it for webpack:
+- Let's configure the use of `Runtime-only`. To configure it for webpack:
 
 ### ./webpack.config.js
 
 ```diff
+var path = require('path');
+var webpack = require('webpack');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var MiniCssExtractPlugin = require('mini-css-extract-plugin');
+var ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
++ var VueLoaderPlugin = require('vue-loader/lib/plugin');
 ...
 resolve: {
 -    extensions: ['.js', '.ts'],
-+    extensions: ['.js', '.ts', 'vue'],
++    extensions: ['.js', '.ts', '.vue'],
 +    alias: {
-+      'vue$': 'vue/dist/vue.esm.js'
++      'vue': 'vue/dist/vue.esm.js',
 +    },
   },
 ...
@@ -137,7 +143,7 @@ resolve: {
 +     {
 +       test: /\.vue$/,
 +       exclude: /node_modules/,
-+       loader: 'vue-loader'
++       loader: 'vue-loader',
 +     },
       {
         test: /\.ts$/,
@@ -156,7 +162,7 @@ resolve: {
 ···
     new ForkTsCheckerWebpackPlugin({
       tsconfig: path.join(__dirname, './tsconfig.json'),
-+     vue: true
++     vue: true,
     }),
   ],
 };
