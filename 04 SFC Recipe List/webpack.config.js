@@ -51,15 +51,6 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        include: /node_modules/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
-        ],
-      },
-      {
-        test: /\.css$/,
-        exclude: /node_modules/,
         oneOf: [
           {
             resourceQuery: /module/,
@@ -69,17 +60,19 @@ module.exports = {
                 loader: 'css-loader',
                 options: {
                   modules: true,
-                  localIdentName: '[name]__[local]__[hash:base64:5]'
-                }
-              }
-            ]
+                  localIdentName: '[name]__[local]__[hash:base64:5]',
+                },
+              },
+            ],
           },
           {
             use: [
-              MiniCssExtractPlugin.loader,
+              process.env.NODE_ENV !== 'production'
+                ? 'vue-style-loader'
+                : MiniCssExtractPlugin.loader,
               'css-loader',
             ],
-          }
+          },
         ],
       },
       // Loading glyphicons => https://github.com/gowravshekar/bootstrap-webpack
