@@ -68,7 +68,7 @@ Once you have successfully fullfilled them a **package.json** file we will gener
 - Let's install locally TypeScript:
 
  ```
- npm install typescript@2 --save-dev
+ npm install typescript --save-dev
  ```
 
 - We need as well to drop a **tsconfig.json** file in the root folder of our project
@@ -161,7 +161,7 @@ npm install babel-core babel-preset-env --save-dev
     "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "^0.4.1",
     "ts-loader": "^4.4.2",
-    "typescript": "^2.9.2",
+    "typescript": "^3.0.1",
     "url-loader": "^1.0.1",
     "webpack": "^4.16.3",
     "webpack-cli": "^3.1.0",
