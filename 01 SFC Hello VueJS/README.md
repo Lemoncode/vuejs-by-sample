@@ -57,6 +57,8 @@ npm install
 
 - To get a better experience debugging `vue` we can install [Vue devtools](https://github.com/vuejs/vue-devtools). It's a Chrome extension.
 
+- To get a better experience development we can install [Vetur](https://github.com/vuejs/vetur). It's a Vue tooling for VS Code.
+
 - Install `vue` library as project dependency:
 
 ```
@@ -66,7 +68,7 @@ npm install vue --save
 - To use SFC there install vue-loader and vue-template-compiler:
 
 ```
-npm install vue-loader vue-template-compiler --save
+npm install vue-loader vue-template-compiler --save-dev
 ```
 
 - This library has its own TypeScript definition file, so we don't need install other typings.
