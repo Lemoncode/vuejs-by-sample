@@ -10,12 +10,5 @@
     "suppressImplicitAnyIndexErrors": true,
     "strict": true
   },
-  "compileOnSave": false,
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.vue"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "compileOnSave": false
 }
