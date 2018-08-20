@@ -77,7 +77,7 @@ export interface Recipe {
   name: string;
   description: string;
   ingredients: string[];
-}
+};
 
 export const createEmptyRecipe = (): Recipe => ({
   id: 0,
@@ -237,6 +237,7 @@ export const router = new Router({
       />
       <div class="input-group-btn">
         <button
+          type="button"
           :class="buttonClassName"
           @click.prevent="buttonClickHandler(value)"
         >
@@ -325,6 +326,7 @@ import ButtonComponent from './Button.vue';
         <button-component
           class-name="btn btn-lg btn-success"
           label="Save"
+          type="button"
           :click-handler="save"
         />
       </div>
@@ -408,7 +410,7 @@ export { FormComponent };
 +   addIngredient: PropOptions<(ingredient) => void>;
 +   removeIngredient: PropOptions<(ingredient) => void>;
 +   save: PropOptions<() => void>;
-+ }
++ };
 
 export default Vue.extend({
   name: 'RecipeEditPage',
@@ -472,7 +474,7 @@ export default Vue.extend({
         <ingredient-row-component
           :key="index"
           :ingredient="ingredient"
-          :removeIngredient="removeIngredient"
+          :remove-ingredient="removeIngredient"
         />
       </template>
     </div>
@@ -527,7 +529,7 @@ export default Vue.extend({
         button-text="Add"
         button-class-name="btn btn-primary"
         :value="ingredient"
-        :inputHandler="updateIngredient"
+        :input-handler="updateIngredient"
         :button-click-handler="addIngredient"
       />
     </div>
@@ -609,10 +611,9 @@ export default Vue.extend({
       :name="name"
       :placeholder="placeholder"
       :rows="rows"
+      :value="value"
       @input="onInput"
-    >
-      {{ value }}
-    </textarea>
+    />
   </div>  
 </template>
 
@@ -729,9 +730,9 @@ import InputButtonComponent from './InputButton.vue';
     <div class="row">
       <div class="form-group pull-right">
         <button-component
-          className="btn btn-lg btn-success"
+          class-name="btn btn-lg btn-success"
           label="Save"
-          :clickHandler="save"
+          :click-handler="save"
         />
       </div>
     </div>
@@ -878,7 +879,7 @@ export const createEmptyRecipe = (): Recipe => ({
 + export interface RecipeError {
 +   name: FieldValidationResult;
 +   ingredients: FieldValidationResult;
-+ }
++ };
 
 + export const createEmptyRecipeError = (): RecipeError => ({
 +   name: {
@@ -906,21 +907,21 @@ export const createEmptyRecipe = (): Recipe => ({
   <edit-recipe-page
     :recipe="recipe"
 +   :recipe-error="recipeError"
-    :updateRecipe="updateRecipe"
-    :addIngredient="addIngredient"
-    :removeIngredient="removeIngredient"
+    :update-recipe="updateRecipe"
+    :add-ingredient="addIngredient"
+    :remove-ingredient="removeIngredient"
     :save="save"  
   />  
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { router } from "../../../router";
-import { fetchRecipeById, save } from "../../../rest-api/api/recipe";
-- import { Recipe, createEmptyRecipe } from "./viewModel";
-+ import { Recipe, createEmptyRecipe, RecipeError, createEmptyRecipeError } from "./viewModel";
-import { mapRecipeModelToVm } from "./mappers";
-import EditRecipePage from "./Page.vue";
+import Vue from 'vue';
+import { router } from '../../../router';
+import { fetchRecipeById, save } from '../../../rest-api/api/recipe';
+- import { Recipe, createEmptyRecipe } from './viewModel';
++ import { Recipe, createEmptyRecipe, RecipeError, createEmptyRecipeError } from './viewModel';
+import { mapRecipeModelToVm } from './mappers';
+import EditRecipePage from './Page.vue';
 + import { validations } from './validations';
 
 export default Vue.extend({
@@ -1017,7 +1018,7 @@ export default Vue.extend({
   <div>
     <form-component
       :recipe="recipe"
-+     :recipeError="recipeError"
++     :recipe-error="recipeError"
       :update-recipe="updateRecipe"
       :add-ingredient="addIngredient"
       :remove-ingredient="removeIngredient"
@@ -1101,7 +1102,7 @@ export default Vue.extend({
 +       :has-error="!recipeError.ingredients.succeeded"
 -       error-message="Test error"
 +       :error-message="recipeError.ingredients.errorMessage"
->
+      >
         <ingredient-list-component
           :ingredients="recipe.ingredients"
           :remove-ingredient="removeIngredient"
