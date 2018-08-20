@@ -213,6 +213,17 @@ resolve: {
           },
         },
       },
+      {
+        test: /\.css$/,
++       include: /node_modules/,
+        use: [
+-         MiniCssExtractPlugin.loader,
++         process.env.NODE_ENV !== 'production'
++           ? 'vue-style-loader'
++           : MiniCssExtractPlugin.loader,
+          'css-loader',
+        ],
+      },
 ···
   plugins: [
 +   new VueLoaderPlugin(),
