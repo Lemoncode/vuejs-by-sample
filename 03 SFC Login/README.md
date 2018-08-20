@@ -1,4 +1,4 @@
-# 04 SFC Login
+# 03 SFC Login
 
 In this sample we are going to create a `login` page.
 
@@ -280,14 +280,13 @@ import Vue from 'vue';
 
 export default Vue.extend({
   name: 'App',
-  data() {
+- data() {
 -   return {
 -     message: 'Hello from Vue.js',
 -   };
 - },
 });
 </script>
-
 
 ```
 
@@ -526,7 +525,7 @@ export default Vue.extend({
     <div class="row">
       <div class="col-md-4 col-md-offset-4">
         <div class="panel panel-default">
-          <header-component /> <!-- <HeaderComponent /> Its the same -->
+          <header-component />
 -          <form-component />
 +          <form-component
 +            :login-entity="loginEntity"
@@ -779,14 +778,12 @@ export default Vue.extend({
   components: {
     LoginPage,
   },
-- data() {
+  data() {
 -   return {
 -     loginEntity: createEmptyLoginEntity(),
 -   };
-- },
-+ data() {
 +   return state;
-+ },
+  },
   ...
 
 ```
