@@ -89,11 +89,29 @@ npm install vue-loader vue-template-compiler --save-dev
     ],
   },
 ...
+new ForkTsCheckerWebpackPlugin({
+      tsconfig: path.join(__dirname, './tsconfig.json'),
+      vue: true,
+    }),
+  ],
++ optimization: {
++   splitChunks: {
++     cacheGroups: {
++       vendor: {
++         test: /node_modules/,
++         name: 'vendor',
++         chunks: 'initial',
++         enforce: true
++       },
++     },
++   },
++ },  
 ```
 
-- Recommended configuration for [`tsconfig.json`](https://vuejs.org/v2/guide/typescript.html#Recommended-Configuration):
+- Update configuration for [`tsconfig.json`](https://vuejs.org/v2/guide/typescript.html#Recommended-Configuration):
 
 ### ./tsconfig.json
+
 ```diff
 {
   "compilerOptions": {
@@ -169,23 +187,6 @@ resolve: {
 
 ```
 
-- Update `tsconfig.json`:
-
-```diff
-{
-···
-  "compileOnSave": false,
-+  "include": [
-+    "src/**/*.ts",
-+    "src/**/*.vue"
-+  ],
-  "exclude": [
-    "node_modules"
-  ]
-}
-
-```
-
 - Update `index.html`:
 
 ### ./src/index.html
@@ -233,6 +234,8 @@ export default Vue.extend({
 ```
 
 - Create `sfc.d.ts` in order to TypeScript recognize and treat .vue files
+
+ ###./src/sfc.d.ts
 
 ```javascript
 declare module '*.vue' {
