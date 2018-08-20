@@ -845,7 +845,7 @@ export const validations = createFormValidation(validationConstraints);
 interface LoginEntity {
   login: string;
   password: string;
-}
+};
 
 const createEmptyLoginEntity = (): LoginEntity => ({
   login: '',
@@ -855,7 +855,7 @@ const createEmptyLoginEntity = (): LoginEntity => ({
 + interface LoginError {
 +   login: FieldValidationResult;
 +   password: FieldValidationResult;
-+ }
++ };
 
 + const createEmptyLoginError = (): LoginError => ({
 +   login: {
@@ -921,6 +921,7 @@ export default Vue.extend({
 +       ...this.loginEntity,
 +       [field]: value,
 +     };
+
 +    validations.validateField(this.loginEntity, field, value)
 +     .then(fieldValidationResult => {
 +       this.loginError = {
@@ -1105,7 +1106,7 @@ export default Vue.extend({
   <button
     :class="className"
     :type="type"
-    @click="clickHandler"
+    @click.prevent="clickHandler"
     :disabled="disabled"
   >
     {{ label }}
@@ -1201,7 +1202,7 @@ export { ValidationComponent, InputComponent, ButtonComponent };
 +      <button-component
 +        class-name="btn btn-lg btn-success btn-block"
 +        label="Login"
-+        :clickHandler="loginRequest"
++        :click-handler="loginRequest"
 +      />
     </form>
   </div>
