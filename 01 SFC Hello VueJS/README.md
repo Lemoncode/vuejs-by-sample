@@ -108,10 +108,7 @@ npm install vue-loader vue-template-compiler --save-dev
 +   "suppressImplicitAnyIndexErrors": true,
 +   "strict": true
   },
-  "compileOnSave": false,
-  "exclude": [
-    "node_modules"
-  ]
+  "compileOnSave": false
 }
 
 ```
