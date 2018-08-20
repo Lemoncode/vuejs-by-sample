@@ -1,18 +1,18 @@
 var path = require('path');
 var webpack = require('webpack');
-const { VueLoaderPlugin } = require('vue-loader');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+var VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 var basePath = __dirname;
 
 module.exports = {
   context: path.join(basePath, 'src'),
   resolve: {
-    extensions: ['.js', '.ts', 'vue'],
+    extensions: ['.js', '.ts', '.vue'],
     alias: {
-      'vue$': 'vue/dist/vue.esm.js'
+      'vue': 'vue/dist/vue.esm.js',
     },
   },
   mode: 'development',
@@ -36,8 +36,8 @@ module.exports = {
       {
         test: /\.vue$/,
         exclude: /node_modules/,
-        loader: 'vue-loader'
-      },
+        loader: 'vue-loader',
+      },      
       {
         test: /\.ts$/,
         exclude: /node_modules/,
@@ -51,15 +51,6 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        include: /node_modules/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
-        ],
-      },
-      {
-        test: /\.css$/,
-        exclude: /node_modules/,
         oneOf: [
           {
             resourceQuery: /module/,
@@ -69,17 +60,19 @@ module.exports = {
                 loader: 'css-loader',
                 options: {
                   modules: true,
-                  localIdentName: '[name]__[local]__[hash:base64:5]'
-                }
-              }
-            ]
+                  localIdentName: '[name]__[local]__[hash:base64:5]',
+                },
+              },
+            ],
           },
           {
             use: [
-              MiniCssExtractPlugin.loader,
+              process.env.NODE_ENV !== 'production'
+                ? 'vue-style-loader'
+                : MiniCssExtractPlugin.loader,
               'css-loader',
             ],
-          }
+          },
         ],
       },
       // Loading glyphicons => https://github.com/gowravshekar/bootstrap-webpack
@@ -117,7 +110,19 @@ module.exports = {
     }),
     new ForkTsCheckerWebpackPlugin({
       tsconfig: path.join(__dirname, './tsconfig.json'),
-      vue: true
+      vue: true,
     }),
   ],
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /node_modules/,
+          name: 'vendor',
+          chunks: 'initial',
+          enforce: true
+        },
+      },
+    },
+  },
 };

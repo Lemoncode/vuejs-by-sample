@@ -1,15 +1,12 @@
 <template>
-  <div class="container-fluid">
-    <h1>Recipe {{recipe.name}}</h1>
-    <form-component
-      :recipe="recipe"
-      :recipe-error="recipeError"
-      :update-recipe="updateRecipe"
-      :add-ingredient="addIngredient"
-      :remove-ingredient="removeIngredient"
-      :save="save"
+  <form-component
+    :recipe="recipe"
+    :recipe-error="recipeError"
+    :update-recipe="updateRecipe"
+    :add-ingredient="addIngredient"
+    :remove-ingredient="removeIngredient"
+    :save="save"
     />
-  </div>
 </template>
 
 <script lang="ts">
@@ -24,13 +21,13 @@ interface Props {
   addIngredient: PropOptions<(ingredient) => void>;
   removeIngredient: PropOptions<(ingredient) => void>;
   save: PropOptions<() => void>;
-}
+};
 
 export default Vue.extend({
   name: 'RecipeEditPage',
   components: {
     FormComponent,
-  },
+  },  
   props: {
     recipe: {},
     recipeError: {},
@@ -38,6 +35,6 @@ export default Vue.extend({
     addIngredient: {},
     removeIngredient: {},
     save: {},
-  } as Props,
+  } as Props,  
 });
 </script>

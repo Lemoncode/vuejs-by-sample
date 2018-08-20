@@ -30,6 +30,7 @@
       <button-component
         class-name="btn btn-lg btn-success btn-block"
         label="Login"
+        type="button"
         :click-handler="loginRequest"
       />
     </form>

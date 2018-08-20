@@ -14,6 +14,7 @@
       />
       <div class="input-group-btn">
         <button
+          type="button"
           :class="buttonClassName"
           @click.prevent="buttonClickHandler(value)"
         >

@@ -22,14 +22,14 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from "vue";
-import { Recipe } from "../viewModel";
+import Vue, { PropOptions } from 'vue';
+import { Recipe } from '../viewModel';
 
 export default Vue.extend({
-  name: "RowComponent",
+  name: 'RowComponent',
   props: {
     recipe: {} as PropOptions<Recipe>
-  }
+  },
 });
 </script>
 

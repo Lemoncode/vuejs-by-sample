@@ -38,7 +38,7 @@
         />
       </validation-component>
     </div>
-   <div class="row">
+    <div class="row">
       <textarea-component
         class-name="description"
         label="Description"
@@ -48,12 +48,13 @@
         :value="recipe.description"
         :input-handler="updateRecipe"
       />
-    </div>
+    </div>    
     <div class="row">
       <div class="form-group pull-right">
         <button-component
           class-name="btn btn-lg btn-success"
           label="Save"
+          type="button"
           :click-handler="save"
         />
       </div>
@@ -64,8 +65,8 @@
 <script lang="ts">
 import Vue, { PropOptions } from 'vue';
 import { Recipe, RecipeError } from '../viewModel';
-import { ValidationComponent, InputComponent, InputButtonComponent, ButtonComponent, TextareaComponent } from '../../../../common/components/form';
 import IngredientListComponent from './IngredientList.vue';
+import { ValidationComponent, InputComponent, InputButtonComponent, ButtonComponent, TextareaComponent } from '../../../../common/components/form';
 
 interface Props {
   recipe: PropOptions<Recipe>;

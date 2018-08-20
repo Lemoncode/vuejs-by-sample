@@ -13,7 +13,7 @@
 import Vue from 'vue';
 import { router } from '../../../router';
 import { fetchRecipeById, save } from '../../../rest-api/api/recipe';
-import { Recipe, createEmptyRecipe, RecipeError, createEmptyRecipeError } from "./viewModel";
+import { Recipe, createEmptyRecipe, RecipeError, createEmptyRecipeError } from './viewModel';
 import { mapRecipeModelToVm } from './mappers';
 import RecipeEditPage from './Page.vue';
 import { validations } from './validations';
@@ -76,26 +76,25 @@ export default Vue.extend({
         ...this.recipeError,
         [field]: result,
       };
-    },    
+    },
     save() {
       validations.validateForm(this.recipe)
-        .then(result => {
-          result.fieldErrors
-            .map(error => this.updateRecipeError(error.key, error));
- 
-          if (result.succeeded) {      
-            save(this.recipe)
-              .then(message => {
-                console.log(message);
-                this.$router.back();
-              })
-              .catch(error => console.log(error));
-          } else {
-            result.fieldErrors
-              .filter(error => !error.succeeded)
-              .map(error => console.log(`Error in ${error.key}: ${error.errorMessage}`));
-          }
-        });        
+       .then(result => {
+         result.fieldErrors
+           .map(error => this.updateRecipeError(error.key, error));
+         if (result.succeeded) {
+      save(this.recipe)
+        .then(message => {
+          console.log(message);
+          this.$router.back();
+        })
+        .catch(error => console.log(error));
+         } else {
+           result.fieldErrors
+             .filter(error => !error.succeeded)
+             .map(error => console.log(`Error in ${error.key}: ${error.errorMessage}`));
+         }
+       });        
     },
   },
 });

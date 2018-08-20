@@ -8,10 +8,9 @@
       :name="name"
       :placeholder="placeholder"
       :rows="rows"
+      :value="value"
       @input="onInput"
-    >
-      {{ value }}
-    </textarea>
+    />
   </div>  
 </template>
 

@@ -5,7 +5,7 @@ export interface Recipe {
   name: string;
   description: string;
   ingredients: string[];
-}
+};
 
 export const createEmptyRecipe = (): Recipe => ({
   id: 0,
@@ -17,8 +17,8 @@ export const createEmptyRecipe = (): Recipe => ({
 export interface RecipeError {
   name: FieldValidationResult;
   ingredients: FieldValidationResult;
-}
-  
+};
+
 export const createEmptyRecipeError = (): RecipeError => ({
   name: {
     key: 'name',
@@ -33,3 +33,4 @@ export const createEmptyRecipeError = (): RecipeError => ({
     type: '',
   },
 });
+  

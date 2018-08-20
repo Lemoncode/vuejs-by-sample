@@ -16,7 +16,7 @@
         </template>
       </tbody>
     </table>
-  </div>
+  </div>  
 </template>
 
 <script lang="ts">
@@ -47,6 +47,6 @@ export default Vue.extend({
     filteredRecipes(): Recipe[] {
       return filterRecipesByCommaSeparatedText(this.recipes, this.searchText);
     },
-  },  
+  },   
 });
 </script>
