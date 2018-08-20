@@ -1193,15 +1193,16 @@ export { ValidationComponent, InputComponent, ButtonComponent };
 +          :input-handler="updateLogin"
 +        />
 +      </validation-component>
--         <button-component
+-         <button
 -           class="btn btn-lg btn-success btn-block"
 -           @click.prevent="loginRequest"
 -         >
 -           Login
--         </button-component>
+-         </button>
 +      <button-component
 +        class-name="btn btn-lg btn-success btn-block"
 +        label="Login"
++        type="button"
 +        :click-handler="loginRequest"
 +      />
     </form>
