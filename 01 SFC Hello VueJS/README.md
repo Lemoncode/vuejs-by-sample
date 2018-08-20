@@ -57,7 +57,46 @@ npm install
 
 - To get a better experience debugging `vue` we can install [Vue devtools](https://github.com/vuejs/vue-devtools). It's a Chrome extension.
 
-- To get a better experience development we can install [Vetur](https://github.com/vuejs/vetur). It's a Vue tooling for VS Code.
+- To get a better experience development we can install [Vetur](https://github.com/vuejs/vetur). It's a Vue tooling for VS Code. With Vetur, we se to scaffolding as `template`, `script`, `style` or `scaffold`.
+
+**template**
+![Vetur template](../Misc/pics/01-vetur-template.png)
+
+**script**
+![Vetur script](../Misc/pics/01-vetur-script.png)
+
+**style**
+![Vetur style](../Misc/pics/01-vetur-style.png)
+
+**scaffold**
+![Vetur scaffold](../Misc/pics/01-vetur-scaffold.png)
+
+In Misc folder, there are a scaffold with Typescript ready to add to your VSC.
+
+```json
+{
+  "Scaffold with TS": {
+    "prefix": "sts",
+    "body": [
+      "<template>",
+      "",
+      "</template>",
+      "",
+      "<script lang=\"ts\">",
+        "import Vue from 'vue';",
+        "",
+        "export default Vue.extend({",
+        "\tname: '$0',",
+        "});",
+      "</script>",
+      "",
+      "<style>",
+      "</style>"
+    ]
+  }
+}
+
+```
 
 - Install `vue` library as project dependency:
 
@@ -232,6 +271,8 @@ export default Vue.extend({
 </script>
 
 ```
+
+> The special case to note here is the **data option** it must be a function when used with `Vue.extend()`.
 
 - Create `sfc.d.ts` in order to TypeScript recognize and treat .vue files
 
