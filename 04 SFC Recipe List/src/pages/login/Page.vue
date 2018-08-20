@@ -8,7 +8,7 @@
             :login-entity="loginEntity"
             :login-error="loginError"
             :update-login="updateLogin"
-            :login-request="loginRequest"          
+            :login-request="loginRequest"
           />
         </div>
       </div>
@@ -31,6 +31,6 @@ export default Vue.extend({
     loginError: {},
     updateLogin: {},
     loginRequest: {},
-  } as FormProps,    
+  } as FormProps,
 });
 </script>

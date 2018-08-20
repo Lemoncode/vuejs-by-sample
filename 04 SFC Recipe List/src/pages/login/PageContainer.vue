@@ -32,15 +32,14 @@ export default Vue.extend({
         ...this.loginEntity,
         [field]: value,
       };
-
-      validations.validateField(this.loginEntity, field, value)
-        .then(fieldValidationResult => {
-          this.loginError = {
-            ...this.loginError,
-            [field]: fieldValidationResult,
-          };
-        })
-        .catch(error => console.log(error));
+     validations.validateField(this.loginEntity, field, value)
+      .then(fieldValidationResult => {
+        this.loginError = {
+          ...this.loginError,
+          [field]: fieldValidationResult,
+        };
+      })
+      .catch(error => console.log(error));
     },
     loginRequest() {
       validations.validateForm(this.loginEntity)
@@ -58,7 +57,7 @@ export default Vue.extend({
             }
           }
         })
-        .catch(error => console.log(error));
+       .catch(error => console.log(error));
     },
   },
 });

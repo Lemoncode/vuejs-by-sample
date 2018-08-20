@@ -25,6 +25,6 @@ export default Vue.extend({
     inputHandler(field: string, value: string) {
       this.searchInputHandler(value);
     }
-  }    
+  }
 });
 </script>
