@@ -86,10 +86,7 @@ Once you have successfully fullfilled them a **package.json** file we will gener
     "noLib": false,
     "suppressImplicitAnyIndexErrors": true
   },
-  "compileOnSave": false,
-  "exclude": [
-    "node_modules"
-  ]
+  "compileOnSave": false
 }
 
  ```
@@ -300,7 +297,7 @@ module.exports = {
       filename: '[name].css',
     }),
     new ForkTsCheckerWebpackPlugin({
-      tsconfig: path.join(__dirname, './tsconfig.json')
+      tsconfig: path.join(__dirname, './tsconfig.json'),
     }),
   ],
 };
