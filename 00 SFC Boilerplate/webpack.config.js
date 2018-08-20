@@ -74,7 +74,7 @@ module.exports = {
       filename: '[name].css',
     }),
     new ForkTsCheckerWebpackPlugin({
-      tsconfig: path.join(__dirname, './tsconfig.json')
+      tsconfig: path.join(__dirname, './tsconfig.json'),
     }),
   ],
 };
