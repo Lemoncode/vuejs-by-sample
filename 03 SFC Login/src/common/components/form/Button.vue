@@ -2,7 +2,7 @@
   <button
     :class="className"
     :type="type"
-    @click.prevent="clickHandler"
+    @click="clickHandler"
     :disabled="disabled"
   >
     {{ label }}

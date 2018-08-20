@@ -14,7 +14,7 @@ interface LoginError {
   login: FieldValidationResult;
   password: FieldValidationResult;
 };
-  
+
 const createEmptyLoginError = (): LoginError => ({
   login: {
     key: 'login',
