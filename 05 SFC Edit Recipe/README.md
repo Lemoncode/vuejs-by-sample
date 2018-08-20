@@ -386,16 +386,14 @@ export { FormComponent };
 
 ```diff
 <template>
-+  <div>
 -  <h1>Edit Recipe Page {{ id }}</h1>
-+    <form-component
-+      :recipe="recipe"
-+      :update-recipe="updateRecipe"
-+      :add-ingredient="addIngredient"
-+      :remove-ingredient="removeIngredient"
-+      :save="save"
-+    />
-+  </div>
++   <form-component
++     :recipe="recipe"
++     :update-recipe="updateRecipe"
++     :add-ingredient="addIngredient"
++     :remove-ingredient="removeIngredient"
++     :save="save"
++   />
 </template>
 
 <script lang="ts">
@@ -1015,16 +1013,14 @@ export default Vue.extend({
 
 ```diff
 <template>
-  <div>
-    <form-component
-      :recipe="recipe"
+  <form-component
+    :recipe="recipe"
 +     :recipe-error="recipeError"
-      :update-recipe="updateRecipe"
-      :add-ingredient="addIngredient"
-      :remove-ingredient="removeIngredient"
-      :save="save"
-    />
-  </div>
+    :update-recipe="updateRecipe"
+    :add-ingredient="addIngredient"
+    :remove-ingredient="removeIngredient"
+    :save="save"
+  />
 </template>
 
 <script lang="ts">

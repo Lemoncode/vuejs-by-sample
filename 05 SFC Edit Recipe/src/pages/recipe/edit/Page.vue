@@ -6,7 +6,7 @@
     :add-ingredient="addIngredient"
     :remove-ingredient="removeIngredient"
     :save="save"
-    />
+  />
 </template>
 
 <script lang="ts">
