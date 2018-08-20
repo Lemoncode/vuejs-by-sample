@@ -25,7 +25,7 @@ export default Vue.extend({
   methods: {
     onChange(event) {
       this.message = event.target.value;
-    }
+    },
   },
 });
 </script>
