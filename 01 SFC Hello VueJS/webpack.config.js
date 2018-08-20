@@ -49,7 +49,6 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        include: /node_modules/,
         use: [
           process.env.NODE_ENV !== 'production'
             ? 'vue-style-loader'
