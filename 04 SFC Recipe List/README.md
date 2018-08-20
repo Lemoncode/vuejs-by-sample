@@ -1,8 +1,8 @@
-# 05 SFC Recipe List
+# 04 SFC Recipe List
 
 In this sample we are going to create a `recipe list` page.
 
-We will take a startup point sample _04 SFC Login_.
+We will take a startup point sample _03 SFC Login_.
 
 Summary steps:
 
@@ -16,7 +16,7 @@ Summary steps:
 
 ## Prerequisites
 
-You will need to have Node.js installed in your computer. In order to follow this step guides you will also need to take sample _04 SFC Login_ as a starting point.
+You will need to have Node.js installed in your computer. In order to follow this step guides you will also need to take sample _03 SFC Login_ as a starting point.
 
 ## Steps
 
