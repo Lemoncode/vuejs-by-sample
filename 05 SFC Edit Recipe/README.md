@@ -1,8 +1,8 @@
-# 06 SFC Edit Recipe
+# 05 SFC Edit Recipe
 
 In this sample we are going to create a `edit recipe` page.
 
-We will take a startup point sample _05 SFC Recipe List_.
+We will take a startup point sample _04 SFC Recipe List_.
 
 Summary steps:
 
@@ -17,7 +17,7 @@ Summary steps:
 
 ## Prerequisites
 
-You will need to have Node.js installed in your computer. In order to follow this step guides you will also need to take sample _05 SFC Recipe List_ as a starting point.
+You will need to have Node.js installed in your computer. In order to follow this step guides you will also need to take sample _04 SFC Recipe List_ as a starting point.
 
 ## Steps
 
