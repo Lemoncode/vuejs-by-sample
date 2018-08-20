@@ -31,6 +31,7 @@
         class-name="btn btn-lg btn-success btn-block"
         label="Login"
         :click-handler="loginRequest"
+        type="button"
       />
     </form>
   </div>

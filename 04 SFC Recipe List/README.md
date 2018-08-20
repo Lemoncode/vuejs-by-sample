@@ -36,7 +36,7 @@ export interface Recipe {
   name: string;
   description: string;
   ingredients: string[];
-}
+};
 
 ```
 
@@ -143,7 +143,7 @@ export interface Recipe {
   name: string;
   description: string;
   ingredients: string[];
-}
+};
 
 ```
 
@@ -251,17 +251,12 @@ npm install @types/webpack-env --save-dev
       ...
       {
         test: /\.css$/,
-+       include: /node_modules/,
-        use: [
-          env !== 'production'
-            ? 'vue-style-loader'
-            : MiniCssExtractPlugin.loader,
-          'css-loader'
-        ],
-      },
-+     {
-+       test: /\.css$/,
-+       exclude: /node_modules/,
+-       use: [
+-         process.env.NODE_ENV !== 'production'
+-           ? 'vue-style-loader'
+-           : MiniCssExtractPlugin.loader,
+-         'css-loader'
+-       ],
 +       oneOf: [
 +         {
 +           resourceQuery: /module/,
@@ -271,19 +266,21 @@ npm install @types/webpack-env --save-dev
 +               loader: 'css-loader',
 +               options: {
 +                 modules: true,
-+                 localIdentName: '[name]__[local]__[hash:base64:5]'
-+               }
-+             }
-+           ]
++                 localIdentName: '[name]__[local]__[hash:base64:5]',
++               },
++             },
++           ],
 +         },
 +         {
 +           use: [
-+             MiniCssExtractPlugin.loader,
++             process.env.NODE_ENV !== 'production'
++               ? 'vue-style-loader'
++               : MiniCssExtractPlugin.loader,
 +             'css-loader',
 +           ],
-+         }
++         },
 +       ],
-+     },
+      },
   ...
 ```
 
@@ -315,14 +312,14 @@ npm install @types/webpack-env --save-dev
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from "vue";
-import { Recipe } from "../viewModel";
+import Vue, { PropOptions } from 'vue';
+import { Recipe } from '../viewModel';
 
 export default Vue.extend({
-  name: "RowComponent",
+  name: 'RowComponent',
   props: {
     recipe: {} as PropOptions<Recipe>
-  }
+  },
 });
 </script>
 
@@ -345,6 +342,8 @@ export default Vue.extend({
 </style>
 
 ```
+
+- Create `index.ts`:
 
 ### ./src/pages/recipe/list/components/index.ts
 
@@ -470,6 +469,8 @@ export default Vue.extend({
 </script>
 
 ```
+
+- Update `index.ts`:
 
 ### ./src/pages/recipe/list/components/index.ts
 
@@ -613,6 +614,8 @@ export default Vue.extend({
 </script>
 
 ```
+
+- Create `index.ts`:
 
 ### ./src/pages/recipe/edit/index.ts
 
