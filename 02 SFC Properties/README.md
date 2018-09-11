@@ -119,7 +119,7 @@ export default Vue.extend({
 +   onChange(event) {
 +     this.message = event.target.value;
 +   },
-+ },  
++ },
 };
 </script>
 
@@ -210,7 +210,7 @@ export default Vue.extend({
   name: 'App',
 + components: {
 +   HelloComponent,
-+ },  
++ },
   data() {
     return {
       message: 'Hello from Vue.js',
@@ -228,7 +228,7 @@ export default Vue.extend({
 ```diff
 <template>
   <input
--    v-model="value"  
+-    v-model="value"
 +   :value="value"
 +   @input="onChange"
   />
@@ -318,41 +318,6 @@ export default {
 +   },
 + },
 };
-</script>
-
-
-
-<template>
-  <div>
-    <h1>{{message}}</h1>
-    <hello-component
--     v-model="message"
-+     :message="message"
-+     :on-change="onChange"
-    />
-  </div>
-</template>
-
-<script lang="ts">
-import Vue from 'vue';
-import HelloComponent from './Hello.vue';
-
-export default Vue.extend({
-  name: 'App',
-  components: {
-    HelloComponent,
-  },
-  data() {
-    return {
-      message: 'Hello from Vue.js',
-    };
-  },
-+ methods: {
-+   onChange(event) {
-+     this.message = event.target.value;
-+   },
-+ },
-});
 </script>
 
 ```
