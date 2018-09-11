@@ -15,7 +15,7 @@ import { mapLoginEntityVmToModel } from './mappers';
 import { validations } from './validations';
 import LoginPage from './Page.vue';
 
-export default Vue.extend({  
+export default Vue.extend({
   name: 'LoginPageContainer',
   components: {
     LoginPage,
@@ -44,7 +44,7 @@ export default Vue.extend({
     loginRequest() {
       validations.validateForm(this.loginEntity)
         .then(formValidationResult => {
-          if (formValidationResult.succeeded) {      
+          if (formValidationResult.succeeded) {
             const loginEntityModel = mapLoginEntityVmToModel(this.loginEntity);
             loginRequest(loginEntityModel)
               .then(() => {
@@ -52,9 +52,10 @@ export default Vue.extend({
               })
               .catch(error => console.log(error));
           } else {
-            for (const obj in this.loginEntity) {
-              this.updateLogin(obj, this.loginEntity[obj]);
-            }
+            this.loginError = {
+              ...this.loginError,
+              ...formValidationResult.fieldErrors,
+            };
           }
         })
        .catch(error => console.log(error));
