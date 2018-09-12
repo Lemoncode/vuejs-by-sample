@@ -233,18 +233,11 @@ export default Vue.extend({
 
 ```
 
-- To work with CSS Modules, we'll install `webpack-env` typings for use `require`:
-
-```
-npm install @types/webpack-env --save-dev
-```
-
 - Configure CSS modules:
 
 ### ./webpack.config.js
 
 ```diff
-  ...
   ...
   module: {
     rules: [
@@ -362,7 +355,7 @@ export { HeaderComponent, RowComponent };
 ```diff
 <template>
 +  <div class="container-fluid">
--    <h1> Recipe List Page</h1>  
+-    <h1> Recipe List Page</h1>
 +    <h2>Recipes</h2>
 +    <table class="table table-striped">
 +      <header-component />
@@ -375,7 +368,7 @@ export { HeaderComponent, RowComponent };
 +        </template>
 +      </tbody>
 +    </table>
-+  </div>  
++  </div>
 </template>
 
 <script lang="ts">
@@ -391,7 +384,7 @@ export default Vue.extend({
 + },
 + props: {
 +   recipes: {} as PropOptions<Recipe[]>,
-+ },  
++ },
 });
 </script>
 
@@ -554,7 +547,7 @@ const matchIngredient = (ingredient, searchedIngredient) => {
         </template>
       </tbody>
     </table>
-  </div>  
+  </div>
 </template>
 
 <script lang="ts">
@@ -587,7 +580,7 @@ export default Vue.extend({
 +    filteredRecipes(): Recipe[] {
 +      return filterRecipesByCommaSeparatedText(this.recipes, this.searchText);
 +    },
-+  },  
++  },
 });
 </script>
 
@@ -609,7 +602,7 @@ export default Vue.extend({
   name: 'RecipeEditPage',
   props: {
     id: String,
-  },  
+  },
 });
 </script>
 
