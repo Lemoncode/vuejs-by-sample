@@ -144,7 +144,7 @@ new ForkTsCheckerWebpackPlugin({
 +       },
 +     },
 +   },
-+ },  
++ },
 ```
 
 - Update configuration for [`tsconfig.json`](https://vuejs.org/v2/guide/typescript.html#Recommended-Configuration):
@@ -236,6 +236,8 @@ resolve: {
 
 ```
 
+> The `vue-style-loader` add css to the DOM by injecting a `<style>` tag. This is included as a dependency by default in `vue-loader`.
+
 - Update `index.html`:
 
 ### ./src/index.html
@@ -276,7 +278,7 @@ export default Vue.extend({
     return {
       message: 'Hello from Vue.js',
     };
-  },  
+  },
 });
 </script>
 
@@ -290,7 +292,7 @@ export default Vue.extend({
 
 ```javascript
 declare module '*.vue' {
-  import Vue from 'vue';  
+  import Vue from 'vue';
   export default Vue;
 }
 ```
