@@ -24,7 +24,6 @@
   },
   "homepage": "https://github.com/Lemoncode/vuejs-by-sample#readme",
   "devDependencies": {
-    "@types/webpack-env": "^1.13.6",
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
     "css-loader": "^1.0.0",
