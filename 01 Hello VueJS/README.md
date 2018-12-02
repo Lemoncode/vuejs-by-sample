@@ -229,6 +229,24 @@ module.exports = {
 </html>
 ```
 
+- Update `main.ts`:
+
+### ./src/main.ts
+
+```diff
+- document.write("Hello from main.ts !");
++ import Vue from 'vue';
+
++ new Vue({
++  el: '#root',
++  template: '<h1>{{message}}</h1>',
++  data: {
++    message: 'Hello from Vue.js',
++  },
++ });
+
+```
+
 - Create `App.vue`:
 
 ### ./src/App.vue
@@ -244,7 +262,7 @@ import Vue from 'vue';
 export default Vue.extend({
   name: 'App',
   data: () => ({
-    message: 'Hello from Vue.js',
+    message: 'Hello from App',
   }),
 });
 </script>
@@ -258,14 +276,17 @@ export default Vue.extend({
 ### ./src/main.ts
 
 ```diff
-- document.write("Hello from main.ts !");
-+ import Vue from 'vue';
+import Vue from 'vue';
 + import App from './App.vue';
 
-+ new Vue({
-+   el: '#root',
-+   render: (h) => h(App),
-+ });
+new Vue({
+  el: '#root',
+- template: '<h1>{{message}}</h1>',
+- data: {
+-   message: 'Hello from Vue.js',
+- },
++ render: (h) => h(App),
+});
 
 ```
 

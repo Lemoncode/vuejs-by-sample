@@ -1,11 +1,11 @@
-var path = require('path');
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var MiniCssExtractPlugin = require('mini-css-extract-plugin');
-var ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-var VueLoaderPlugin = require('vue-loader/lib/plugin');
- 
-var basePath = __dirname;
+const path = require('path');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
+
+const basePath = __dirname;
 
 module.exports = {
   context: path.join(basePath, 'src'),
@@ -21,13 +21,22 @@ module.exports = {
     vendor: [
       'vue',
     ],
-    vendorStyles: [
-      '../node_modules/bootstrap/dist/css/bootstrap.css',
-    ],
   },
   output: {
     path: path.join(basePath, 'dist'),
     filename: '[name].js',
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /node_modules/,
+          name: 'vendor',
+          chunks: 'initial',
+          enforce: true
+        },
+      },
+    },
   },
   module: {
     rules: [
@@ -35,7 +44,7 @@ module.exports = {
         test: /\.vue$/,
         exclude: /node_modules/,
         loader: 'vue-loader',
-      },      
+      },
       {
         test: /\.ts$/,
         exclude: /node_modules/,
@@ -54,10 +63,8 @@ module.exports = {
             ? 'vue-style-loader'
             : MiniCssExtractPlugin.loader,
           'css-loader',
-        ]
+        ],
       },
-      // Loading glyphicons => https://github.com/gowravshekar/bootstrap-webpack
-      // Using here url-loader and file-loader
       {
         test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader?limit=10000&mimetype=application/font-woff'
@@ -78,11 +85,9 @@ module.exports = {
   },
   devtool: 'inline-source-map',
   plugins: [
-    new VueLoaderPlugin(),
-    //Generate index.html in /dist => https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
-      filename: 'index.html', //Name of file in ./dist/
-      template: 'index.html', //Name of template in ./src
+      filename: 'index.html',
+      template: 'index.html',
       hash: true,
     }),
     new webpack.HashedModuleIdsPlugin(),
@@ -93,17 +98,6 @@ module.exports = {
       tsconfig: path.join(__dirname, './tsconfig.json'),
       vue: true,
     }),
+    new VueLoaderPlugin(),
   ],
-  optimization: {
-    splitChunks: {
-      cacheGroups: {
-        vendor: {
-          test: /node_modules/,
-          name: 'vendor',
-          chunks: 'initial',
-          enforce: true
-        },
-      },
-    },
-  },
 };
