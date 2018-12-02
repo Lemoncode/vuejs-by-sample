@@ -1,0 +1,47 @@
+{
+  "name": "sample-vue-js",
+  "version": "1.0.0",
+  "description": "Sample working with TypeScript and Webpack",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lemoncode/vuejs-by-sample.git"
+  },
+  "keywords": [
+    "vue.js",
+    "samples",
+    "typescript",
+    "webpack"
+  ],
+  "author": "Lemoncode",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Lemoncode/vuejs-by-sample/issues"
+  },
+  "homepage": "https://github.com/Lemoncode/vuejs-by-sample#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "css-loader": "^1.0.0",
+    "file-loader": "^1.1.11",
+    "fork-ts-checker-webpack-plugin": "^0.4.9",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.4.1",
+    "ts-loader": "^4.5.0",
+    "typescript": "^3.0.1",
+    "url-loader": "^1.1.1",
+    "vue-loader": "^15.4.0",
+    "vue-template-compiler": "^2.5.17",
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.5"
+  },
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "vue": "^2.5.16"
+  }
+}
