@@ -102,7 +102,7 @@ TypeScript transpile to ES6 files and Babel transpile to ES5 files
 ```
 
 ```
-npm install babel-core babel-preset-env --save-dev
+npm install @babel/cli @babel/core @babel/preset-env --save-dev
 
 ```
 
@@ -112,17 +112,16 @@ npm install babel-core babel-preset-env --save-dev
 ```diff
 {
   "presets": [
-    "env"
+    [
+      "@babel/preset-env",
+      {
+        "useBuiltIns": "entry"
+      }
+    ]
   ]
 }
 
 ```
-
-- Let's install bootstrap:
-
- ```
- npm install bootstrap@3 --save
- ```
 
 - Now, our **package.json** file should look something like:
 
@@ -153,22 +152,20 @@ npm install babel-core babel-preset-env --save-dev
   },
   "homepage": "https://github.com/Lemoncode/vuejs-by-sample#readme",
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-preset-env": "^1.7.0",
-    "css-loader": "^1.0.0",
-    "file-loader": "^1.1.11",
-    "fork-ts-checker-webpack-plugin": "^0.4.3",
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.6",
+    "@babel/preset-env": "^7.1.6",
+    "css-loader": "^1.0.1",
+    "file-loader": "^2.0.0",
+    "fork-ts-checker-webpack-plugin": "^0.5.0",
     "html-webpack-plugin": "^3.2.0",
-    "mini-css-extract-plugin": "^0.4.1",
-    "ts-loader": "^4.4.2",
-    "typescript": "^3.0.1",
-    "url-loader": "^1.0.1",
-    "webpack": "^4.16.3",
-    "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.5"
-  },
-  "dependencies": {
-    "bootstrap": "^3.3.7"
+    "mini-css-extract-plugin": "^0.4.5",
+    "ts-loader": "^5.3.1",
+    "typescript": "^3.2.1",
+    "url-loader": "^1.1.2",
+    "webpack": "^4.26.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
   }
 }
 
@@ -203,9 +200,7 @@ document.write("Hello from main.ts !");
     <title>Vue.js by sample</title>
   </head>
   <body>
-    <div class="well">
-      <h1>Sample app</h1>
-    </div>
+    <h1>Sample app</h1>
   </body>
 </html>
 
@@ -221,13 +216,13 @@ document.write("Hello from main.ts !");
 ### ./webpack.config.js
 
 ```javascript
-var path = require('path');
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var MiniCssExtractPlugin = require('mini-css-extract-plugin');
-var ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
- 
-var basePath = __dirname;
+const path = require('path');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+
+const basePath = __dirname;
 
 module.exports = {
   context: path.join(basePath, 'src'),
@@ -237,9 +232,6 @@ module.exports = {
   mode: 'development',
   entry: {
     app: './main.ts',
-    vendorStyles: [
-      '../node_modules/bootstrap/dist/css/bootstrap.css',
-    ],
   },
   output: {
     path: path.join(basePath, 'dist'),
@@ -264,8 +256,6 @@ module.exports = {
           'css-loader',
         ],
       },
-      // Loading glyphicons => https://github.com/gowravshekar/bootstrap-webpack
-      // Using here url-loader and file-loader
       {
         test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader?limit=10000&mimetype=application/font-woff'
@@ -286,10 +276,9 @@ module.exports = {
   },
   devtool: 'inline-source-map',
   plugins: [
-    //Generate index.html in /dist => https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
-      filename: 'index.html', //Name of file in ./dist/
-      template: 'index.html', //Name of template in ./src
+      filename: 'index.html',
+      template: 'index.html',
       hash: true,
     }),
     new webpack.HashedModuleIdsPlugin(),

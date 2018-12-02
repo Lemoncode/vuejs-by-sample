@@ -1,7 +1,7 @@
 {
   "name": "sample-vue-js",
   "version": "1.0.0",
-  "description": "Sample working SFC VueJs with TypeScript and Webpack",
+  "description": "Sample working with TypeScript and Webpack",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server",
@@ -14,7 +14,6 @@
   "keywords": [
     "vue.js",
     "samples",
-    "sfc",
     "typescript",
     "webpack"
   ],
@@ -25,23 +24,19 @@
   },
   "homepage": "https://github.com/Lemoncode/vuejs-by-sample#readme",
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-preset-env": "^1.7.0",
-    "css-loader": "^1.0.0",
-    "file-loader": "^1.1.11",
-    "fork-ts-checker-webpack-plugin": "^0.4.9",
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.6",
+    "@babel/preset-env": "^7.1.6",
+    "css-loader": "^1.0.1",
+    "file-loader": "^2.0.0",
+    "fork-ts-checker-webpack-plugin": "^0.5.0",
     "html-webpack-plugin": "^3.2.0",
-    "mini-css-extract-plugin": "^0.4.1",
-    "ts-loader": "^4.5.0",
-    "typescript": "^3.0.1",
-    "url-loader": "^1.1.1",
-    "vue-loader": "^15.4.0",
-    "vue-template-compiler": "^2.5.17",
-    "webpack": "^4.16.5",
-    "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.5"
-  },
-  "dependencies": {
-    "bootstrap": "^3.3.7"
+    "mini-css-extract-plugin": "^0.4.5",
+    "ts-loader": "^5.3.1",
+    "typescript": "^3.2.1",
+    "url-loader": "^1.1.2",
+    "webpack": "^4.26.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
   }
 }
