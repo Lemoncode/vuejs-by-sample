@@ -47,11 +47,9 @@ import Vue from 'vue';
 
 export default Vue.extend({
   name: 'App',
-  data() {
-    return {
-      message: 'Hello from Vue.js',
-    };
-  },
+  data: () => ({
+    message: "Hello from App"
+  }),
 };
 </script>
 
@@ -79,11 +77,9 @@ import Vue from 'vue';
 
 export default Vue.extend({
   name: 'App',
-  data() {
-    return {
-      message: 'Hello from Vue.js',
-    };
-  },
+  data: () => ({
+    message: "Hello from App"
+  }),
 };
 </script>
 
@@ -110,11 +106,9 @@ import Vue from 'vue';
 
 export default Vue.extend({
   name: 'App',
-  data() {
-    return {
-      message: 'Hello from Vue.js',
-    };
-  },
+  data: () => ({
+    message: "Hello from App"
+  }),
 + methods: {
 +   onChange(event) {
 +     this.message = event.target.value;
@@ -148,11 +142,9 @@ import Vue from 'vue';
 
 export default Vue.extend({
   name: 'App',
-  data() {
-    return {
-      message: 'Hello from Vue.js',
-    };
-  },
+  data: () => ({
+    message: "Hello from App"
+  }),
 - methods: {
 -   onChange(event) {
 -     this.message = event.target.value;
@@ -163,14 +155,14 @@ export default Vue.extend({
 
 ```
 
-- Create our first component `Hello.vue`:
+- Create a child component `Hello.vue`:
 
 ### ./src/Hello.vue
 
 ```javascript
 <template>
   <input
-    v-model="value"
+    v-model="message"
   />
 </template>
 
@@ -180,7 +172,7 @@ import Vue from 'vue';
 export default Vue.extend({
   name: 'HelloComponent',
   props: {
-    value: String,
+    message: String,
   },
 });
 </script>
@@ -196,8 +188,9 @@ export default Vue.extend({
   <div>
     <h1>{{message}}</h1>
 -    <input
+-     v-model="message"
 +    <hello-component
-      v-model="message"
++     :message="message"
     />
   </div>
 </template>
@@ -211,11 +204,9 @@ export default Vue.extend({
 + components: {
 +   HelloComponent,
 + },
-  data() {
-    return {
-      message: 'Hello from Vue.js',
-    };
-  },
+  data: () => ({
+    message: "Hello from App"
+  }),
 });
 </script>
 
@@ -228,8 +219,8 @@ export default Vue.extend({
 ```diff
 <template>
   <input
--    v-model="value"
-+   :value="value"
+-   v-model="message"
++   :value="message"
 +   @input="onChange"
   />
 </template>
@@ -240,46 +231,9 @@ import Vue from 'vue';
 export default Vue.extend({
   name: 'HelloComponent',
   props: {
-    value: String,
-  },
-+ methods: {
-+   onChange: function(event) {
-+     this.$emit('input', event.target.value);
-+   },
-+ },
-});
-</script>
-
-```
-
-- Other approach:
-
-### ./src/Hello.vue
-
-```diff
-<template>
-  <input
--   :value="value"
-+   :value="message"
-    @input="onChange"
-  />
-</template>
-
-<script lang="ts">
-import Vue from 'vue';
-
-export default Vue.extend({
-  name: 'HelloComponent',
-  props: {
--   value: String,
-+   message: String,
+    message: String,
 +   onChange: Function,
   },
-- methods: {
--   onChange: function(event) {
--     this.$emit('input', event.target.value);
--   },
-- },
 });
 </script>
 
@@ -292,8 +246,7 @@ export default Vue.extend({
   <div>
     <h1>{{message}}</h1>
     <hello-component
--       v-model="message"
-+       :message="message"
+        :message="message"
 +       :on-change="onChange"
     />
   </div>
@@ -307,17 +260,83 @@ export default {
   components: {
     HelloComponent,
   },
-  data() {
-    return {
-      message: 'Hello from Vue.js',
-    };
-  },
+  data: () => ({
+    message: "Hello from App"
+  }),
 + methods: {
 +   onChange(event) {
 +     this.message = event.target.value;
 +   },
 + },
 };
+</script>
+
+```
+
+- Other approach:
+
+### ./src/App.vue
+
+```diff
+<template>
+  <div>
+    <h1>{{message}}</h1>
+    <hello-component
+-       :message="message"
+-       :on-change="onChange"
++       v-model="message"
+    />
+  </div>
+</template>
+
+<script>
+import HelloComponent from './Hello.vue';
+
+export default {
+  name: 'App',
+  components: {
+    HelloComponent,
+  },
+  data: () => ({
+    message: "Hello from App"
+  }),
+- methods: {
+-   onChange(event) {
+-     this.message = event.target.value;
+-   },
+- },
+};
+</script>
+
+```
+
+### ./src/Hello.vue
+
+```diff
+<template>
+  <input
+-   :value="message"
++   :value="value"
+    @input="onChange"
+  />
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  name: 'HelloComponent',
+  props: {
+-   message: String,
+-   onChange: Function
++   value: String,
+  },
++ methods: {
++   onChange: function(event) {
++     this.$emit('input', event.target.value);
++   },
++ },
+});
 </script>
 
 ```
