@@ -210,7 +210,6 @@ document.write("Hello from main.ts !");
  include plumbing for:
  - Launching a web dev server.
  - Transpiling from TypeScript to JavaScript.
- - Setting up Twitter Bootstrap (including fonts, etc...).
  - Generating the build under a **dist** folder.
 
 ### ./webpack.config.js

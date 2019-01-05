@@ -179,7 +179,7 @@ module.exports = {
         use: {
           loader: 'ts-loader',
           options: {
-+           appendTsSuffixTo: [/\.vue$/],
++           appendTsSuffixTo: [/\.vue$/], // Add suffix to vue files to transpile ts scripts in vue files
             transpileOnly: true,
           },
         },
