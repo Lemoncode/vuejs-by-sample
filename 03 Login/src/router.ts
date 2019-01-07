@@ -9,5 +9,5 @@ const routes: RouteConfig[] = [
 ];
 
 export const router = new Router({
-  routes
+  routes,
 });

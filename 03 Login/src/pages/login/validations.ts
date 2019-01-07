@@ -2,7 +2,7 @@ import { ValidationConstraints, Validators, createFormValidation } from 'lc-form
 
 const validationConstraints: ValidationConstraints = {
   fields: {
-    login: [
+    name: [
       { validator: Validators.required },
     ],
     password: [
