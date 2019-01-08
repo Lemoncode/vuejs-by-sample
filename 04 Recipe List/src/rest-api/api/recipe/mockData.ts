@@ -10,12 +10,7 @@ export const mockRecipes: Recipe[] = [
      3. When the omelette begins to cook and firm up, but still has a little raw egg on top, sprinkle over the cheese (if using).
      4. Using a spatula, ease around the edges of the omelette, then fold it over in half. When it starts to turn golden brown underneath, remove the pan from the heat and slide the omelette on to a plate.
     `,
-    ingredients: [
-      '2 eggs',
-      'cheese',
-      'salt',
-      'black pepper',
-    ],
+    ingredients: ['2 eggs', 'cheese', 'salt', 'black pepper'],
   },
   {
     id: 2,
@@ -33,7 +28,7 @@ export const mockRecipes: Recipe[] = [
       '1 onion',
       'lemon juice',
       'salt',
-      'pepper'
+      'pepper',
     ],
   },
   {

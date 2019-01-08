@@ -1,23 +1,23 @@
 import { FieldValidationResult } from 'lc-form-validation';
 
-interface LoginEntity {
-  login: string;
+interface Login {
+  name: string;
   password: string;
-};
+}
 
-const createEmptyLoginEntity = (): LoginEntity => ({
-  login: '',
+const createEmptyLogin = (): Login => ({
+  name: '',
   password: '',
 });
 
 interface LoginError {
-  login: FieldValidationResult;
+  name: FieldValidationResult;
   password: FieldValidationResult;
-};
+}
 
 const createEmptyLoginError = (): LoginError => ({
-  login: {
-    key: 'login',
+  name: {
+    key: 'name',
     succeeded: true,
     errorMessage: '',
     type: '',
@@ -30,4 +30,4 @@ const createEmptyLoginError = (): LoginError => ({
   },
 });
 
-export { LoginEntity, createEmptyLoginEntity, LoginError, createEmptyLoginError };
+export { Login, createEmptyLogin, LoginError, createEmptyLoginError };

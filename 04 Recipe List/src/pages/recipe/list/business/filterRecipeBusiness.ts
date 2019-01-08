@@ -3,9 +3,9 @@ import { Recipe } from '../viewModel';
 export const filterRecipesByCommaSeparatedText = (recipes, searchText) => {
   const searchedIngredients = getSearchedIngredientList(searchText);
 
-  return searchText === '' ?
-    recipes :
-    filterRecipesBySearchedIngredients(recipes, searchedIngredients);
+  return searchText === ''
+    ? recipes
+    : filterRecipesBySearchedIngredients(recipes, searchedIngredients);
 };
 
 const getSearchedIngredientList = (searchText: string) => {
@@ -19,13 +19,16 @@ const filterRecipesBySearchedIngredients = (recipes, searchedIngredients) => {
 };
 
 const matchAllSearchedIngredients = (ingredients, searchedIngredients) => {
-  return searchedIngredients.every((searchedIngredient) =>
+  return searchedIngredients.every(searchedIngredient =>
     matchSearchedIngredient(searchedIngredient, ingredients)
   );
 };
 
-const matchSearchedIngredient = (searchedIngredient: string, ingredients: string[]) => {
-  return ingredients.some((ingredient) =>
+const matchSearchedIngredient = (
+  searchedIngredient: string,
+  ingredients: string[]
+) => {
+  return ingredients.some(ingredient =>
     matchIngredient(ingredient, searchedIngredient)
   );
 };

@@ -165,6 +165,139 @@ const mapRecipeModelToVm = (recipe: model.Recipe): vm.Recipe => ({
 
 ```
 
+- Create `header`:
+
+### ./src/pages/recipe/list/components/Header.vue
+
+```javascript
+<template>
+  <thead>
+    <th>Name</th>
+    <th>Description</th>
+    <th></th>
+  </thead>
+  </thead>
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  name: 'HeaderComponent',
+});
+</script>
+
+```
+
+- Create `row`:
+
+### ./src/pages/recipe/list/components/Row.vue
+
+```javascript
+<template>
+  <tr>
+    <td>
+      <span>{{recipe.name}}</span>
+    </td>
+    <td>
+      <span>{{recipe.description}}</span>
+    </td>
+    <td>
+      <v-btn flat icon>
+        <v-icon>edit</v-icon>
+      </v-btn>
+    </td>
+  </tr>
+</template>
+
+<script lang="ts">
+import Vue, { PropOptions } from "vue";
+import { Recipe } from "../viewModel";
+
+export default Vue.extend({
+  name: "RowComponent",
+  props: {
+    recipe: {} as PropOptions<Recipe>
+  }
+});
+</script>
+
+```
+
+- Create `table`:
+
+### ./src/pages/recipe/list/components/Table.vue
+
+```javascript
+<template>
+  <table>
+    <header-component/>
+    <tbody>
+      <template v-for="recipe in recipes">
+        <row-component :key="recipe.id" :recipe="recipe"/>
+      </template>
+    </tbody>
+  </table>
+</template>
+
+<script lang="ts">
+import Vue, { PropOptions } from "vue";
+import { Recipe } from "../viewModel";
+import HeaderComponent from "./Header.vue";
+import RowComponent from "./Row.vue";
+
+export default Vue.extend({
+  name: "TableComponent",
+  components: { HeaderComponent, RowComponent },
+  props: {
+    recipes: {} as PropOptions<Recipe[]>
+  }
+});
+</script>
+
+```
+
+- Create `index.ts`:
+
+### ./src/pages/recipe/list/components/index.ts
+
+```javascript
+import TableComponent from './TableComponent.vue';
+
+export { TableComponent };
+
+```
+
+- Update `recipe list` page:
+
+### ./src/pages/recipe/list/Page.vue
+
+```diff
+<template>
++  <v-container>
+-    <h1> Recipe List Page</h1>
++    <h2>Recipes</h2>
++    <table-component :recipes="recipes"/>
++  </v-container>
+</template>
+
+<script lang="ts">
+- import Vue from 'vue';
++ import Vue, { PropOptions } from 'vue';
++ import { Recipe } from './viewModel';
++ import { TableComponent } from "./components";
+
+export default Vue.extend({
+  name: 'RecipeListPage',
++ components: { TableComponent },
++ props: {
++   recipes: {} as PropOptions<Recipe[]>,
++ },
+});
+</script>
+
+```
+
 - Create `recipe list` page container:
 
 ### ./src/pages/recipe/list/PageContainer.vue
@@ -205,191 +338,6 @@ export default Vue.extend({
 
 ```
 
-- Create `header`:
-
-### ./src/pages/recipe/list/components/Header.vue
-
-```javascript
-<template>
-  <thead>
-    <th>
-      Name
-    </th>
-    <th>
-      Description
-    </th>
-    <th>
-    </th>
-  </thead>
-</template>
-
-<script lang="ts">
-import Vue from 'vue';
-
-export default Vue.extend({
-  name: 'HeaderComponent',
-});
-</script>
-
-```
-
-- Configure CSS modules:
-
-### ./webpack.config.js
-
-```diff
-  ...
-  module: {
-    rules: [
-      ...
-      {
-        test: /\.css$/,
--       use: [
--         process.env.NODE_ENV !== 'production'
--           ? 'vue-style-loader'
--           : MiniCssExtractPlugin.loader,
--         'css-loader'
--       ],
-+       oneOf: [
-+         {
-+           resourceQuery: /module/,
-+           use: [
-+             'vue-style-loader',
-+             {
-+               loader: 'css-loader',
-+               options: {
-+                 modules: true,
-+                 localIdentName: '[name]__[local]__[hash:base64:5]',
-+               },
-+             },
-+           ],
-+         },
-+         {
-+           use: [
-+             process.env.NODE_ENV !== 'production'
-+               ? 'vue-style-loader'
-+               : MiniCssExtractPlugin.loader,
-+             'css-loader',
-+           ],
-+         },
-+       ],
-      },
-  ...
-```
-
-[More info about CSS Modules with `vue-loader`](https://vue-loader.vuejs.org/guide/css-modules.html#usage)
-
-- Create `row`:
-
-### ./src/pages/recipe/list/components/Row.vue
-
-```javascript
-<template>
-  <tr>
-    <td :class="$style.name">
-      <span>
-        {{ recipe.name }}
-      </span>
-    </td>
-    <td :class="$style.description">
-      <span>
-        {{ recipe.description }}
-      </span>
-    </td>
-    <td>
-      <a class="btn btn-primary pull-right">
-        <i class="glyphicon glyphicon-pencil" />
-      </a>
-    </td>
-  </tr>
-</template>
-
-<script lang="ts">
-import Vue, { PropOptions } from 'vue';
-import { Recipe } from '../viewModel';
-
-export default Vue.extend({
-  name: 'RowComponent',
-  props: {
-    recipe: {} as PropOptions<Recipe>
-  },
-});
-</script>
-
-<style module>
-.name {
-  width: 25%;
-}
-
-.description {
-  max-width: 177px;
-}
-
-.description span {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: inline-block;
-  max-width: 100%;
-}
-</style>
-
-```
-
-- Create `index.ts`:
-
-### ./src/pages/recipe/list/components/index.ts
-
-```javascript
-import HeaderComponent from './Header.vue';
-import RowComponent from './Row.vue';
-
-export { HeaderComponent, RowComponent };
-
-```
-
-- Update `recipe list` page:
-
-### ./src/pages/recipe/list/Page.vue
-
-```diff
-<template>
-+  <div class="container-fluid">
--    <h1> Recipe List Page</h1>
-+    <h2>Recipes</h2>
-+    <table class="table table-striped">
-+      <header-component />
-+      <tbody>
-+        <template v-for="recipe in recipes">
-+          <row-component
-+            :key="recipe.id"
-+            :recipe="recipe"
-+          />
-+        </template>
-+      </tbody>
-+    </table>
-+  </div>
-</template>
-
-<script lang="ts">
-- import Vue from 'vue';
-+ import Vue, { PropOptions } from 'vue';
-+ import { Recipe } from './viewModel';
-+ import { HeaderComponent, RowComponent } from './components';
-
-export default Vue.extend({
-  name: 'RecipeListPage',
-+ components: {
-+   HeaderComponent, RowComponent,
-+ },
-+ props: {
-+   recipes: {} as PropOptions<Recipe[]>,
-+ },
-});
-</script>
-
-```
-
 - Update `index.ts`:
 
 ### ./src/pages/recipe/list/index.ts
@@ -425,38 +373,194 @@ export const router = new Router({
 
 ```
 
+- If we run app, there are some challenges that we need to resolve. First, we will load `edit icon`:
+
+### ./src/index.html
+
+```diff
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vue.js by sample</title>
++   <link
++     href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons"
++     rel="stylesheet"
++   />
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+
+```
+
+- Then, we could improve `table` look and feel.
+
+> Scoped Styles vs CSS Modules: https://www.netguru.com/codestories/vue.js-scoped-styles-vs-css-modules
+
+- Configure CSS modules:
+
+### ./webpack.config.js
+
+```diff
+  ...
+  module: {
+    rules: [
+      ...
+      {
+        test: /\.css$/,
+-       use: [
+-         process.env.NODE_ENV !== 'production'
+-           ? 'vue-style-loader'
+-           : MiniCssExtractPlugin.loader,
+-         'css-loader'
+-       ],
++       oneOf: [
++         {
++           resourceQuery: /module/,
++           use: [
++             'vue-style-loader',
++             {
++               loader: 'css-loader',
++               options: {
++                 modules: true,
++                 camelCase: true,
++                 localIdentName: '[name]__[local]__[hash:base64:5]',
++               },
++             },
++           ],
++         },
++         {
++           use: [
++             process.env.NODE_ENV !== 'production'
++               ? 'vue-style-loader'
++               : MiniCssExtractPlugin.loader,
++             'css-loader',
++           ],
++         },
++       ],
+      },
+  ...
+```
+
+[More info about CSS Modules with `vue-loader`](https://vue-loader.vuejs.org/guide/css-modules.html#usage)
+
+- We will update `row` styles:
+
+### ./src/pages/recipe/list/components/Row.vue
+
+```diff
+<template>
+  <tr>
+-   <td>
++   <td :class="$style.name">
+      <span>{{recipe.name}}</span>
+    </td>
+-   <td>
++   <td :class="$style.description">
+      <span>{{recipe.description}}</span>
+    </td>
+-   <td>
++   <td :class="$style.editButton">
+      <v-btn flat icon>
+        <v-icon>edit</v-icon>
+      </v-btn>
+    </td>
+  </tr>
+</template>
+
+<script lang="ts">
+import Vue, { PropOptions } from "vue";
+import { Recipe } from "../viewModel";
+
+export default Vue.extend({
+  name: "RowComponent",
+  props: {
+    recipe: {} as PropOptions<Recipe>
+  }
+});
+</script>
+
++ <style module>
++   .name {
++     width: 25%;
++   }
+
++   .description {
++     max-width: 177px;
++   }
+
++   .description span {
++     white-space: nowrap;
++     overflow: hidden;
++     text-overflow: ellipsis;
++     display: inline-block;
++     max-width: 100%;
++   }
+
++   .edit-button {
++     text-align: end;
++   }
++ </style>
+
+```
+
+- We will update `table` styles:
+
+### ./src/pages/recipe/list/components/Table.vue
+
+```diff
+<template>
+- <table>
++ <table :class="$style.table">
+    <header-component/>
+    <tbody>
+      <template v-for="recipe in recipes">
+        <row-component :key="recipe.id" :recipe="recipe"/>
+      </template>
+    </tbody>
+  </table>
+</template>
+
+...
+
++ <style module>
++   .table {
++     border-collapse: collapse;
++     width: 100%;
++   }
+
++   .table tbody tr:nth-of-type(odd) {
++     background-color: rgba(0, 0, 0, 0.05);
++   }
+</style>
+
+```
+
 - Create `SearchBar`:
 
 ### ./src/pages/recipe/list/components/SearchBar.vue
 
 ```javascript
 <template>
-  <input-component
-    type="text"
-    name="searchText"
+  <v-text-field
     placeholder="Search for ingredients comma separated..."
     :value="searchText"
-    :input-handler="inputHandler"
-/>
+    @input="onSearch"
+  />
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from 'vue';
-import { InputComponent } from '../../../../common/components/form';
+import Vue, { PropOptions } from "vue";
 
 export default Vue.extend({
-  name: 'SearchBarComponent',
-  components: {
-    InputComponent,
-  },
+  name: "SearchBarComponent",
   props: {
     searchText: String,
-    searchInputHandler: {} as PropOptions<(value: string) => void>,
-  },
-  methods: {
-    inputHandler(field: string, value: string) {
-      this.searchInputHandler(value);
-    }
+    onSearch: {} as PropOptions<(value: string) => void>
   }
 });
 </script>
@@ -468,12 +572,11 @@ export default Vue.extend({
 ### ./src/pages/recipe/list/components/index.ts
 
 ```diff
-import HeaderComponent from './Header.vue';
-import RowComponent from './Row.vue';
+import TableComponent from './Table.vue';
 + import SearchBarComponent from './SearchBar.vue';
 
-- export { HeaderComponent, RowComponent };
-+ export { HeaderComponent, RowComponent, SearchBarComponent };
+- export { TableComponent };
++ export { TableComponent, SearchBarComponent };
 
 ```
 
@@ -527,60 +630,44 @@ const matchIngredient = (ingredient, searchedIngredient) => {
 
 ### ./src/pages/recipe/list/Page.vue
 
+> NOTE: [Computed vs Methods](https://vuejs.org/v2/guide/computed.html#Computed-Caching-vs-Methods)
+
 ```diff
 <template>
-  <div class="container-fluid">
+  <v-container>
     <h2>Recipes</h2>
-+    <search-bar-component
-+      :search-text="searchText"
-+      :search-input-handler="searchInputHandler"
-+    />
-    <table class="table table-striped">
-      <header-component />
-      <tbody>
--        <template v-for="recipe in recipes">
-+        <template v-for="recipe in filteredRecipes">
-          <row-component
-            :key="recipe.id"
-            :recipe="recipe"
-          />
-        </template>
-      </tbody>
-    </table>
-  </div>
++    <search-bar-component :search-text="searchText" :on-search="onSearch"/>
+-   <table-component :recipes="recipes"/>
++   <table-component :recipes="filteredRecipes"/>
+  </v-container>
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from 'vue';
-import { Recipe } from './viewModel';
-- import { HeaderComponent, RowComponent } from './components';
-+ import { HeaderComponent, RowComponent, SearchBarComponent } from './components';
-+ import { filterRecipesByCommaSeparatedText } from './business/filterRecipeBusiness';
+import Vue, { PropOptions } from "vue";
+import { Recipe } from "./viewModel";
+- import { TableComponent } from "./components";
++ import { TableComponent, SearchBarComponent } from "./components";
++ import { filterRecipesByCommaSeparatedText } from "./business/filterRecipeBusiness";
 
 export default Vue.extend({
-  name: 'RecipeListPage',
-  components: {
--    HeaderComponent, RowComponent,
-+    HeaderComponent, RowComponent, SearchBarComponent,
-  },
+  name: "RecipeListPage",
+- components: { TableComponent },
++ components: { TableComponent, SearchBarComponent },
   props: {
-    recipes: {} as PropOptions<Recipe[]>,
-  },
-+  data() {
-+    return {
-+      searchText: '',
-+    };
-+  },
-+  methods: {
-+    searchInputHandler(value: string) {
-+      this.searchText = value;
-+    },
-+  },
-+  computed: {
-+    filteredRecipes(): Recipe[] {
-+      return filterRecipesByCommaSeparatedText(this.recipes, this.searchText);
-+    },
-+  },
+    recipes: {} as PropOptions<Recipe[]>
+- }
++ },
++ data: () => ({ searchText: "" }),
++ methods: {
++   onSearch: function(value: string) {
++     this.searchText = value;
++   },
++ },
++ computed: {
++   filteredRecipes(): Recipe[] {
++     return filterRecipesByCommaSeparatedText(this.recipes, this.searchText);
++   },
++ },
 });
 </script>
 
@@ -649,28 +736,20 @@ export const router = new Router({
 <template>
   <tr>
     <td :class="$style.name">
-      <span>
-        {{ recipe.name }}
-      </span>
+      <span>{{recipe.name}}</span>
     </td>
     <td :class="$style.description">
-      <span>
-        {{ recipe.description }}
-      </span>
+      <span>{{recipe.description}}</span>
     </td>
-    <td>
--     <a class="btn btn-primary pull-right">
-+     <router-link
-+       :to="`recipe/${recipe.id}`"
-+       class="btn btn-primary pull-right"
-+     >
-        <i class="glyphicon glyphicon-pencil" />
--     </a>
-+     </router-link>
+    <td :class="$style.editButton">
+-     <v-btn flat icon>
++     <v-btn flat icon :to="`recipe/${recipe.id}`">
+        <v-icon>edit</v-icon>
+      </v-btn>
     </td>
   </tr>
 </template>
-  ···
+···
 
 ```
 

@@ -1,2 +1,2 @@
-import RecipeEditPage from './Page.vue';
-export { RecipeEditPage };
+import EditRecipePage from './Page.vue';
+export { EditRecipePage };
