@@ -28,16 +28,17 @@ Summary steps:
 
 ## 01 Hello VueJS
 
-In this sample we are going to create our first Vue.js component and connect it with the DOM.
+In this sample we are going to create our first Vue.js SFC and connect it with the DOM.
 
 We will take a startup point sample _00 Boilerplate_.
 
 Summary steps:
- - Install Vue.js devtools.
- - Install `vue.js` library.
- - Configure webpack to work with `vue.js`.
- - Update `index.html`.
- - Update `main.ts`.
+
+- Install Vue.js devtools.
+- Install `vue.js` library and others dependencies.
+- Configure webpack to work with `vue.js`.
+- Update `index.html`.
+- Update `main.ts`.
 
 ## 02 Properties
 
@@ -46,67 +47,59 @@ In this sample we are going to learn a basic concept, handling properties.
 We will take a startup point sample _01 Hello VueJS_.
 
 Summary steps:
- - Update `main.ts` with and input element.
- - Use `v-model` directive.
- - Create our first component.
- - Passing properties from `main.ts` to `hello.ts`.
- - Other approach to work with properties.
 
-## 03 Render
+- Update `App.vue` with and input element.
+- Use `v-model` directive.
+- Create our first component.
+- Passing properties from `main.ts` to `hello.ts`.
+- Other approach to work with properties.
 
-In this sample we are going to work with `render` function.
+## 03 Login
+
+In this sample we are going to create a `login` page.
 
 We will take a startup point sample _02 Properties_.
 
 Summary steps:
- - Configure to work with runtime-only build.
- - Enable and configure jsx
- - Install `babel-plugin-transform-vue-jsx`
- - Rename to `main.tsx` and update it.
- - Rename to `hello.tsx` and update it.
 
-## 04 Login
+- Delete `Hello.vue`.
+- Update `App.vue`.
+- Update `index.html`.
+- Create `login` page.
+- Configure router navigation.
+- Create `recipe list` page.
+- Create `LoginEntity` model.
+- Create fake `login` API.
+- Check valid login.
 
-In this sample we are going to create a `login` page.
-
-We will take a startup point sample _03 Render_.
-
-Summary steps:
- - Delete `hello.tsx`.
- - Update `index.html`.
- - Create `login` page.
- - Configure router navigation.
- - Create `recipe list` page.
- - Create `LoginEntity` model.
- - Create fake `login` API.
- - Check valid login.
-
-## 05 Recipe List
+## 04 Recipe List
 
 In this sample we are going to create a `recipe list` page.
 
-We will take a startup point sample _04 Login_.
+We will take a startup point sample _03 Login_.
 
 Summary steps:
- - Create `recipe` model.
- - Create fake `recipe` API.
- - Create `recipe list` page container.
- - Update `recipe list` page.
- - Navigate to `edit recipe` page.
 
-## 06 Edit Recipe
+- Create `recipe` model.
+- Create fake `recipe` API.
+- Create `recipe list` page container.
+- Update `recipe list` page.
+- Navigate to `edit recipe` page.
+
+## 05 Edit Recipe
 
 In this sample we are going to create a `edit recipe` page.
 
-We will take a startup point sample _05 Recipe List_.
+We will take a startup point sample _04 Recipe List_.
 
 Summary steps:
- - Create `API` methods.
- - Create `pageContainer`.
- - Update `page`.
- - Create `common` components.
- - Create `edit recipe` form.
- - Add `form validations` with `lc-form-validation`.
+
+- Create `API` methods.
+- Create `pageContainer`.
+- Update `page`.
+- Create `common` components.
+- Create `edit recipe` form.
+- Add `form validations` with `lc-form-validation`.
 
 # About Lemoncode
 
