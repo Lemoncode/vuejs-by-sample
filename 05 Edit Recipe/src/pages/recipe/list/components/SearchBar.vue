@@ -1,30 +1,19 @@
 <template>
-  <input-component
-    type="text"
-    name="searchText"
+  <v-text-field
     placeholder="Search for ingredients comma separated..."
     :value="searchText"
-    :input-handler="inputHandler"
-/>
+    @input="onSearch"
+  />
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from 'vue';
-import { InputComponent } from '../../../../common/components/form';
+import Vue, { PropOptions } from "vue";
 
 export default Vue.extend({
-  name: 'SearchBarComponent',
-  components: {
-    InputComponent,
-  },
+  name: "SearchBarComponent",
   props: {
     searchText: String,
-    searchInputHandler: {} as PropOptions<(value: string) => void>,
-  },
-  methods: {
-    inputHandler(field: string, value: string) {
-      this.searchInputHandler(value);
-    }
+    onSearch: {} as PropOptions<(value: string) => void>
   }
 });
 </script>

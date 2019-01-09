@@ -1,25 +1,20 @@
 <template>
-  <div class="col-sm-3">
-    <label class="col-xs-8">
-      {{ ingredient }}
-    </label>
-    <span
-      class="btn btn-default"
-      @click="removeIngredient(ingredient)"
-    >
-      <i class="glyphicon glyphicon-remove"></i>
-    </span>
-  </div>  
+  <v-layout row align-center>
+    <v-chip>
+      {{ingredient}}
+      <v-icon right @click="() => onRemoveIngredient(ingredient)">close</v-icon>
+    </v-chip>
+  </v-layout>
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from 'vue';
+import Vue, { PropOptions } from "vue";
 
 export default Vue.extend({
-  name: 'IngredientRowComponent',
+  name: "IngredientRowComponent",
   props: {
     ingredient: String,
-    removeIngredient: {} as PropOptions<(ingredient) => void>,
-  },
+    onRemoveIngredient: {} as PropOptions<(ingredient) => void>
+  }
 });
 </script>

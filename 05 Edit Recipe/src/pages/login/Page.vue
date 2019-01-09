@@ -1,36 +1,36 @@
 <template>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-md-4 col-md-offset-4">
-        <div class="panel panel-default">
-          <header-component />
+  <v-layout>
+    <v-flex xs12 sm6 offset-sm3>
+      <v-card>
+        <v-card-title primary-title>
+          <h3 class="headline">Login</h3>
+        </v-card-title>
+        <v-card-text>
           <form-component
-            :login-entity="loginEntity"
+            :login="login"
             :login-error="loginError"
             :update-login="updateLogin"
             :login-request="loginRequest"
           />
-        </div>
-      </div>
-    </div>
-  </div>
+        </v-card-text>
+      </v-card>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from 'vue';
-import { FormProps } from './formProps';
-import { HeaderComponent, FormComponent } from './components';
+import Vue, { PropOptions } from "vue";
+import { FormProps } from "./formProps";
+import { FormComponent } from "./components";
 
 export default Vue.extend({
-  name: 'LoginPage',
-  components: {
-    HeaderComponent, FormComponent,
-  },
+  name: "LoginPage",
+  components: { FormComponent },
   props: {
-    loginEntity: {},
+    login: {},
     loginError: {},
     updateLogin: {},
-    loginRequest: {},
-  } as FormProps,
+    loginRequest: {}
+  }
 });
 </script>

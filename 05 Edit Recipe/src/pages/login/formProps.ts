@@ -1,9 +1,9 @@
 import { PropOptions } from 'vue';
-import { LoginEntity, LoginError } from './viewModel';
+import { Login, LoginError } from './viewModel';
 
 export interface FormProps {
-  loginEntity: PropOptions<LoginEntity>,
+  login: PropOptions<Login>,
   loginError: PropOptions<LoginError>,
-  updateLogin: PropOptions<(login: string, password: string) => void>,
+  updateLogin: PropOptions<(name: string, password: string) => void>,
   loginRequest: PropOptions<() => void>,
 }

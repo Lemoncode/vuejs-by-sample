@@ -155,11 +155,13 @@ With `Vue.extends`, we create components that it needs to be imported in other f
 
 ```javascript
 <template>
-  <v-layout column justify-center>
-    <v-text-field label="Name"></v-text-field>
-    <v-text-field label="Password" type="password"></v-text-field>
-    <v-btn color="info">Login</v-btn>
-  </v-layout>
+  <form>
+    <v-layout column justify-center>
+      <v-text-field label="Name"></v-text-field>
+      <v-text-field label="Password" type="password"></v-text-field>
+      <v-btn type="submit" color="info">Login</v-btn>
+    </v-layout>
+  </form>
 </template>
 
 <script lang="ts">
@@ -388,12 +390,14 @@ export const router = new Router({
 
 ```diff
 <template>
-  <v-layout column justify-center>
-    <v-text-field label="Name"></v-text-field>
-    <v-text-field label="Password" type="password"></v-text-field>
--   <v-btn color="info">Login</v-btn>
-+   <v-btn color="info" to="/recipe">Login</v-btn>
-  </v-layout>
+  <form>
+    <v-layout column justify-center>
+      <v-text-field label="Name"></v-text-field>
+      <v-text-field label="Password" type="password"></v-text-field>
+-     <v-btn type="submit" color="info">Login</v-btn>
++     <v-btn type="submit" color="info" to="/recipe">Login</v-btn>
+    </v-layout>
+  </form>
 </template>
 
 ```
@@ -482,23 +486,25 @@ export const mapLoginVmToModel = (login: vm.Login): model.Login => ({
 
 ```diff
 <template>
-  <v-layout column justify-center>
--   <v-text-field label="Name"></v-text-field>
-+   <v-text-field
-+     label="Name"
-+     :value="login.name"
-+     @input="(name) => updateLogin(name, login.password)"
-+   />
--   <v-text-field label="Password" type="password"></v-text-field>
-+   <v-text-field
-+     label="Password"
-+     type="password"
-+     :value="login.password"
-+     @input="(password) => updateLogin(login.name, password)"
-+   />
--   <v-btn color="info" to="/recipe">Login</v-btn>
-+   <v-btn color="info" @click.prevent="loginRequest">Login</v-btn>
-  </v-layout>
+  <form>
+    <v-layout column justify-center>
+-     <v-text-field label="Name"></v-text-field>
++     <v-text-field
++       label="Name"
++       :value="login.name"
++       @input="(name) => updateLogin(name, login.password)"
++     />
+-     <v-text-field label="Password" type="password"></v-text-field>
++     <v-text-field
++       label="Password"
++       type="password"
++       :value="login.password"
++       @input="(password) => updateLogin(login.name, password)"
++     />
+-     <v-btn type="submit" color="info" to="/recipe">Login</v-btn>
++     <v-btn type="submit" color="info" @click.prevent="loginRequest">Login</v-btn>
+    </v-layout>
+  </form>
 </template>
 
 <script lang="ts">
@@ -910,24 +916,26 @@ export interface FormProps {
 
 ```diff
 <template>
-  <v-layout column justify-center>
-    <v-text-field
-      label="Name"
-      :value="login.name"
--     @input="(name) => updateLogin(name, login.password)"
-+     @input="(name) => updateLogin('name', name)"
-+     :rules="[() => loginError.name.succeeded || loginError.name.errorMessage]"
-    />
-    <v-text-field
-      label="Password"
-      type="password"
-      :value="login.password"
--     @input="(password) => updateLogin(login.name, password)"
-+     @input="(password) => updateLogin('password', password)"
-+     :rules="[() => loginError.password.succeeded || loginError.password.errorMessage]"
-    />
-    <v-btn color="info" @click.prevent="loginRequest">Login</v-btn>
-  </v-layout>
+  <form>
+    <v-layout column justify-center>
+      <v-text-field
+        label="Name"
+        :value="login.name"
+-       @input="(name) => updateLogin(name, login.password)"
++       @input="(name) => updateLogin('name', name)"
++       :rules="[() => loginError.name.succeeded || loginError.name.errorMessage]"
+      />
+      <v-text-field
+        label="Password"
+        type="password"
+        :value="login.password"
+-       @input="(password) => updateLogin(login.name, password)"
++       @input="(password) => updateLogin('password', password)"
++       :rules="[() => loginError.password.succeeded || loginError.password.errorMessage]"
+      />
+      <v-btn type="submit" color="info" @click.prevent="loginRequest">Login</v-btn>
+    </v-layout>
+  </form>
 </template>
 
 <script lang="ts">

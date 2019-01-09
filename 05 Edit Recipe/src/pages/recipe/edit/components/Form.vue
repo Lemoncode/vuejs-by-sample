@@ -1,108 +1,72 @@
 <template>
-  <form class="container">
-    <div class="row">
-      <validation-component
-        :has-error="!recipeError.name.succeeded"
-        :error-message="recipeError.name.errorMessage"
-      >
-        <input-component
-          type="text"
+  <form>
+    <v-container>
+      <v-layout row>
+        <v-text-field
           label="Name"
-          name="name"
           :value="recipe.name"
-          :input-handler="updateRecipe"
+          @input="(name) => onUpdateRecipe('name', name)"
+          :rules="[() => recipeError.name.succeeded || recipeError.name.errorMessage]"
         />
-      </validation-component>
-    </div>
-    <div class="row">
-      <input-button-component
-        type="text"
-        label="Ingredients"
-        name="ingredients"
-        placeholder="Add ingredient"
-        button-text="Add"
-        button-class-name="btn btn-primary"
-        :value="ingredient"
-        :input-handler="updateIngredient"
-        :button-click-handler="addIngredient"
-      />
-    </div>
-    <div class="row">
-      <validation-component
-        :has-error="!recipeError.ingredients.succeeded"
-        :error-message="recipeError.ingredients.errorMessage"
-      >
+      </v-layout>
+      <v-layout column>
+        <v-text-field
+          label="Ingredients"
+          placeholder="Add ingredient"
+          :value="ingredient"
+          @input="onUpdateIngredient"
+          append-icon="add"
+          @click:append="() => onAddIngredient(ingredient)"
+        />
         <ingredient-list-component
           :ingredients="recipe.ingredients"
-          :remove-ingredient="removeIngredient"
+          :on-remove-ingredient="onRemoveIngredient"
         />
-      </validation-component>
-    </div>
-    <div class="row">
-      <textarea-component
-        class-name="description"
-        label="Description"
-        name="description"
-        placeholder="Description..."
-        rows="10"
-        :value="recipe.description"
-        :input-handler="updateRecipe"
-      />
-    </div>    
-    <div class="row">
-      <div class="form-group pull-right">
-        <button-component
-          class-name="btn btn-lg btn-success"
-          label="Save"
-          type="button"
-          :click-handler="save"
-        />
-      </div>
-    </div>
+      </v-layout>
+      <v-alert
+        :value="!recipeError.ingredients.succeeded"
+        color="error"
+        outline
+      >{{recipeError.ingredients.errorMessage}}</v-alert>
+      <v-layout row>
+        <v-textarea
+          placeholder="Description...."
+          :value="recipe.description"
+          @input="(value) => onUpdateRecipe('description', value)"
+          rows="10"
+          :no-resize="true"
+        ></v-textarea>
+      </v-layout>
+      <v-layout row justify-end>
+        <v-btn type="button" color="success" @click.prevent="onSave">Save</v-btn>
+      </v-layout>
+    </v-container>
   </form>
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from 'vue';
-import { Recipe, RecipeError } from '../viewModel';
-import IngredientListComponent from './IngredientList.vue';
-import { ValidationComponent, InputComponent, InputButtonComponent, ButtonComponent, TextareaComponent } from '../../../../common/components/form';
-
-interface Props {
-  recipe: PropOptions<Recipe>;
-  recipeError: PropOptions<RecipeError>;
-  updateRecipe: PropOptions<(field, value) => void>;
-  addIngredient: PropOptions<(ingredient) => void>;
-  removeIngredient: PropOptions<(ingredient) => void>;
-  save: PropOptions<() => void>;
-}
+import Vue from "vue";
+import { FormProps } from "../formProps";
+import IngredientListComponent from "./IngredientList.vue";
 
 export default Vue.extend({
-  name: 'FormComponent',
-  components: {
-    ValidationComponent, InputComponent, InputButtonComponent, ButtonComponent, IngredientListComponent, TextareaComponent,
-  },
+  name: "FormComponent",
+  components: { IngredientListComponent },
   props: {
     recipe: {},
     recipeError: {},
-    updateRecipe: {},
-    addIngredient: {},
-    removeIngredient: {},
-    save: {},
-  } as Props,
+    onUpdateRecipe: {},
+    onAddIngredient: {},
+    onRemoveIngredient: {},
+    onSave: {}
+  } as FormProps,
   data: () => ({
-    ingredient: '',
+    ingredient: ""
   }),
   methods: {
-    updateIngredient(fieldName, value) {
+    onUpdateIngredient: function(value) {
       this.ingredient = value;
-    },
-  },
-})
+    }
+  }
+});
 </script>
-
-<style scoped>
-.description textarea {
-  resize: none;
-}
-</style>

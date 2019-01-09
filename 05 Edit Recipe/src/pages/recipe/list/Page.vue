@@ -1,52 +1,33 @@
 <template>
-  <div class="container-fluid">
+  <v-container>
     <h2>Recipes</h2>
-    <search-bar-component
-      :search-text="searchText"
-      :search-input-handler="searchInputHandler"
-    />    
-    <table class="table table-striped">
-      <header-component />
-      <tbody>
-        <template v-for="recipe in filteredRecipes">
-          <row-component
-            :key="recipe.id"
-            :recipe="recipe"
-          />
-        </template>
-      </tbody>
-    </table>
-  </div>  
+    <search-bar-component :search-text="searchText" :on-search="onSearch"/>
+    <table-component :recipes="filteredRecipes"/>
+  </v-container>
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from 'vue';
-import { Recipe } from './viewModel';
-import { HeaderComponent, RowComponent, SearchBarComponent } from './components';
-import { filterRecipesByCommaSeparatedText } from './business/filterRecipeBusiness';
+import Vue, { PropOptions } from "vue";
+import { Recipe } from "./viewModel";
+import { TableComponent, SearchBarComponent } from "./components";
+import { filterRecipesByCommaSeparatedText } from "./business/filterRecipeBusiness";
 
 export default Vue.extend({
-  name: 'RecipeListPage',
-  components: {
-    HeaderComponent, RowComponent, SearchBarComponent,
-  },
+  name: "RecipeListPage",
+  components: { TableComponent, SearchBarComponent },
   props: {
-    recipes: {} as PropOptions<Recipe[]>,
+    recipes: {} as PropOptions<Recipe[]>
   },
-  data() {
-    return {
-      searchText: '',
-    };
-  },
+  data: () => ({ searchText: "" }),
   methods: {
-    searchInputHandler(value: string) {
+    onSearch: function(value: string) {
       this.searchText = value;
-    },
+    }
   },
   computed: {
-    filteredRecipes(): Recipe[] {
+    filteredRecipes: function(): Recipe[] {
       return filterRecipesByCommaSeparatedText(this.recipes, this.searchText);
-    },
-  },   
+    }
+  }
 });
 </script>

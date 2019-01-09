@@ -2,36 +2,35 @@
   <recipe-edit-page
     :recipe="recipe"
     :recipe-error="recipeError"
-    :update-recipe="updateRecipe"
-    :add-ingredient="addIngredient"
-    :remove-ingredient="removeIngredient"
-    :save="save"  
-  />  
+    :on-update-recipe="onUpdateRecipe"
+    :on-add-ingredient="onAddIngredient"
+    :on-remove-ingredient="onRemoveIngredient"
+    :on-save="onSave"
+  />
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { router } from '../../../router';
-import { fetchRecipeById, save } from '../../../rest-api/api/recipe';
-import { Recipe, createEmptyRecipe, RecipeError, createEmptyRecipeError } from './viewModel';
-import { mapRecipeModelToVm } from './mappers';
-import RecipeEditPage from './Page.vue';
-import { validations } from './validations';
+import Vue from "vue";
+import { router } from "../../../router";
+import { fetchRecipeById, save } from "../../../rest-api/api/recipe";
+import {
+  Recipe,
+  createEmptyRecipe,
+  RecipeError,
+  createEmptyRecipeError
+} from "./viewModel";
+import { mapRecipeModelToVm, mapRecipeVmToModel } from "./mappers";
+import RecipeEditPage from "./Page.vue";
+import { validations } from "./validations";
 
 export default Vue.extend({
-  name: 'RecipeEditPageContainer',
-  components: {
-    RecipeEditPage,
-  },
-  props: {
-    id: String,
-  },
-  data() {
-    return {
-      recipe: createEmptyRecipe(),
-      recipeError: createEmptyRecipeError(),
-    };
-  },
+  name: "RecipeEditPageContainer",
+  components: { RecipeEditPage },
+  props: { id: String },
+  data: () => ({
+    recipe: createEmptyRecipe(),
+    recipeError: createEmptyRecipeError()
+  }),
   beforeMount() {
     const id = Number(this.id || 0);
     fetchRecipeById(id)
@@ -41,61 +40,58 @@ export default Vue.extend({
       .catch(error => console.log(error));
   },
   methods: {
-    updateRecipe(field: string, value) {
+    onUpdateRecipe: function(field: string, value: string) {
       this.recipe = {
         ...this.recipe,
-        [field]: value,
+        [field]: value
       };
-
       this.validateRecipeField(field, value);
     },
-    addIngredient(ingredient: string) {
+    onAddIngredient: function(ingredient: string) {
       this.recipe = {
         ...this.recipe,
-        ingredients: [...this.recipe.ingredients, ingredient],
+        ingredients: [...this.recipe.ingredients, ingredient]
       };
-
-      this.validateRecipeField('ingredients', this.recipe.ingredients);
+      this.validateRecipeField("ingredients", this.recipe.ingredients);
     },
-    removeIngredient(ingredient: string) {
+    onRemoveIngredient: function(ingredient: string) {
       this.recipe = {
         ...this.recipe,
-        ingredients: this.recipe.ingredients.filter((i) => {
+        ingredients: this.recipe.ingredients.filter(i => {
           return i !== ingredient;
-        }),
+        })
       };
-
-      this.validateRecipeField('ingredients', this.recipe.ingredients);
+      this.validateRecipeField("ingredients", this.recipe.ingredients);
+    },
+    onSave: function() {
+      validations.validateForm(this.recipe).then(result => {
+        if (result.succeeded) {
+          const recipe = mapRecipeVmToModel(this.recipe);
+          save(recipe)
+            .then(message => {
+              console.log(message);
+              this.$router.back();
+            })
+            .catch(error => console.log(error));
+        } else {
+          this.recipeError = {
+            ...this.recipeError,
+            ...result.fieldErrors
+          };
+        }
+      });
     },
     validateRecipeField: function(field, value) {
-      validations.validateField(this.recipe, field, value)
+      validations
+        .validateField(this.recipe, field, value)
         .then(result => this.updateRecipeError(field, result));
     },
     updateRecipeError: function(field, result) {
       this.recipeError = {
         ...this.recipeError,
-        [field]: result,
+        [field]: result
       };
-    },
-    save() {
-      validations.validateForm(this.recipe)
-       .then(result => {
-         result.fieldErrors
-           .map(error => this.updateRecipeError(error.key, error));
-         if (result.succeeded) {
-      save(this.recipe)
-        .then(message => {
-          console.log(message);
-          this.$router.back();
-        })
-        .catch(error => console.log(error));
-         } else {
-           result.fieldErrors
-             .filter(error => !error.succeeded)
-             .map(error => console.log(`Error in ${error.key}: ${error.errorMessage}`));
-         }
-       });        
-    },
-  },
+    }
+  }
 });
 </script>

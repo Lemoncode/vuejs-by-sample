@@ -1,11 +1,11 @@
 import { FieldValidationResult } from 'lc-form-validation';
 
-const hasItems = (message) => (value: any[]): FieldValidationResult => {
+const hasItems = (value: any[]): FieldValidationResult => {
   const isValid = value.length > 0;
   return {
     type: 'ARRAY_HAS_ITEMS',
     succeeded: isValid,
-    errorMessage: isValid ? '' : message,
+    errorMessage: isValid ? '' : 'Should has one or more ingredients',
   };
 };
 
