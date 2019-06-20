@@ -17,9 +17,11 @@ export default Vue.extend({
   components: {
     HelloComponent,
   },
-  data: () => ({
-    message: 'Hello from App'
-  }),
+  data() {
+    return {
+      message: 'Hello from App',
+    };
+  },
   methods: {
     onChange(event) {
       this.message = event.target.value;
