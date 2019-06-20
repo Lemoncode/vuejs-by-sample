@@ -47,9 +47,11 @@ import Vue from 'vue';
 
 export default Vue.extend({
   name: 'App',
-  data: () => ({
-    message: "Hello from App"
-  }),
+  data() {
+    return {
+      message: "Hello from App",
+    };
+  },
 };
 </script>
 
@@ -77,9 +79,11 @@ import Vue from 'vue';
 
 export default Vue.extend({
   name: 'App',
-  data: () => ({
-    message: "Hello from App"
-  }),
+  data() {
+    return {
+      message: "Hello from App",
+    };
+  },
 };
 </script>
 
@@ -106,9 +110,11 @@ import Vue from 'vue';
 
 export default Vue.extend({
   name: 'App',
-  data: () => ({
-    message: "Hello from App"
-  }),
+  data() {
+    return {
+      message: "Hello from App",
+    };
+  },
 + methods: {
 +   onChange(event) {
 +     this.message = event.target.value;
@@ -142,9 +148,11 @@ import Vue from 'vue';
 
 export default Vue.extend({
   name: 'App',
-  data: () => ({
-    message: "Hello from App"
-  }),
+  data() {
+    return {
+      message: "Hello from App",
+    };
+  },
 - methods: {
 -   onChange(event) {
 -     this.message = event.target.value;
@@ -204,9 +212,11 @@ export default Vue.extend({
 + components: {
 +   HelloComponent,
 + },
-  data: () => ({
-    message: "Hello from App"
-  }),
+  data() {
+    return {
+      message: "Hello from App"
+    };
+  },
 });
 </script>
 
@@ -246,8 +256,8 @@ export default Vue.extend({
   <div>
     <h1>{{message}}</h1>
     <hello-component
-        :message="message"
-+       :on-change="onChange"
+      :message="message"
++     :on-change="onChange"
     />
   </div>
 </template>
@@ -260,9 +270,11 @@ export default {
   components: {
     HelloComponent,
   },
-  data: () => ({
-    message: "Hello from App"
-  }),
+  data() {
+    return {
+      message: "Hello from App"
+    };
+  },
 + methods: {
 +   onChange(event) {
 +     this.message = event.target.value;
@@ -297,9 +309,11 @@ export default {
   components: {
     HelloComponent,
   },
-  data: () => ({
-    message: "Hello from App"
-  }),
+  data() {
+    return {
+      message: "Hello from App"
+    };
+  },
 - methods: {
 -   onChange(event) {
 -     this.message = event.target.value;
