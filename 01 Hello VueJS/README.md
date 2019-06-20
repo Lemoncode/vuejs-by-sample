@@ -162,7 +162,7 @@ module.exports = {
 -   extensions: ['.js', '.ts'],
 +   extensions: ['.js', '.ts', '.vue'],
 +   alias: {
-+     'vue': 'vue/dist/vue.esm.js',
++     'vue': 'vue/dist/vue.runtime.esm.js',
 +   },
   },
 ...
@@ -238,11 +238,13 @@ module.exports = {
 + import Vue from 'vue';
 
 + new Vue({
-+  el: '#root',
-+  template: '<h1>{{message}}</h1>',
-+  data: {
-+    message: 'Hello from Vue.js',
-+  },
++   el: '#root',
++   render: function (createElement) {
++     return createElement(
++       "h1",
++       "Hello from Vue.js",
++     )
++   }
 + });
 
 ```
@@ -261,9 +263,11 @@ import Vue from 'vue';
 
 export default Vue.extend({
   name: 'App',
-  data: () => ({
-    message: 'Hello from App',
-  }),
+  data() {
+    return {
+      message: 'Hello from App',
+    };
+  },
 });
 </script>
 
@@ -280,19 +284,22 @@ import Vue from 'vue';
 + import App from './App.vue';
 
 new Vue({
-  el: '#root',
-- template: '<h1>{{message}}</h1>',
-- data: {
--   message: 'Hello from Vue.js',
-- },
-+ render: (h) => h(App),
-});
+-   el: '#root',
+-   render: function (createElement) {
+-     return createElement(
+-       "h1",
+-       "Hello from Vue.js",
+-     )
+-   }
++ render: h => h(App),
+- });
++ }).$mount('#root');
 
 ```
 
 - Create `sfc.d.ts` in order to TypeScript recognize and treat .vue files
 
- ###./src/sfc.d.ts
+###./src/sfc.d.ts
 
 ```javascript
 declare module '*.vue' {
