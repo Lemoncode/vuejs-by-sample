@@ -18,10 +18,12 @@ import { validations } from "./validations";
 export default Vue.extend({
   name: "LoginPageContainer",
   components: { LoginPage },
-  data: () => ({
-    login: createEmptyLogin(),
-    loginError: createEmptyLoginError()
-  }),
+  data() {
+    return {
+      login: createEmptyLogin(),
+      loginError: createEmptyLoginError()
+    };
+  },
   methods: {
     updateLogin: function(field: string, value: string) {
       this.login = {

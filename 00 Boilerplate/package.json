@@ -4,7 +4,7 @@
   "description": "Sample working with TypeScript and Webpack",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --open",
+    "start": "webpack-dev-server",
     "build": "webpack"
   },
   "repository": {

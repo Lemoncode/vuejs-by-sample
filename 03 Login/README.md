@@ -106,9 +106,8 @@ import App from './App.vue';
 + Vue.use(Vuetify);
 
 new Vue({
-  el: '#root',
   render: (h) => h(App),
-});
+}).$mount('#root');
 
 ```
 
@@ -117,17 +116,22 @@ new Vue({
 ```diff
 <template>
 + <v-app>
-  <div>
+-  <div>
     <h1>{{message}}</h1>
-  </div>
+-  </div>
 + </v-app>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue from 'vue';
 
 export default Vue.extend({
-  name: "App"
+  name: 'App',
+  data() {
+    return {
+      message: 'Hello from Vue.js',
+    };
+  },
 });
 </script>
 
@@ -157,8 +161,8 @@ With `Vue.extends`, we create components that it needs to be imported in other f
 <template>
   <form>
     <v-layout column justify-center>
-      <v-text-field label="Name"></v-text-field>
-      <v-text-field label="Password" type="password"></v-text-field>
+      <v-text-field label="Name"/>
+      <v-text-field label="Password" type="password"/>
       <v-btn type="submit" color="info">Login</v-btn>
     </v-layout>
   </form>
@@ -167,7 +171,9 @@ With `Vue.extends`, we create components that it needs to be imported in other f
 <script lang="ts">
 import Vue from "vue";
 
-export default Vue.extend();
+export default Vue.extend({
+  name: 'FormComponent',
+});
 </script>
 
 ```
@@ -251,9 +257,8 @@ Vue.use(Vuetify);
 + Vue.use(VueRouter);
 
 new Vue({
-  el: '#root',
-  render: (h) => h(App),
-});
+  render: h => h(App),
+}).$mount('#root');
 
 ```
 
@@ -274,7 +279,6 @@ export const router = new Router({
   routes,
 });
 
-
 ```
 
 - Update `main.ts` to work with router:
@@ -292,11 +296,9 @@ Vue.use(Vuetify);
 Vue.use(VueRouter);
 
 new Vue({
-  el: '#root',
 +  router,
   render: h => h(App),
-});
-
+}).$mount('#root');
 
 ```
 
@@ -319,9 +321,11 @@ import Vue from 'vue';
 
 export default Vue.extend({
   name: 'App',
-- data: () => ({
--   message: "Hello from App"
-- })
+-  data() {
+-    return {
+-      message: "Hello from App"
+-    };
+-  },
 });
 </script>
 
@@ -488,13 +492,13 @@ export const mapLoginVmToModel = (login: vm.Login): model.Login => ({
 <template>
   <form>
     <v-layout column justify-center>
--     <v-text-field label="Name"></v-text-field>
+-     <v-text-field label="Name"/>
 +     <v-text-field
 +       label="Name"
 +       :value="login.name"
 +       @input="(name) => updateLogin(name, login.password)"
 +     />
--     <v-text-field label="Password" type="password"></v-text-field>
+-     <v-text-field label="Password" type="password"/>
 +     <v-text-field
 +       label="Password"
 +       type="password"
@@ -585,9 +589,11 @@ import { createEmptyLogin } from './viewModel';
 export default Vue.extend({
   name: 'LoginPageContainer',
   components: { LoginPage },
-  data: () => ({
-    login: createEmptyLogin()
-  })
+  data() {
+    return {
+      login: createEmptyLogin(),
+    };
+  },
 });
 </script>
 ```
@@ -610,9 +616,11 @@ import { createEmptyLogin } from './viewModel';
 export default Vue.extend({
   name: 'LoginPageContainer',
   components: { LoginPage },
-  data: () => ({
-    login: createEmptyLogin()
-  }),
+  data() {
+    return {
+      login: createEmptyLogin(),
+    };
+  },
 + methods: {
 +   updateLogin: function(name, password) {
 +     this.login = {
@@ -1008,10 +1016,12 @@ import { mapLoginVmToModel } from "./mapper";
 export default Vue.extend({
   name: "LoginPageContainer",
   components: { LoginPage },
-  data: () => ({
-    login: createEmptyLogin(),
-+   loginError: createEmptyLoginError(),
-  }),
+  data() {
+    return {
+      login: createEmptyLogin(),
++     loginError: createEmptyLoginError(),
+    };
+  },
   methods: {
 -   updateLogin(name: string, password: string) {
 +   updateLogin(field: string, value: string) {

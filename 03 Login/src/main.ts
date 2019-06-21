@@ -8,7 +8,6 @@ Vue.use(Vuetify);
 Vue.use(VueRouter);
 
 new Vue({
-  el: '#root',
   router,
   render: h => h(App),
-});
+}).$mount('#root');
