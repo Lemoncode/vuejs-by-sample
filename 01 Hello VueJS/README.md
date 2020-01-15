@@ -85,7 +85,7 @@ npm install vue-loader vue-template-compiler --save-dev
 
 - This library has its own TypeScript definition file, so we don't need install other typings.
 
-- Configure `webpack.config` to set `vue.js` as vendor:
+- Configure `webpack.config.js` to set `vue.js` as vendor:
 
 ### ./webpack.config.js
 
@@ -93,9 +93,7 @@ npm install vue-loader vue-template-compiler --save-dev
 ...
   entry: {
     app: './main.ts',
-+   vendor: [
-+     'vue',
-+   ],
++   vendor: ['vue'],
   },
   output: {
     path: path.join(basePath, 'dist'),
@@ -162,7 +160,7 @@ module.exports = {
 -   extensions: ['.js', '.ts'],
 +   extensions: ['.js', '.ts', '.vue'],
 +   alias: {
-+     'vue': 'vue/dist/vue.runtime.esm.js',
++     vue: 'vue/dist/vue.runtime.esm.js',
 +   },
   },
 ...
@@ -186,13 +184,9 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
--         MiniCssExtractPlugin.loader,
-+         process.env.NODE_ENV !== 'production'
-+           ? 'vue-style-loader'
-+           : MiniCssExtractPlugin.loader,
-          'css-loader',
-        ],
+-        use: [MiniCssExtractPlugin.loader, 'css-loader'],
++        use: [isDev ? 'vue-style-loader' : MiniCssExtractPlugin.loader, 'css-loader'],
++
       },
 ···
   plugins: [
@@ -253,7 +247,7 @@ module.exports = {
 
 ### ./src/App.vue
 
-```javascript
+```vue
 <template>
   <h1>{{ message }}</h1>
 </template>
@@ -270,7 +264,6 @@ export default Vue.extend({
   },
 });
 </script>
-
 ```
 
 > The special case to note here is the [**data option**](https://vuejs.org/v2/api/#data). It must be a function when it used with `Vue.extend()`.
