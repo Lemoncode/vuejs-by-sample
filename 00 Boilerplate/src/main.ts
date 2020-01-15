@@ -1,1 +1,1 @@
-document.write("Hello from main.ts !");
+document.write('Hello from main.ts !');
