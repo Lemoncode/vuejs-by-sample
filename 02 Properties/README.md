@@ -167,11 +167,9 @@ export default Vue.extend({
 
 ### ./src/Hello.vue
 
-```javascript
+```vue
 <template>
-  <input
-    v-model="message"
-  />
+  <input v-model="message" />
 </template>
 
 <script lang="ts">
@@ -184,7 +182,6 @@ export default Vue.extend({
   },
 });
 </script>
-
 ```
 
 - Update `App.vue`:
