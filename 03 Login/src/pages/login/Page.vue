@@ -19,18 +19,18 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from "vue";
-import { FormProps } from "./formProps";
-import { FormComponent } from "./components";
+import Vue, { PropOptions } from 'vue';
+import { FormProps } from './formProps';
+import { FormComponent } from './components';
 
 export default Vue.extend({
-  name: "LoginPage",
+  name: 'LoginPage',
   components: { FormComponent },
   props: {
     login: {},
     loginError: {},
     updateLogin: {},
-    loginRequest: {}
-  }
+    loginRequest: {},
+  } as FormProps,
 });
 </script>

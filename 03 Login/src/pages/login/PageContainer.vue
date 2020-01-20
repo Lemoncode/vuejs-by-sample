@@ -9,9 +9,9 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { loginRequest } from "../../rest-api/api/login";
 import LoginPage from "./Page.vue";
 import { createEmptyLogin, createEmptyLoginError } from "./viewModel";
-import { loginRequest } from "../../rest-api/api/login";
 import { mapLoginVmToModel } from "./mapper";
 import { validations } from "./validations";
 
@@ -25,7 +25,7 @@ export default Vue.extend({
     };
   },
   methods: {
-    updateLogin: function(field: string, value: string) {
+    updateLogin(field: string, value: string) {
       this.login = {
         ...this.login,
         [field]: value
@@ -41,7 +41,7 @@ export default Vue.extend({
         })
         .catch(error => console.log(error));
     },
-    loginRequest: function() {
+    loginRequest() {
       validations
         .validateForm(this.login)
         .then(formValidationResult => {

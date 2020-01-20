@@ -1,3 +1,1 @@
-import RecipeListPage from './Page.vue';
-
-export { RecipeListPage };
+export { default as RecipeListPage } from './Page.vue';

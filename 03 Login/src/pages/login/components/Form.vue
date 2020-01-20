@@ -1,34 +1,66 @@
 <template>
-  <form>
+  <v-form ref="form" v-model="valid">
     <v-layout column justify-center>
       <v-text-field
         label="Name"
         :value="login.name"
-        @input="(name) => updateLogin('name', name)"
-        :rules="[() => loginError.name.succeeded || loginError.name.errorMessage]"
+        :rules="[resultLoginError.name]"
+        @input="name => updateLogin('name', name)"
       />
       <v-text-field
         label="Password"
         type="password"
         :value="login.password"
-        @input="(password) => updateLogin('password', password)"
-        :rules="[() => loginError.password.succeeded || loginError.password.errorMessage]"
+        :rules="[resultLoginError.password]"
+        @input="password => updateLogin('password', password)"
       />
-      <v-btn type="submit" color="info" @click.prevent="loginRequest">Login</v-btn>
+      <v-btn type="submit" color="info" @click.prevent="handleClick">Login</v-btn>
     </v-layout>
-  </form>
+  </v-form>
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from "vue";
-import { FormProps } from "../formProps";
+import Vue, { VueConstructor, PropOptions } from 'vue';
+import { FormProps } from '../formProps';
+import { ResultLoginError } from '../viewModel';
 
-export default Vue.extend({
+interface Refs {
+  $refs: {
+    form: HTMLFormElement;
+  };
+}
+
+export default (Vue as VueConstructor<Vue & Refs>).extend({
+  name: 'FormComponent',
   props: {
     login: {},
     loginError: {},
     updateLogin: {},
-    loginRequest: {}
-  } as FormProps
+    loginRequest: {},
+  } as FormProps,
+  data() {
+    return {
+      valid: true,
+    };
+  },
+  computed: {
+    resultLoginError(): ResultLoginError {
+      return Object.keys(this.loginError).reduce(
+        (acc, item) => ({
+          ...acc,
+          [item]:
+            this.loginError[item as keyof ResultLoginError].succeeded ||
+            this.loginError[item as keyof ResultLoginError].errorMessage,
+        }),
+        {} as ResultLoginError
+      );
+    },
+  },
+  methods: {
+    handleClick() {
+      this.$refs.form.validate();
+      this.loginRequest();
+    },
+  },
 });
 </script>
