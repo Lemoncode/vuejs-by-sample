@@ -15,6 +15,8 @@ interface LoginError {
   password: FieldValidationResult;
 }
 
+type ResultLoginError = Record<keyof LoginError, boolean | string>;
+
 const createEmptyLoginError = (): LoginError => ({
   name: {
     key: 'name',
@@ -30,4 +32,4 @@ const createEmptyLoginError = (): LoginError => ({
   },
 });
 
-export { Login, createEmptyLogin, LoginError, createEmptyLoginError };
+export { Login, createEmptyLogin, LoginError, ResultLoginError, createEmptyLoginError };

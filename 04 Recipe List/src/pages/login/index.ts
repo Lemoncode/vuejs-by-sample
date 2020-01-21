@@ -1,2 +1,1 @@
-import LoginPageContainer from './PageContainer.vue';
-export { LoginPageContainer };
+export { default as LoginPageContainer } from './PageContainer.vue';

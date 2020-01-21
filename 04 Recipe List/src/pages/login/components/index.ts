@@ -1,3 +1,1 @@
-import FormComponent from './Form.vue';
-
-export { FormComponent };
+export { default as FormComponent } from './Form.vue';

@@ -8,25 +8,27 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import LoginPage from "./Page.vue";
-import { createEmptyLogin, createEmptyLoginError } from "./viewModel";
-import { loginRequest } from "../../rest-api/api/login";
-import { mapLoginVmToModel } from "./mapper";
-import { validations } from "./validations";
+import Vue from 'vue';
+import { loginRequest } from '../../rest-api/api/login';
+import LoginPage from './Page.vue';
+import { createEmptyLogin, createEmptyLoginError } from './viewModel';
+import { mapLoginVmToModel } from './mapper';
+import { validations } from './validations';
 
 export default Vue.extend({
-  name: "LoginPageContainer",
+  name: 'LoginPageContainer',
   components: { LoginPage },
-  data: () => ({
-    login: createEmptyLogin(),
-    loginError: createEmptyLoginError()
-  }),
+  data() {
+    return {
+      login: createEmptyLogin(),
+      loginError: createEmptyLoginError(),
+    };
+  },
   methods: {
-    updateLogin: function(field: string, value: string) {
+    updateLogin(field: string, value: string) {
       this.login = {
         ...this.login,
-        [field]: value
+        [field]: value,
       };
 
       validations
@@ -34,12 +36,12 @@ export default Vue.extend({
         .then(fieldValidationResult => {
           this.loginError = {
             ...this.loginError,
-            [field]: fieldValidationResult
+            [field]: fieldValidationResult,
           };
         })
         .catch(error => console.log(error));
     },
-    loginRequest: function() {
+    loginRequest() {
       validations
         .validateForm(this.login)
         .then(formValidationResult => {
@@ -47,18 +49,18 @@ export default Vue.extend({
             const loginModel = mapLoginVmToModel(this.login);
             loginRequest(loginModel)
               .then(() => {
-                this.$router.push("/recipe");
+                this.$router.push('/recipe');
               })
               .catch(error => console.log(error));
           } else {
             this.loginError = {
               ...this.loginError,
-              ...formValidationResult.fieldErrors
+              ...formValidationResult.fieldErrors,
             };
           }
         })
         .catch(error => console.log(error));
-    }
-  }
+    },
+  },
 });
 </script>
