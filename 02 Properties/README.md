@@ -343,7 +343,7 @@ export default Vue.extend({
 +   value: String,
   },
 + methods: {
-+   onChange: function(event) {
++   onChange(event) {
 +     this.$emit('input', event.target.value);
 +   },
 + },

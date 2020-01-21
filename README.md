@@ -12,16 +12,15 @@ by webpack.
 
 We won't install anything related to Vue.js, just some basic plumbing.
 
-We will setup an initial <abbr title="Node.js package manager, a package manager for the JavaScript runtime environment Node.js">npm</abbr> project and give support to TypeScript. Then we will create a **helloworld.ts** sample.
+We will setup an initial <abbr title="Node.js package manager, a package manager for the JavaScript runtime environment Node.js">npm</abbr> project and give support to TypeScript. Then we will create a Hello World TypeScript sample.
 
 Summary steps:
 
 - Prerequisites: Install Node.js
 - Initialize **package.json** (with `npm init`)
 - Install:
-    - Webpack and webpack-dev-server.
-    - TypeScript.
-    - Bootstrap.
+  - Webpack and webpack-dev-server.
+  - TypeScript.
 - Setup **webpack.config.js**
 - Create a test js file.
 - Create a simple HTML file.
