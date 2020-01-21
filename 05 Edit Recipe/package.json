@@ -1,11 +1,11 @@
 {
   "name": "sample-vue-js",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Sample working with TypeScript and Webpack",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server",
-    "build": "webpack"
+    "start": "webpack-dev-server --open",
+    "build": "webpack --mode=production"
   },
   "repository": {
     "type": "git",

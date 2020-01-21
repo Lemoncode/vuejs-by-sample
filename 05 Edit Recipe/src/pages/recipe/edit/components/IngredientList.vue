@@ -11,15 +11,15 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from "vue";
-import IngredientRowComponent from "./IngredientRow.vue";
+import Vue, { PropOptions } from 'vue';
+import IngredientRowComponent from './IngredientRow.vue';
 
 export default Vue.extend({
-  name: "IngredientListComponent",
+  name: 'IngredientListComponent',
   components: { IngredientRowComponent },
   props: {
     ingredients: {} as PropOptions<string[]>,
-    onRemoveIngredient: {} as PropOptions<(ingredient) => void>
-  }
+    onRemoveIngredient: {} as PropOptions<(ingredient: string) => void>,
+  },
 });
 </script>

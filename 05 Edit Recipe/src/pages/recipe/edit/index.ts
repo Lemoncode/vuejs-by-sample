@@ -1,2 +1,1 @@
-import EditRecipePageContainer from './PageContainer.vue';
-export { EditRecipePageContainer };
+export { default as RecipeEditPageContainer } from './PageContainer.vue';

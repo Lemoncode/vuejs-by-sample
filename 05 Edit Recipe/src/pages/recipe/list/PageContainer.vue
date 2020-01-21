@@ -1,26 +1,28 @@
 <template>
-  <recipe-list-page :recipes="recipes"/>
+  <recipe-list-page :recipes="recipes" />
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Recipe } from "./viewModel";
-import { mapRecipeListModelToVm } from "./mappers";
-import { fetchRecipes } from "../../../rest-api/api/recipe";
-import RecipeListPage from "./Page.vue";
+import Vue from 'vue';
+import { Recipe } from './viewModel';
+import { mapRecipeListModelToVm } from './mappers';
+import { fetchRecipes } from '../../../rest-api/api/recipe';
+import RecipeListPage from './Page.vue';
 
 export default Vue.extend({
-  name: "RecipeListPageContainer",
+  name: 'RecipeListPageContainer',
   components: { RecipeListPage },
-  data: () => ({
-    recipes: [] as Recipe[]
-  }),
-  created: function() {
+  data() {
+    return {
+      recipes: [] as Recipe[],
+    };
+  },
+  created() {
     fetchRecipes()
       .then(recipes => {
         this.recipes = mapRecipeListModelToVm(recipes);
       })
       .catch(error => console.log(error));
-  }
+  },
 });
 </script>

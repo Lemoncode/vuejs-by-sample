@@ -1,3 +1,1 @@
-import RecipeListPageContainer from './PageContainer.vue';
-
-export { RecipeListPageContainer };
+export { default as RecipeListPageContainer } from './PageContainer.vue';

@@ -5,17 +5,17 @@
         <v-text-field
           label="Name"
           :value="recipe.name"
-          @input="(name) => onUpdateRecipe('name', name)"
-          :rules="[() => recipeError.name.succeeded || recipeError.name.errorMessage]"
+          :rules="[resultRecipeError]"
+          @input="name => onUpdateRecipe('name', name)"
         />
       </v-layout>
       <v-layout column>
         <v-text-field
           label="Ingredients"
           placeholder="Add ingredient"
+          append-icon="add"
           :value="ingredient"
           @input="onUpdateIngredient"
-          append-icon="add"
           @click:append="() => onAddIngredient(ingredient)"
         />
         <ingredient-list-component
@@ -23,18 +23,16 @@
           :on-remove-ingredient="onRemoveIngredient"
         />
       </v-layout>
-      <v-alert
-        :value="!recipeError.ingredients.succeeded"
-        color="error"
-        outline
-      >{{recipeError.ingredients.errorMessage}}</v-alert>
+      <v-alert :value="!recipeError.ingredients.succeeded" color="error" outline>{{
+        recipeError.ingredients.errorMessage
+      }}</v-alert>
       <v-layout row>
         <v-textarea
           placeholder="Description...."
-          :value="recipe.description"
-          @input="(value) => onUpdateRecipe('description', value)"
           rows="10"
+          :value="recipe.description"
           :no-resize="true"
+          @input="value => onUpdateRecipe('description', value)"
         ></v-textarea>
       </v-layout>
       <v-layout row justify-end>
@@ -45,12 +43,12 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { FormProps } from "../formProps";
-import IngredientListComponent from "./IngredientList.vue";
+import Vue from 'vue';
+import { FormProps } from '../formProps';
+import IngredientListComponent from './IngredientList.vue';
 
 export default Vue.extend({
-  name: "FormComponent",
+  name: 'FormComponent',
   components: { IngredientListComponent },
   props: {
     recipe: {},
@@ -58,15 +56,22 @@ export default Vue.extend({
     onUpdateRecipe: {},
     onAddIngredient: {},
     onRemoveIngredient: {},
-    onSave: {}
+    onSave: {},
   } as FormProps,
-  data: () => ({
-    ingredient: ""
-  }),
+  data() {
+    return {
+      ingredient: '',
+    };
+  },
+  computed: {
+    resultRecipeError(): boolean | string {
+      return this.recipeError.name.succeeded || this.recipeError.name.errorMessage;
+    },
+  },
   methods: {
-    onUpdateIngredient: function(value) {
+    onUpdateIngredient(value) {
       this.ingredient = value;
-    }
-  }
+    },
+  },
 });
 </script>

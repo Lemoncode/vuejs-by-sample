@@ -1,4 +1,2 @@
-import TableComponent from './Table.vue';
-import SearchBarComponent from './SearchBar.vue';
-
-export { TableComponent, SearchBarComponent };
+export { default as TableComponent } from './Table.vue';
+export { default as SearchBarComponent } from './SearchBar.vue';
