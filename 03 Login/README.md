@@ -100,8 +100,9 @@ npm install vuetify@1 --save
 
 ```diff
 import Vue from 'vue';
-+ import Vuetify from 'vuetify';
 import App from './App.vue';
++ import Vuetify from 'vuetify';
++ import 'vuetify/dist/vuetify.min.css';
 
 + Vue.use(Vuetify);
 
@@ -248,6 +249,7 @@ npm install vue-router --save
 ```diff
 import Vue from 'vue';
 import Vuetify from 'vuetify';
+import 'vuetify/dist/vuetify.min.css';
 + import VueRouter from 'vue-router';
 import App from './App.vue';
 
@@ -285,6 +287,7 @@ export const router = new Router({
 ```diff
 import Vue from 'vue';
 import Vuetify from 'vuetify';
+import 'vuetify/dist/vuetify.min.css';
 import VueRouter from 'vue-router';
 + import { router } from './router';
 import App from './App.vue';
