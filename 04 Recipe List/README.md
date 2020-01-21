@@ -36,8 +36,7 @@ export interface Recipe {
   name: string;
   description: string;
   ingredients: string[];
-};
-
+}
 ```
 
 ### ./src/rest-api/model/index.ts
@@ -65,12 +64,7 @@ export const mockRecipes: Recipe[] = [
      3. When the omelette begins to cook and firm up, but still has a little raw egg on top, sprinkle over the cheese (if using).
      4. Using a spatula, ease around the edges of the omelette, then fold it over in half. When it starts to turn golden brown underneath, remove the pan from the heat and slide the omelette on to a plate.
     `,
-    ingredients: [
-      '2 eggs',
-      'cheese',
-      'salt',
-      'black pepper',
-    ],
+    ingredients: ['2 eggs', 'cheese', 'salt', 'black pepper'],
   },
   {
     id: 2,
@@ -88,7 +82,7 @@ export const mockRecipes: Recipe[] = [
       '1 onion',
       'lemon juice',
       'salt',
-      'pepper'
+      'pepper',
     ],
   },
   {
@@ -111,7 +105,6 @@ export const mockRecipes: Recipe[] = [
     ],
   },
 ];
-
 ```
 
 ### ./src/rest-api/api/recipe/recipe.ts
@@ -123,14 +116,12 @@ import { mockRecipes } from './mockData';
 export const fetchRecipes = (): Promise<Recipe[]> => {
   return Promise.resolve(mockRecipes);
 };
-
 ```
 
 ### ./src/rest-api/api/recipe/index.ts
 
 ```javascript
 export * from './recipe';
-
 ```
 
 - Create `recipe` viewModel:
@@ -143,8 +134,7 @@ export interface Recipe {
   name: string;
   description: string;
   ingredients: string[];
-};
-
+}
 ```
 
 - Create `mapper` to map from model to viewModel:
@@ -155,27 +145,24 @@ export interface Recipe {
 import * as model from '../../../rest-api/model';
 import * as vm from './viewModel';
 
-export const mapRecipeListModelToVm = (recipes: model.Recipe[]): vm.Recipe[] => (
-  recipes.map(mapRecipeModelToVm)
-);
+export const mapRecipeListModelToVm = (recipes: model.Recipe[]): vm.Recipe[] =>
+  recipes.map(mapRecipeModelToVm);
 
 const mapRecipeModelToVm = (recipe: model.Recipe): vm.Recipe => ({
   ...recipe,
 });
-
 ```
 
 - Create `header`:
 
 ### ./src/pages/recipe/list/components/Header.vue
 
-```javascript
+```vue
 <template>
   <thead>
     <th>Name</th>
     <th>Description</th>
     <th></th>
-  </thead>
   </thead>
 </template>
 
@@ -186,21 +173,20 @@ export default Vue.extend({
   name: 'HeaderComponent',
 });
 </script>
-
 ```
 
 - Create `row`:
 
 ### ./src/pages/recipe/list/components/Row.vue
 
-```javascript
+```vue
 <template>
   <tr>
     <td>
-      <span>{{recipe.name}}</span>
+      <span>{{ recipe.name }}</span>
     </td>
     <td>
-      <span>{{recipe.description}}</span>
+      <span>{{ recipe.description }}</span>
     </td>
     <td>
       <v-btn flat icon>
@@ -211,50 +197,48 @@ export default Vue.extend({
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from "vue";
-import { Recipe } from "../viewModel";
+import Vue, { PropOptions } from 'vue';
+import { Recipe } from '../viewModel';
 
 export default Vue.extend({
-  name: "RowComponent",
+  name: 'RowComponent',
   props: {
-    recipe: {} as PropOptions<Recipe>
-  }
+    recipe: {} as PropOptions<Recipe>,
+  },
 });
 </script>
-
 ```
 
 - Create `table`:
 
 ### ./src/pages/recipe/list/components/Table.vue
 
-```javascript
+```vue
 <template>
   <table>
-    <header-component/>
+    <header-component />
     <tbody>
       <template v-for="recipe in recipes">
-        <row-component :key="recipe.id" :recipe="recipe"/>
+        <row-component :key="recipe.id" :recipe="recipe" />
       </template>
     </tbody>
   </table>
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from "vue";
-import { Recipe } from "../viewModel";
-import HeaderComponent from "./Header.vue";
-import RowComponent from "./Row.vue";
+import Vue, { PropOptions } from 'vue';
+import { Recipe } from '../viewModel';
+import HeaderComponent from './Header.vue';
+import RowComponent from './Row.vue';
 
 export default Vue.extend({
-  name: "TableComponent",
+  name: 'TableComponent',
   components: { HeaderComponent, RowComponent },
   props: {
-    recipes: {} as PropOptions<Recipe[]>
-  }
+    recipes: {} as PropOptions<Recipe[]>,
+  },
 });
 </script>
-
 ```
 
 - Create `index.ts`:
@@ -262,10 +246,7 @@ export default Vue.extend({
 ### ./src/pages/recipe/list/components/index.ts
 
 ```javascript
-import TableComponent from './TableComponent.vue';
-
-export { TableComponent };
-
+export { default as TableComponent } from './Table.vue';
 ```
 
 - Update `recipe list` page:
@@ -302,11 +283,9 @@ export default Vue.extend({
 
 ### ./src/pages/recipe/list/PageContainer.vue
 
-```javascript
+```vue
 <template>
-  <recipe-list-page
-    :recipes="recipes"
-  />
+  <recipe-list-page :recipes="recipes" />
 </template>
 
 <script lang="ts">
@@ -335,7 +314,6 @@ export default Vue.extend({
   },
 });
 </script>
-
 ```
 
 - Update `index.ts`:
@@ -385,10 +363,7 @@ export const router = new Router({
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Vue.js by sample</title>
-+   <link
-+     href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons"
-+     rel="stylesheet"
-+   />
++   <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons' rel="stylesheet">
   </head>
   <body>
     <div id="root"></div>
@@ -412,12 +387,7 @@ export const router = new Router({
       ...
       {
         test: /\.css$/,
--       use: [
--         process.env.NODE_ENV !== 'production'
--           ? 'vue-style-loader'
--           : MiniCssExtractPlugin.loader,
--         'css-loader'
--       ],
+-       use: [isDev ? 'vue-style-loader' : MiniCssExtractPlugin.loader, 'css-loader'],
 +       oneOf: [
 +         {
 +           resourceQuery: /module/,
@@ -426,20 +396,17 @@ export const router = new Router({
 +             {
 +               loader: 'css-loader',
 +               options: {
-+                 modules: true,
-+                 camelCase: true,
-+                 localIdentName: '[name]__[local]__[hash:base64:5]',
++                 localsConvention: 'camelCase',
++                 modules: {
++                   mode: 'local',
++                   localIdentName: '[name]__[local]__[hash:base64:5]',
++                 },
 +               },
 +             },
 +           ],
 +         },
 +         {
-+           use: [
-+             process.env.NODE_ENV !== 'production'
-+               ? 'vue-style-loader'
-+               : MiniCssExtractPlugin.loader,
-+             'css-loader',
-+           ],
++           use: [isDev ? 'vue-style-loader' : MiniCssExtractPlugin.loader, 'css-loader'],
 +         },
 +       ],
       },
@@ -536,7 +503,7 @@ export default Vue.extend({
 +   .table tbody tr:nth-of-type(odd) {
 +     background-color: rgba(0, 0, 0, 0.05);
 +   }
-</style>
++ </style>
 
 ```
 
@@ -544,7 +511,7 @@ export default Vue.extend({
 
 ### ./src/pages/recipe/list/components/SearchBar.vue
 
-```javascript
+```vue
 <template>
   <v-text-field
     placeholder="Search for ingredients comma separated..."
@@ -554,17 +521,16 @@ export default Vue.extend({
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from "vue";
+import Vue, { PropOptions } from 'vue';
 
 export default Vue.extend({
-  name: "SearchBarComponent",
+  name: 'SearchBarComponent',
   props: {
     searchText: String,
-    onSearch: {} as PropOptions<(value: string) => void>
-  }
+    onSearch: {} as PropOptions<(value: string) => void>,
+  },
 });
 </script>
-
 ```
 
 - Update `index.ts`:
@@ -572,11 +538,8 @@ export default Vue.extend({
 ### ./src/pages/recipe/list/components/index.ts
 
 ```diff
-import TableComponent from './Table.vue';
-+ import SearchBarComponent from './SearchBar.vue';
-
-- export { TableComponent };
-+ export { TableComponent, SearchBarComponent };
+export { default as TableComponent } from './Table.vue';
++ export { default as SearchBarComponent } from './SearchBar.vue';
 
 ```
 
@@ -590,9 +553,9 @@ import { Recipe } from '../viewModel';
 export const filterRecipesByCommaSeparatedText = (recipes, searchText) => {
   const searchedIngredients = getSearchedIngredientList(searchText);
 
-  return searchText === '' ?
-    recipes :
-    filterRecipesBySearchedIngredients(recipes, searchedIngredients);
+  return searchText === ''
+    ? recipes
+    : filterRecipesBySearchedIngredients(recipes, searchedIngredients);
 };
 
 const getSearchedIngredientList = (searchText: string) => {
@@ -606,15 +569,13 @@ const filterRecipesBySearchedIngredients = (recipes, searchedIngredients) => {
 };
 
 const matchAllSearchedIngredients = (ingredients, searchedIngredients) => {
-  return searchedIngredients.every((searchedIngredient) =>
+  return searchedIngredients.every(searchedIngredient =>
     matchSearchedIngredient(searchedIngredient, ingredients)
   );
 };
 
 const matchSearchedIngredient = (searchedIngredient: string, ingredients: string[]) => {
-  return ingredients.some((ingredient) =>
-    matchIngredient(ingredient, searchedIngredient)
-  );
+  return ingredients.some(ingredient => matchIngredient(ingredient, searchedIngredient));
 };
 
 const matchIngredient = (ingredient, searchedIngredient) => {
@@ -623,7 +584,6 @@ const matchIngredient = (ingredient, searchedIngredient) => {
 
   return ingredientLowerCase.indexOf(searchedIngredientLowerCase) >= 0;
 };
-
 ```
 
 - Update `recipe list` page:
@@ -657,9 +617,13 @@ export default Vue.extend({
     recipes: {} as PropOptions<Recipe[]>
 - }
 + },
-+ data: () => ({ searchText: "" }),
++ data() {
++    return {
++      searchText: "",
++    };
++  },
 + methods: {
-+   onSearch: function(value: string) {
++   onSearch(value: string) {
 +     this.searchText = value;
 +   },
 + },
@@ -677,7 +641,7 @@ export default Vue.extend({
 
 ### ./src/pages/recipe/edit/Page.vue
 
-```javascript
+```vue
 <template>
   <h1>Edit Recipe Page {{ id }}</h1>
 </template>
@@ -692,7 +656,6 @@ export default Vue.extend({
   },
 });
 </script>
-
 ```
 
 - Create `index.ts`:
@@ -700,9 +663,7 @@ export default Vue.extend({
 ### ./src/pages/recipe/edit/index.ts
 
 ```javascript
-import EditRecipePage from './Page.vue';
-export { EditRecipePage };
-
+export { default as EditRecipePage } from './Page.vue';
 ```
 
 - Update `router.ts`:
